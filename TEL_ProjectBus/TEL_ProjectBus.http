@@ -1,0 +1,6 @@
+@TEL_ProjectBus_HostAddress = http://localhost:5195
+
+GET {{TEL_ProjectBus_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
