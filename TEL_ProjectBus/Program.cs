@@ -23,6 +23,7 @@ builder.Logging.AddConsole().SetMinimumLevel(LogLevel.Debug);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 // Добавляем Swagger и загружаем XML-документацию
 builder.Services.AddSwaggerGen(c =>
 {
@@ -89,11 +90,14 @@ builder.Services.AddMassTransit(x =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//	app.UseSwagger();
+//	app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();// Перенаправляет HTTP ? HTTPS
 
