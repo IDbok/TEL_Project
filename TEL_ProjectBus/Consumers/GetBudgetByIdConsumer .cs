@@ -19,56 +19,56 @@ public class GetBudgetByIdConsumer(ILogger<GetBudgetByIdConsumer> logger) : ICon
 			var newGuid = Guid.NewGuid();
 
 			var budgetLines = new List<BudgetLineDto>
-		{
-			new BudgetLineDto
 			{
-				WBSTemplate = "Менеджмент проекта",
-				BudgetName = "Project Leader  Руководитель проекта",
-				Role = "PL_P18",
-				Hours = 560,
-				Quantity = 1,
-				CPTCCPcs = 115000,
-				RGPPCS = 33,
-				Probability = 100,
-				DataPlan = DateTime.Parse("2024-11-20"),
-				CPTCCPlan = 115000,
-				DataFact = DateTime.Parse("2024-12-21"),
-				PriceTCCPcs = 172419.79m,
-				PriceTCC = 172419.79m
-			},
-			new BudgetLineDto
-			{
-				WBSTemplate = "Менеджмент проекта",
-				BudgetName = "Design manager  Менеджер по проектированию",
-				Role = "PL_P18",
-				Hours = 100,
-				Quantity = 1,
-				CPTCCPcs = 115000,
-				RGPPCS = 33,
-				Probability = 100,
-				DataPlan = DateTime.Parse("2024-11-20"),
-				CPTCCPlan = 115000,
-				DataFact = DateTime.Parse("2024-12-21"),
-				PriceTCCPcs = 172419.79m,
-				PriceTCC = 172419.79m
-			},
-			new BudgetLineDto
-			{
-				WBSTemplate = "Менеджмент проекта",
-				BudgetName = "Segment Sales Director  Директор по продажам в сегмент",
-				Role = "PL_P18",
-				Hours = 32,
-				Quantity = 1,
-				CPTCCPcs = 115000,
-				RGPPCS = 33,
-				Probability = 100,
-				DataPlan = DateTime.Parse("2024-11-20"),
-				CPTCCPlan = 115000,
-				DataFact = DateTime.Parse("2024-12-21"),
-				PriceTCCPcs = 172419.79m,
-				PriceTCC = 172419.79m
-			}
-		};
+				new BudgetLineDto
+				{
+					WBSTemplate = "Менеджмент проекта",
+					BudgetName = "Project Leader  Руководитель проекта",
+					Role = "PL_P18",
+					Hours = 560,
+					Quantity = 1,
+					CPTCCPcs = 115000,
+					RGPPCS = 33,
+					Probability = 100,
+					DataPlan = DateTime.Parse("2024-11-20"),
+					CPTCCPlan = 115000,
+					DataFact = DateTime.Parse("2024-12-21"),
+					PriceTCCPcs = 172419.79m,
+					PriceTCC = 172419.79m
+				},
+				new BudgetLineDto
+				{
+					WBSTemplate = "Менеджмент проекта",
+					BudgetName = "Design manager  Менеджер по проектированию",
+					Role = "PL_P18",
+					Hours = 100,
+					Quantity = 1,
+					CPTCCPcs = 115000,
+					RGPPCS = 33,
+					Probability = 100,
+					DataPlan = DateTime.Parse("2024-11-20"),
+					CPTCCPlan = 115000,
+					DataFact = DateTime.Parse("2024-12-21"),
+					PriceTCCPcs = 172419.79m,
+					PriceTCC = 172419.79m
+				},
+				new BudgetLineDto
+				{
+					WBSTemplate = "Менеджмент проекта",
+					BudgetName = "Segment Sales Director  Директор по продажам в сегмент",
+					Role = "PL_P18",
+					Hours = 32,
+					Quantity = 1,
+					CPTCCPcs = 115000,
+					RGPPCS = 33,
+					Probability = 100,
+					DataPlan = DateTime.Parse("2024-11-20"),
+					CPTCCPlan = 115000,
+					DataFact = DateTime.Parse("2024-12-21"),
+					PriceTCCPcs = 172419.79m,
+					PriceTCC = 172419.79m
+				}
+			};
 			var budgetItemResponse = new GetBudgetByIdResponse
 			{
 				BudgetItemId = newGuid,
@@ -88,10 +88,7 @@ public class GetBudgetByIdConsumer(ILogger<GetBudgetByIdConsumer> logger) : ICon
 				CreatedAt = DateTime.Now,
 
 				budgetLines = budgetLines
-
 			};
-
-
 
 			if (budgetItemResponse is null)
 			{
@@ -122,11 +119,11 @@ public class GetBudgetByIdConsumer(ILogger<GetBudgetByIdConsumer> logger) : ICon
 		}
 		catch (Exception ex)
 		{
-			Console.WriteLine($"Error processing request: {ex.Message}");
-			//await context.RespondAsync<GetBudgetByIdResponse>(new
-			//{
-			//	ErrorMessage = ex.Message
-			//});
+			//Console.WriteLine($"Error processing request: {ex.Message}");
+			await context.RespondAsync<GetBudgetByIdResponse>(new
+			{
+				ErrorMessage = ex.Message
+			});
 		}
 	}
 }

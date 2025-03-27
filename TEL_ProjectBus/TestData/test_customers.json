@@ -1,0 +1,29 @@
+[
+    {
+        "Id": "ae6a726b-ea33-4b48-8b1b-759793833618",
+        "CustomerName": "Клиент №1",
+        "Address": "Город 1, Улица 1",
+        "CompanyName": "Компания 1",
+        "ContactPerson": "Контакт 1",
+        "DateCreated": "2025-03-26T17:29:34.421222",
+        "DateChanged": "2025-03-26T17:29:34.421234"
+    },
+    {
+        "Id": "edf13301-65e1-4046-ab03-387818fa6585",
+        "CustomerName": "Клиент №2",
+        "Address": "Город 2, Улица 2",
+        "CompanyName": "Компания 2",
+        "ContactPerson": "Контакт 2",
+        "DateCreated": "2025-03-26T17:29:34.421242",
+        "DateChanged": "2025-03-26T17:29:34.421245"
+    },
+    {
+        "Id": "43caba03-7e96-4b53-8774-ff65204cae81",
+        "CustomerName": "Клиент №3",
+        "Address": "Город 3, Улица 3",
+        "CompanyName": "Компания 3",
+        "ContactPerson": "Контакт 3",
+        "DateCreated": "2025-03-26T17:29:34.421252",
+        "DateChanged": "2025-03-26T17:29:34.421255"
+    }
+]

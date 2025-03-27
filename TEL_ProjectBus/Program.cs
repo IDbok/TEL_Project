@@ -1,4 +1,6 @@
+using Infrastructure;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using TEL_ProjectBus;
@@ -15,6 +17,12 @@ using TEL_ProjectBus.Messages.Queries;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+	options.UseNpgsql(connectionString);
+});
 
 var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
 
@@ -46,10 +54,12 @@ builder.Services.AddMassTransit(x =>
 
 	// Регистрируем обработчики сообщений
 	x.AddConsumer<GetBudgetByIdConsumer>();
+	x.AddConsumer<GetProjectsConsumer>();
 	//x.AddConsumer<CurrentTimeConsumer>();
 
 	// Регистрация RequestClient
 	x.AddRequestClient<GetBudgetByIdQuery>();
+	x.AddRequestClient<GetProjectsQuery>();
 
 	if (useInMemory)
 		x.UsingInMemory((context, cfg) =>
@@ -96,6 +106,8 @@ var app = builder.Build();
 //	app.UseSwaggerUI();
 //}
 
+
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -104,5 +116,12 @@ app.UseHttpsRedirection();// Перенаправляет HTTP ? HTTPS
 //app.UseAuthorization();
 
 app.MapControllers(); // Подключает маршрутизацию контроллеров
+
+using (var scope = app.Services.CreateScope())
+{
+	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+	db.Database.Migrate(); // применит все миграции
+	DbInitializer.Seed(db); // добавит начальные данные
+}
 
 app.Run();
