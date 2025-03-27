@@ -35,15 +35,36 @@ public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
 		{
 			Items = projects.Select(x => new ProjectDto
 			{
-				ProjectId = x.Id,
+				//ProjectId = x.Id,
 				ProjectName = x.ProjectName,
 				ProjectCode = x.ProjectCode,
 				DateInitiation = x.DateInitiation,
-				CustomerId = x.CustomerId
+				//CustomerId = x.CustomerId
+				Phases = new List<PhaseDto>()
+				{
+					new PhaseDto
+					{
+						PhaseName = "Phase 1",
+						PhaseStatus = "In Progress"
+					},
+					new PhaseDto
+					{
+						PhaseName = "Phase 2",
+						PhaseStatus = "In Progress"
+					},
+					new PhaseDto
+					{
+						PhaseName = "Phase 3",
+						PhaseStatus = "In Progress"
+					}
+				},
+				// рандомное значение для ProjectProgress от 0 до 100
+				ProjectProgress = new Random().Next(0, 100),
+				ProjectStatus = x.Status.ToString(),
 			}),
 			TotalCount = totalCount,
 			PageNumber = query.PageNumber,
-			PageSize = query.PageSize
+			PageSize = query.PageSize,
 		});
 	}
 }
