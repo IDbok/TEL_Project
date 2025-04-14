@@ -1,6 +1,4 @@
-﻿using DAL.Entities;
-
-namespace TEL_ProjectBus.DAL.Entities;
+﻿namespace TEL_ProjectBus.DAL.Entities;
 
 public class Budget
 {

@@ -1,5 +1,4 @@
-﻿using DAL.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.DAL.Entities;
 
 namespace Infrastructure;
