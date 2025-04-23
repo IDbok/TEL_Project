@@ -1,10 +1,15 @@
 using Infrastructure;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text;
 using TEL_ProjectBus;
 using TEL_ProjectBus.Consumers;
+using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.Messages.Queries;
 
 // Использую Request/Response паттерн - запросы и ответы асинхронно
@@ -47,7 +52,7 @@ builder.Services.AddSwaggerGen(c =>
 	c.IncludeXmlComments(xmlPath);
 });
 
-// Настройка MassTransit с RabbitMQ
+// Настраиваем MassTransit с RabbitMQ
 builder.Services.AddMassTransit(x =>
 {
 	x.SetKebabCaseEndpointNameFormatter(); // Используем kebab-case для именования очередей
@@ -96,6 +101,52 @@ builder.Services.AddMassTransit(x =>
 	});
 });
 
+// Добавляем Identity-сервис
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+	// Настройка требований к паролю
+	options.Password.RequireDigit = true;
+	options.Password.RequireUppercase = false;
+	options.Password.RequireLowercase = false;
+	options.Password.RequireNonAlphanumeric = false;
+	options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders(); // подключаем токены для сброса пароля, подтверждения email и т.д.
+
+
+// Добавляем Middleware для проверки JWT
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+	//options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	//options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer( options =>
+{
+
+	// Настраиваем JWT-аутентификацию
+	var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+	var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]!));
+
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = jwtSettings["Issuer"],
+		ValidAudience = jwtSettings["Audience"],
+		LifetimeValidator = (notBefore, expires, token, parameters) => expires > DateTime.UtcNow, // todo: проверить
+		IssuerSigningKey = key
+	};
+});
+
+// Включаем авторизацию
+builder.Services.AddAuthorization();
+
+
 //builder.Services.AddHostedService<MessagePublisher>();
 var app = builder.Build();
 
@@ -104,14 +155,15 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();// Перенаправляет HTTP ? HTTPS
 
-//app.UseAuthorization();
+app.UseAuthentication(); // Проверяет JWT в каждом запросе (достаёт и расшифровывает токен, добавляет User в HttpContext)
+app.UseAuthorization();  // Проверяет, разрешён ли доступ к endpoint'у (смотрит, есть ли у User права на выполнение запроса (например, роль Admin))
 
 app.MapControllers(); // Подключает маршрутизацию контроллеров
 
 using (var scope = app.Services.CreateScope())
 {
 	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-	db.Database.Migrate(); // применит все миграции
+	//db.Database.Migrate(); // применит все миграции
 	DbInitializer.Seed(db); // добавит начальные данные
 }
 

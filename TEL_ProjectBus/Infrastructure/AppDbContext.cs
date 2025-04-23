@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.DAL.Entities;
 
 namespace Infrastructure;
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<User>
 {
 	public AppDbContext(DbContextOptions<AppDbContext> options)
 		: base(options)
@@ -14,6 +15,8 @@ public class AppDbContext : DbContext
 	public DbSet<Budget> Budgets { get; set; }
 	public DbSet<BudgetItem> BudgetItems { get; set; }
 	public DbSet<Expense> Expenses { get; set; }
+	public DbSet<RefreshToken> RefreshTokens { get; set; }
+
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
