@@ -11,6 +11,8 @@ using System.Text;
 using TEL_ProjectBus.DAL.Entities;
 
 namespace TEL_ProjectBus.Controllers;
+
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -26,6 +28,7 @@ public class AuthController : ControllerBase
 		_context = context;
 	}
 
+	[AllowAnonymous]
 	[HttpPost("login")]
 	public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
 	{
@@ -35,19 +38,46 @@ public class AuthController : ControllerBase
 			return Unauthorized();
 
 		var accessToken = GenerateJwtToken(user);
-		//var refreshToken = GenerateRefreshToken(user.Id);
+		var refreshToken = GenerateRefreshToken(user.Id);
 
-		//await _context.RefreshTokens.AddAsync(refreshToken);
-		//await _context.SaveChangesAsync();
+		await _context.RefreshTokens.AddAsync(refreshToken);
+		await _context.SaveChangesAsync();
 
 		return Ok(new
 		{
 			token = accessToken,
-			//refreshToken = refreshToken.Token
+			refreshToken = refreshToken.Token
 		});
 	}
 
-	[Authorize]
+	[HttpPost("login-ad")]
+	[Authorize(AuthenticationSchemes = "AD")]
+	public async Task<IActionResult> LoginAd()
+	{
+		var username = User.Identity?.Name;
+
+		if (string.IsNullOrEmpty(username))
+			return Unauthorized();
+
+		var user = await _userManager.FindByNameAsync(username);
+
+		if (user == null)
+		{
+			return Unauthorized("User not found in local database");
+			// Создание нового пользователя, если его нет в локальной базе
+			// todo: нужно ли это?
+			//user = new User { UserName = username };
+			//await _userManager.CreateAsync(user);
+		}
+
+		var accessToken = GenerateJwtToken(user);
+
+		return Ok(new
+		{
+			token = accessToken
+		});
+	}
+
 	[HttpPost("logout")]
 	public async Task<IActionResult> Logout()
 	{
@@ -67,7 +97,6 @@ public class AuthController : ControllerBase
 
 		return Ok("Logged out successfully");
 	}
-
 
 	[HttpPost("refresh-token")]
 	public async Task<IActionResult> Refresh([FromBody] string refreshToken)

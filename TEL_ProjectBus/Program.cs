@@ -120,13 +120,9 @@ builder.Services.AddAuthentication(options =>
 {
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-	//options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-	//options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer( options =>
+.AddJwtBearer("Jwt", options =>
 {
-
 	// Настраиваем JWT-аутентификацию
 	var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 	var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]!));
@@ -141,13 +137,22 @@ builder.Services.AddAuthentication(options =>
 		LifetimeValidator = (notBefore, expires, token, parameters) => expires > DateTime.UtcNow, // todo: проверить
 		IssuerSigningKey = key
 	};
+})
+.AddNegotiate("AD", options =>
+{
+	options.PersistKerberosCredentials = false;
+	options.PersistNtlmCredentials = false;
+	// options.Events = new NegotiateEvents { ... }; // можно добавить хендлеры
 });
 
 // Включаем авторизацию
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+	.AddPolicy("ADPolicy", policy =>
+			policy.AddAuthenticationSchemes("AD").RequireAuthenticatedUser())
+	.AddPolicy("AdminOnly", policy =>
+			policy.RequireRole("Admin"))
+;
 
-
-//builder.Services.AddHostedService<MessagePublisher>();
 var app = builder.Build();
 
 app.UseSwagger();
@@ -168,3 +173,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// todo: добавить роли и пользователя администратора в БД через seed
+// todo: проверить необходимо ли преобразовывать таблицу ролей
+
+// todo: сейчас использую Windows Auth вместо LDAP. Поэтому приложение необходимо запускать под IIS. Надо с разобраться, как это делается
+// todo: для работы с IIS необходимо настроить генерацию web.config файла, либо просто добавить его в корень
