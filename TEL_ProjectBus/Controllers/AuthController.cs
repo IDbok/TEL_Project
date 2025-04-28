@@ -56,14 +56,15 @@ public class AuthController : ControllerBase
 	{
 		var username = User.Identity?.Name;
 
-		if (string.IsNullOrEmpty(username))
+		if (User.Identity?.IsAuthenticated == false 
+			|| string.IsNullOrEmpty(username))
 			return Unauthorized();
 
 		var user = await _userManager.FindByNameAsync(username);
 
 		if (user == null)
 		{
-			return Unauthorized("User not found in local database");
+			return Unauthorized($"User {username} not found in local database");
 			// Создание нового пользователя, если его нет в локальной базе
 			// todo: нужно ли это?
 			//user = new User { UserName = username };

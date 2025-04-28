@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
-using TEL_ProjectBus;
 using TEL_ProjectBus.Consumers;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.Messages.Queries;
@@ -26,7 +25,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
 	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-	options.UseNpgsql(connectionString);
+	//options.UseNpgsql(connectionString);
+	options.UseSqlServer(connectionString);
 });
 
 var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
@@ -137,18 +137,18 @@ builder.Services.AddAuthentication(options =>
 		LifetimeValidator = (notBefore, expires, token, parameters) => expires > DateTime.UtcNow, // todo: проверить
 		IssuerSigningKey = key
 	};
-})
-.AddNegotiate("AD", options =>
-{
-	options.PersistKerberosCredentials = false;
-	options.PersistNtlmCredentials = false;
-	// options.Events = new NegotiateEvents { ... }; // можно добавить хендлеры
 });
+//.AddNegotiate("AD", options =>
+//{
+//	options.PersistKerberosCredentials = false;
+//	options.PersistNtlmCredentials = false;
+//	// options.Events = new NegotiateEvents { ... }; // можно добавить хендлеры
+//});
 
 // Включаем авторизацию
 builder.Services.AddAuthorizationBuilder()
-	.AddPolicy("ADPolicy", policy =>
-			policy.AddAuthenticationSchemes("AD").RequireAuthenticatedUser())
+	//.AddPolicy("ADPolicy", policy =>
+	//		policy.AddAuthenticationSchemes("AD").RequireAuthenticatedUser())
 	.AddPolicy("AdminOnly", policy =>
 			policy.RequireRole("Admin"))
 ;
@@ -165,12 +165,16 @@ app.UseAuthorization();  // Проверяет, разрешён ли доступ к endpoint'у (смотрит,
 
 app.MapControllers(); // Подключает маршрутизацию контроллеров
 
-using (var scope = app.Services.CreateScope())
-{
-	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-	//db.Database.Migrate(); // применит все миграции
-	DbInitializer.Seed(db); // добавит начальные данные
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//	//db.Database.Migrate(); // применит все миграции
+
+//	var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+//	var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+//	DbInitializer.Seed(db, userManager, roleManager); // добавит начальные данные
+//}
 
 app.Run();
 

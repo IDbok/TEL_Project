@@ -1,10 +1,12 @@
-﻿using System.Text.Json;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Text.Json;
 using TEL_ProjectBus.DAL.Entities;
 
 namespace Infrastructure;
 public static class DbInitializer
 {
-	public static void Seed(AppDbContext context)
+	public static void Seed(AppDbContext context, UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null)
 	{
 		// проверить существование БД, если её нет — создать
 		context.Database.EnsureDeleted();
@@ -20,6 +22,13 @@ public static class DbInitializer
 		};
 
 		var folderPath = @"C:\Users\bokar\source\repos\TEL_Project\TEL_ProjectBus\TestData\";
+
+		// --- Роли и пользователи ---
+		if (userManager != null && roleManager != null)
+		{
+			CreateUserAndRoleIfNotExists(userManager, roleManager, "admin", "Admin@123", "Admin").Wait();
+			CreateUserAndRoleIfNotExists(userManager, roleManager, "testuser", "Test@123", "User").Wait();
+		}
 
 		// --- Клиенты ---
 		var customersJson = File.ReadAllText(folderPath + "test_customers.json");
@@ -51,6 +60,32 @@ public static class DbInitializer
 
 		context.SaveChanges();
 
+	}
+
+	private static async Task CreateUserAndRoleIfNotExists(
+		UserManager<User> userManager,
+		RoleManager<IdentityRole> roleManager,
+		string username,
+		string password,
+		string role)
+	{
+		if (!await roleManager.RoleExistsAsync(role))
+		{
+			await roleManager.CreateAsync(new IdentityRole(role));
+		}
+
+		var user = await userManager.FindByNameAsync(username);
+		if (user == null)
+		{
+			user = new User
+			{
+				UserName = username,
+				Email = $"{username}@example.com",
+				EmailConfirmed = true
+			};
+			await userManager.CreateAsync(user, password);
+			await userManager.AddToRoleAsync(user, role);
+		}
 	}
 
 }
