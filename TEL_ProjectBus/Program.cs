@@ -46,6 +46,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	}
 });
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowLocalhost", builder =>
+	{
+		builder.WithOrigins("http://localhost:5000", "http://localhost:4082")
+			   .AllowAnyHeader()
+			   .AllowAnyMethod()
+			   .AllowCredentials();
+	});
+});
+
+
 var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
 
 // Add services to the container.
@@ -179,6 +191,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();// Перенаправляет HTTP ? HTTPS
+
+app.UseCors("AllowLocalhost");
+
 
 app.UseAuthentication(); // Проверяет JWT в каждом запросе (достаёт и расшифровывает токен, добавляет User в HttpContext)
 app.UseAuthorization();  // Проверяет, разрешён ли доступ к endpoint'у (смотрит, есть ли у User права на выполнение запроса (например, роль Admin))
