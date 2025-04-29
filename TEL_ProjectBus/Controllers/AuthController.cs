@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
 		});
 	}
 
-	[Authorize]
+	[AllowAnonymous]
 	[HttpPost("login-ad")]
 	//[Authorize(AuthenticationSchemes = "AD")]
 	public async Task<IActionResult> LoginAd()
