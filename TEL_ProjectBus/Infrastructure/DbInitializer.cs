@@ -26,6 +26,7 @@ public static class DbInitializer
 		// --- Роли и пользователи ---
 		if (userManager != null && roleManager != null)
 		{
+			// создаём тестовые роли и пользователей под каждую роль
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "admin", "Admin@123", "Admin").Wait();
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "testuser", "Test@123", "User").Wait();
 		}

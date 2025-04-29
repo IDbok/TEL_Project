@@ -1,4 +1,5 @@
 ﻿using Infrastructure;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -56,19 +57,57 @@ public class AuthController : ControllerBase
 	{
 		var username = User.Identity?.Name;
 
-		if (User.Identity?.IsAuthenticated == false 
-			|| string.IsNullOrEmpty(username))
+		if (User.Identity?.IsAuthenticated == false || string.IsNullOrEmpty(username))
 			return Unauthorized();
 
 		var user = await _userManager.FindByNameAsync(username);
 
 		if (user == null)
 		{
-			return Unauthorized($"User {username} not found in local database");
-			// Создание нового пользователя, если его нет в локальной базе
-			// todo: нужно ли это?
-			//user = new User { UserName = username };
-			//await _userManager.CreateAsync(user);
+			// Новый пользователь, пытаемся получить имя и фамилию из AD
+			string firstName = string.Empty;
+			string lastName = string.Empty;
+
+			//try
+			//{
+			//	using (var context = new PrincipalContext(ContextType.Domain))
+			//	{
+			//		var userPrincipal = UserPrincipal.FindByIdentity(context, username);
+			//		if (userPrincipal != null)
+			//		{
+			//			firstName = userPrincipal.GivenName ?? string.Empty;
+			//			lastName = userPrincipal.Surname ?? string.Empty;
+			//		}
+			//	}
+			//}
+			//catch (Exception ex)
+			//{
+			//	// Можно логировать ошибку, если не удалось получить данные из AD
+			//	Console.WriteLine($"Ошибка получения данных из AD: {ex.Message}");
+			//}
+
+			user = new User
+			{
+				UserName = username,
+				Account = username,
+				FirstName = firstName,
+				LastName = lastName,
+				Enabled = true,
+				DateCreated = DateTime.UtcNow
+			};
+
+			var createResult = await _userManager.CreateAsync(user);
+			if (!createResult.Succeeded)
+			{
+				return StatusCode(500, "Не удалось создать пользователя");
+			}
+
+			// Добавляем роль "User"
+			await _userManager.AddToRoleAsync(user, "User");
+		}
+		else if (!user.Enabled)
+		{
+			return Unauthorized("Пользователь заблокирован");
 		}
 
 		var accessToken = GenerateJwtToken(user);
