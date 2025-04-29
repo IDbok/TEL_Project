@@ -51,14 +51,20 @@ public class AuthController : ControllerBase
 		});
 	}
 
+	[Authorize]
 	[HttpPost("login-ad")]
-	[Authorize(AuthenticationSchemes = "AD")]
+	//[Authorize(AuthenticationSchemes = "AD")]
 	public async Task<IActionResult> LoginAd()
 	{
-		var username = User.Identity?.Name;
+		var fullUsername = User.Identity?.Name;
 
-		if (User.Identity?.IsAuthenticated == false || string.IsNullOrEmpty(username))
-			return Unauthorized();
+		if (string.IsNullOrEmpty(fullUsername) || !User.Identity!.IsAuthenticated)
+			return Unauthorized("AD Authentication failed.");
+
+		// Обработка имени: убираем домен
+		var username = fullUsername.Contains('\\')
+			? fullUsername.Split('\\')[1] // "DOMAIN\\username" -> "username"
+			: fullUsername;
 
 		var user = await _userManager.FindByNameAsync(username);
 
