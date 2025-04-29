@@ -2,6 +2,7 @@ using Infrastructure;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -26,13 +27,30 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
 	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 	//options.UseNpgsql(connectionString);
-	options.UseSqlServer(connectionString);
+	options.UseSqlServer(connectionString, sqlOptions =>
+	{
+		sqlOptions.EnableRetryOnFailure(); // временный сбой
+	})
+	.EnableSensitiveDataLogging() // параметры запросов
+	.EnableDetailedErrors();     // стек при ошибках
+
+	try
+	{
+		using var conn = new SqlConnection(connectionString);
+		conn.Open();
+		Console.WriteLine("Успешно подключились!");
+	}
+	catch (Exception ex)
+	{
+		Console.WriteLine($"Ошибка подключения: {ex.Message}");
+	}
 });
 
 var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
 
 // Add services to the container.
 builder.Logging.AddConsole().SetMinimumLevel(LogLevel.Debug);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -165,16 +183,26 @@ app.UseAuthorization();  // Проверяет, разрешён ли доступ к endpoint'у (смотрит,
 
 app.MapControllers(); // Подключает маршрутизацию контроллеров
 
-//using (var scope = app.Services.CreateScope())
-//{
-//	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//	//db.Database.Migrate(); // применит все миграции
+try
+{
+	using (var scope = app.Services.CreateScope())
+	{
+		var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+		//db.Database.Migrate(); // применит все миграции
 
-//	var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-//	var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+		var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+		var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-//	DbInitializer.Seed(db, userManager, roleManager); // добавит начальные данные
-//}
+		DbInitializer.Seed(db, userManager, roleManager); // добавит начальные данные
+	}
+}
+catch (Exception ex)
+{
+	// логируем ошибки
+	var logger = app.Services.GetRequiredService<ILogger<Program>>();
+	logger.LogError(ex, "Ошибка при инициализации базы данных.");
+}
+
 
 app.Run();
 
