@@ -155,18 +155,18 @@ builder.Services.AddAuthentication(options =>
 		LifetimeValidator = (notBefore, expires, token, parameters) => expires > DateTime.UtcNow, // todo: проверить
 		IssuerSigningKey = key
 	};
+})
+.AddNegotiate("AD", options =>
+{
+	options.PersistKerberosCredentials = false;
+	options.PersistNtlmCredentials = false;
+	// options.Events = new NegotiateEvents { ... }; // можно добавить хендлеры
 });
-//.AddNegotiate("AD", options =>
-//{
-//	options.PersistKerberosCredentials = false;
-//	options.PersistNtlmCredentials = false;
-//	// options.Events = new NegotiateEvents { ... }; // можно добавить хендлеры
-//});
 
 // ¬ключаем авторизацию
 builder.Services.AddAuthorizationBuilder()
-	//.AddPolicy("ADPolicy", policy =>
-	//		policy.AddAuthenticationSchemes("AD").RequireAuthenticatedUser())
+	.AddPolicy("ADPolicy", policy =>
+			policy.AddAuthenticationSchemes("AD").RequireAuthenticatedUser())
 	.AddPolicy("AdminOnly", policy =>
 			policy.RequireRole("Admin"))
 ;
