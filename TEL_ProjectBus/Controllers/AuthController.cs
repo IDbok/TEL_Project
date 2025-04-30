@@ -16,7 +16,7 @@ namespace TEL_ProjectBus.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController : BaseApiController
 {
 	private readonly UserManager<User> _userManager;
 	private readonly IConfiguration _configuration;
@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
 		await _context.RefreshTokens.AddAsync(refreshToken);
 		await _context.SaveChangesAsync();
 
-		return Ok(new
+		return ApiOk(new
 		{
 			token = accessToken,
 			refreshToken = refreshToken.Token
@@ -53,7 +53,6 @@ public class AuthController : ControllerBase
 
 	[AllowAnonymous]
 	[HttpPost("login-ad")]
-	//[Authorize(AuthenticationSchemes = "AD")]
 	public async Task<IActionResult> LoginAd()
 	{
 		var fullUsername = User.Identity?.Name;
@@ -117,10 +116,15 @@ public class AuthController : ControllerBase
 		}
 
 		var accessToken = GenerateJwtToken(user);
+		var refreshToken = GenerateRefreshToken(user.Id);
 
-		return Ok(new
+		await _context.RefreshTokens.AddAsync(refreshToken);
+		await _context.SaveChangesAsync();
+
+		return ApiOk(new
 		{
-			token = accessToken
+			token = accessToken,
+			refreshToken = refreshToken.Token
 		});
 	}
 
@@ -141,7 +145,7 @@ public class AuthController : ControllerBase
 
 		await _context.SaveChangesAsync();
 
-		return Ok("Logged out successfully");
+		return ApiOk("Logged out successfully");
 	}
 
 	[HttpPost("refresh-token")]
@@ -162,7 +166,7 @@ public class AuthController : ControllerBase
 		await _context.RefreshTokens.AddAsync(newRefresh);
 		await _context.SaveChangesAsync();
 
-		return Ok(new
+		return ApiOk(new
 		{
 			token = newAccessToken,
 			refreshToken = newRefresh.Token
@@ -171,11 +175,15 @@ public class AuthController : ControllerBase
 
 	private string GenerateJwtToken(User user)
 	{
-		var claims = new[]
-		{
-			new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-		};
+		var roles = _userManager.GetRolesAsync(user).Result;
+		var claims = new List<Claim>
+	   {
+		   new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+		   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+	   };
+
+		var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+		claims.AddRange(roleClaims);
 
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]!));
 		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -6,7 +6,7 @@ namespace TEL_ProjectBus.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectQueryController : ControllerBase
+public class ProjectQueryController : BaseApiController
 {
 	private readonly IRequestClient<GetProjectsQuery> _getProjectsClient;
 
@@ -32,6 +32,6 @@ public class ProjectQueryController : ControllerBase
 
 		var response = await _getProjectsClient.GetResponse<GetProjectsResponse>(query);
 
-		return Ok(response.Message);
+		return ApiOk(response.Message);
 	}
 }

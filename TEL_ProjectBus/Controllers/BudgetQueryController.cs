@@ -6,7 +6,7 @@ namespace TEL_ProjectBus.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BudgetQueryController : ControllerBase
+public class BudgetQueryController : BaseApiController
 {
 	private readonly IRequestClient<GetBudgetsQuery> _getBudgetsClient;
 	private readonly IRequestClient<GetBudgetByIdQuery> _getBudgetByIdClient;
@@ -45,7 +45,7 @@ public class BudgetQueryController : ControllerBase
 
 		var response = await _getBudgetsClient.GetResponse<GetBudgetsResponse>(query);
 
-		return Ok(response.Message);
+		return ApiOk(response.Message);
 	}
 
 	/// <summary>
@@ -61,7 +61,7 @@ public class BudgetQueryController : ControllerBase
 			var response = await _getBudgetByIdClient.GetResponse<GetBudgetByIdResponse>(
 				new GetBudgetByIdQuery { BudgetItemId = id }, timeout: TimeSpan.FromSeconds(30));
 
-			return Ok(response.Message);
+			return ApiOk(response.Message);
 		}
 		catch (RequestTimeoutException ex)
 		{
