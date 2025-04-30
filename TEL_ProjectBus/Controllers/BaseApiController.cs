@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TEL_ProjectBus.Common;
 
 namespace TEL_ProjectBus.Controllers;
 
+[Authorize]
 [ApiController]
 public abstract class BaseApiController : ControllerBase
 {

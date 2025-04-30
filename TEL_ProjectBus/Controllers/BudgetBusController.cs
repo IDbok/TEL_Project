@@ -6,7 +6,7 @@ namespace TEL_ProjectBus.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BudgetBusController : ControllerBase
+public class BudgetBusController : BaseApiController
 {
 	private readonly IPublishEndpoint _publishEndpoint;
 

@@ -13,7 +13,6 @@ using TEL_ProjectBus.DAL.Entities;
 
 namespace TEL_ProjectBus.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : BaseApiController
