@@ -33,6 +33,11 @@
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
 </ItemGroup>
+	
+<ItemGroup>
+  <Folder Include="DAL\Entities\UserManagement\" />
+  <Folder Include="WebAPI\Extensions\" />
+</ItemGroup>
 
 
 </Project>

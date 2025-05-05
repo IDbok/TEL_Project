@@ -8,9 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
-using TEL_ProjectBus.Consumers;
+using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
-using TEL_ProjectBus.Messages.Queries;
+using TEL_ProjectBus.WebAPI.Consumers;
+using TEL_ProjectBus.WebAPI.Messages.Queries;
 
 // Использую Request/Response паттерн - запросы и ответы асинхронно
 // Controller: входная точка запроса (REST API).

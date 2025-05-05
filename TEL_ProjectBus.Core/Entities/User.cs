@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TEL_ProjectBus.DAL.Entities.Common;
 
 namespace TEL_ProjectBus.DAL.Entities;
 
