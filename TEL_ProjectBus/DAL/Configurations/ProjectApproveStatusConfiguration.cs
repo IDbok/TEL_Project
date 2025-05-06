@@ -24,7 +24,7 @@ public class ProjectApproveStatusConfiguration : IEntityTypeConfiguration<Projec
 
 		builder.HasOne(pas => pas.Approver)
 			   .WithMany()
-			   .HasForeignKey(pas => pas.ApprovedBy)
+			   .HasForeignKey(pas => pas.ApprovedByUserId)
 			   .OnDelete(DeleteBehavior.Restrict);
 	}
 }

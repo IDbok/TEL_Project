@@ -1,19 +1,40 @@
-﻿namespace TEL_ProjectBus.DAL.Entities.Budgets;
+﻿using TEL_ProjectBus.DAL.Entities.Common;
+using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.DAL.Entities.Reference;
 
-public class Budget
+namespace TEL_ProjectBus.DAL.Entities.Budgets;
+
+public class Budget : AuditableEntity
 {
-	public Guid Id { get; set; }
+	public long Id { get; set; }
 	public int BudgetGroupId { get; set; }
+	public int ProjectId { get; set; }
+	public string? ERPId { get; set; }
+	public int? ClassifierId { get; set; }
 	public bool VisOnPipeline { get; set; }
-	public Guid BudgetErpId { get; set; }
+	public string Name { get; set; } = string.Empty;
+	public int RoleId { get; set; } // todo: вопрос по архитектуре, как будет работать связь с ролями. Что значит эта связь?
 	public decimal ManHoursCost { get; set; }
-	public string BudgetName { get; set; } = string.Empty;
-	public Guid ProjectId { get; set; }
-	public int BudgetVersion { get; set; }
-	public DateTime DateChanged { get; set; }
-	public Guid ChangedBy { get; set; }
+	public string? Description { get; set; }
+	public decimal? Amount { get; set; }
+	public string? EC { get; set; }
+	public decimal RgpPercent { get; set; }
+	public int Version { get; set; }
+	public decimal? Probability { get; set; }
+	public DateOnly? DatePlan { get; set; }
+	public decimal? CalcCPTCCPlan { get; set; }
+	public DateOnly? DateFact { get; set; }
+	public decimal? CPTCCFact { get; set; }
+	public decimal? CalcPriceTCPcs { get; set; }
+	public decimal? CalcPriceTCC { get; set; }
+	public decimal? CalcCV { get; set; }
+	public decimal? CalcSV { get; set; }
+	public decimal? CalcEV { get; set; }
+	public decimal? CalcCPI { get; set; }
+	public decimal? CalcSPI { get; set; }
 
-	//public ICollection<BudgetItem> BudgetItems { get; set; }
-	public ICollection<Expense> Expenses { get; set; } = [];
+	public BudgetGroup BudgetGroup { get; set; } = null!;
+	public Project Project { get; set; } = null!;
+	public Classifier? Classifier { get; set; } = null!;
 }
 

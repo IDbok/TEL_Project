@@ -1,8 +1,9 @@
-﻿using TEL_ProjectBus.DAL.Configurations;
+﻿using TEL_ProjectBus.DAL.Entities.Common;
 
 namespace TEL_ProjectBus.DAL.Entities.Projects;
 
-public class ProjectPhase
+
+public class ProjectPhase : AuditableEntity
 {
 	public int Id { get; set; }
 	public string PhaseName { get; set; } = string.Empty;

@@ -1,11 +1,11 @@
-﻿using TEL_ProjectBus.DAL.Entities.Budgets;
+﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Projects;
 
 namespace TEL_ProjectBus.DAL.Entities.Reference;
 
-public class ApproveStatus
+public class ApproveStatus : AuditableEntity
 {
-	public Guid Id { get; set; }
+	public int Id { get; set; }
 	public string StatusName { get; set; } = string.Empty;
 	public ICollection<ProjectApproveStatus> ProjectApproveStatuses { get; set; } = [];
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TEL_ProjectBus.Common;
+using TEL_ProjectBus.WebAPI.Common;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 

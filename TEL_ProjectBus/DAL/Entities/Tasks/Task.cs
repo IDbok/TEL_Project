@@ -6,15 +6,15 @@ namespace TEL_ProjectBus.DAL.Entities.Tasks;
 public class Task : AuditableEntity
 {
 	public long Id { get; set; }
-	public string TaskName { get; set; } = string.Empty;
-	public string? TaskDescription { get; set; }
-	public Guid TaskOwnerId { get; set; }
-	public Guid TaskAuthorId { get; set; }
-	public DateTime TaskStart { get; set; }
-	public DateTime TaskEnd { get; set; }
+	public string Name { get; set; } = string.Empty;
+	public string? Description { get; set; }
+	public Guid OwnerId { get; set; }
+	public Guid AuthorId { get; set; }
+	public DateTime Start { get; set; }
+	public DateTime End { get; set; }
 
-	public User TaskOwner { get; set; } = null!;
-	public User TaskAuthor { get; set; } = null!;
+	public User Owner { get; set; } = null!;
+	public User Author { get; set; } = null!;
 
 	public ICollection<TaskProgress> Progresses { get; set; } = [];
 	public ICollection<TaskStatus> Statuses { get; set; } = [];

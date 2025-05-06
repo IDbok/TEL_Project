@@ -10,7 +10,7 @@ public class ProjectParameterConfiguration : IEntityTypeConfiguration<ProjectPar
 	{
 		builder.HasKey(pp => pp.Id);
 
-		builder.Property(pp => pp.ProjectDescription).HasMaxLength(4000);
+		builder.Property(pp => pp.Description).HasMaxLength(4000);
 
 		builder.HasOne(pp => pp.Project)
 			   .WithMany()

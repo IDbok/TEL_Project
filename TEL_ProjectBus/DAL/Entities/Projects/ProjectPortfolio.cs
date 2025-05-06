@@ -6,7 +6,7 @@ public class ProjectPortfolio : AuditableEntity
 {
 	public int Id { get; set; }
 	public string Name { get; set; } = string.Empty;
-	public string Description { get; set; } = string.Empty;
+	public string? Description { get; set; }
 
-	public ICollection<ProjectPortfolioCross> Projects { get; set; } = [];
+	public ICollection<ProjectPortfolioCross> ProjectLinks { get; } = new HashSet<ProjectPortfolioCross>();
 }

@@ -1,6 +1,8 @@
-﻿namespace TEL_ProjectBus.DAL.Entities.Projects;
+﻿using TEL_ProjectBus.DAL.Entities.Common;
 
-public class ProjectStage
+namespace TEL_ProjectBus.DAL.Entities.Projects;
+
+public class ProjectStage : AuditableEntity
 {
 	public int Id { get; set; }
 	public string StageName { get; set; } = string.Empty;

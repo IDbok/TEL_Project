@@ -6,9 +6,9 @@ namespace TEL_ProjectBus.DAL.Entities.Projects;
 public class ProjectApproveStatus : AuditableEntity
 {
 	public long Id { get; set; }
-	public Guid ProjectId { get; set; }
-	public Guid ApproveStatusId { get; set; }
-	public Guid? ApprovedBy { get; set; }
+	public int ProjectId { get; set; }
+	public int ApproveStatusId { get; set; }
+	public Guid ApprovedByUserId { get; set; }
 	public int ProjectStageId { get; set; }
 
 	public Project Project { get; set; } = null!;
