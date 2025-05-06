@@ -8,6 +8,8 @@ public class ProjectApproveStatusConfiguration : IEntityTypeConfiguration<Projec
 {
 	public void Configure(EntityTypeBuilder<ProjectApproveStatus> builder)
 	{
+		builder.ToTable("ProjectApproveStatus");
+
 		builder.HasKey(pas => pas.Id);
 
 		builder.HasOne(pas => pas.Project)

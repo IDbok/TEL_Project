@@ -15,8 +15,10 @@ public static class DbInitializer
 		context.Database.EnsureDeleted();
 		context.Database.EnsureCreated();
 
-		if (context.Customers.Any() || context.Projects.Any() || context.Budgets.Any() 
-			|| context.Expenses.Any() )
+		if (true)
+			return;
+
+		if (context.Customers.Any() || context.Projects.Any() || context.Budgets.Any())
 			return;
 
 		var options = new JsonSerializerOptions
@@ -39,7 +41,7 @@ public static class DbInitializer
 		var customers = JsonSerializer.Deserialize<List<Customer>>(customersJson, options);
 		foreach (var customer in customers) // <-- вот здесь исправлено
 		{
-			customer.DateCreated = DateTime.SpecifyKind(customer.DateCreated, DateTimeKind.Utc);
+			customer.DateCreated = DateTime.SpecifyKind((DateTime)customer.DateCreated, DateTimeKind.Utc);
 			customer.DateChanged = DateTime.SpecifyKind(customer.DateChanged, DateTimeKind.Utc);
 		}
 		context.Customers.AddRange(customers);

@@ -8,6 +8,8 @@ public class CustomerTeamConfiguration : IEntityTypeConfiguration<CustomerTeam>
 {
 	public void Configure(EntityTypeBuilder<CustomerTeam> builder)
 	{
+		builder.ToTable("Customer_Team");
+
 		builder.HasKey(ct => ct.Id);
 
 		builder.Property(ct => ct.CustomerMemberRole)

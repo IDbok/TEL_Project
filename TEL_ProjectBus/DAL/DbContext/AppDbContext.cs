@@ -30,8 +30,6 @@ public class AppDbContext : IdentityDbContext<User>
 	public DbSet<Project> Projects { get; set; }
 	public DbSet<Customer> Customers { get; set; }
 	public DbSet<Budget> Budgets { get; set; }
-	//public DbSet<BudgetItem> BudgetItems { get; set; }
-	public DbSet<Expense> Expenses { get; set; }
 	public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 	// Dictionaries
@@ -43,7 +41,6 @@ public class AppDbContext : IdentityDbContext<User>
 
 	// Project approval / parameters
 	public DbSet<ProjectApproveStatus> ProjectApproveStatuses { get; set; }
-	public DbSet<ProjectApproverTemplate> ProjectApproverTemplates { get; set; }
 	public DbSet<ProjectParameter> ProjectParameters { get; set; }
 
 	// Budget approval / versions

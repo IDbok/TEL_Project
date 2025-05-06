@@ -8,6 +8,8 @@ public class BudgetApproveConfiguration : IEntityTypeConfiguration<BudgetApprove
 {
 	public void Configure(EntityTypeBuilder<BudgetApprove> builder)
 	{
+		builder.ToTable("BudgetApprove");
+
 		builder.HasKey(ba => ba.Id);
 
 		builder.Property(ba => ba.Comment).HasMaxLength(4000);
@@ -16,13 +18,10 @@ public class BudgetApproveConfiguration : IEntityTypeConfiguration<BudgetApprove
 			   .WithMany()
 			   .HasForeignKey(ba => ba.BudgetId);
 
-		builder.HasOne(ba => ba.ApproveStatus)
-			   .WithMany(s => s.BudgetApproves)
-			   .HasForeignKey(ba => ba.ApproveStatusId);
 
-		builder.HasOne(ba => ba.User)
+		builder.HasOne(ba => ba.Approver)
 			   .WithMany()
-			   .HasForeignKey(ba => ba.UserId)
+			   .HasForeignKey(ba => ba.ApproverId)
 			   .OnDelete(DeleteBehavior.Restrict);
 	}
 }

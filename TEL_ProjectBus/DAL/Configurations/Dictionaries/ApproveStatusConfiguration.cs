@@ -6,5 +6,12 @@ namespace TEL_ProjectBus.DAL.Configurations.Dictionaries;
 
 public class ApproveStatusConfiguration : IEntityTypeConfiguration<ApproveStatus>
 {
-	public void Configure(EntityTypeBuilder<ApproveStatus> builder) => builder.HasKey(a => a.Id);
+
+	public void Configure(EntityTypeBuilder<ApproveStatus> builder)
+	{
+		builder.ToTable("Ref_ApproveStatus");
+
+		builder.HasKey(a => a.Id);
+	}
+
 }

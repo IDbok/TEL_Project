@@ -8,8 +8,8 @@ public class Task : AuditableEntity
 	public long Id { get; set; }
 	public string Name { get; set; } = string.Empty;
 	public string? Description { get; set; }
-	public Guid OwnerId { get; set; }
-	public Guid AuthorId { get; set; }
+	public string OwnerId { get; set; } = null!;
+	public string AuthorId { get; set; } = null!;
 	public DateTime Start { get; set; }
 	public DateTime End { get; set; }
 

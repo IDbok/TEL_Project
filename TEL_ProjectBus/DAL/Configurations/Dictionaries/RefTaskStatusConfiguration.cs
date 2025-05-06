@@ -8,6 +8,8 @@ public class RefTaskStatusConfiguration : IEntityTypeConfiguration<RefTaskStatus
 {
 	public void Configure(EntityTypeBuilder<RefTaskStatus> builder)
 	{
+		builder.ToTable("Ref_TaskStatus");
+
 		builder.HasKey(rs => rs.Id);
 
 		builder.Property(rs => rs.TaskStatusName)
@@ -16,6 +18,6 @@ public class RefTaskStatusConfiguration : IEntityTypeConfiguration<RefTaskStatus
 
 		builder.Property(rs => rs.TaskStatusName).HasColumnName("TaskStatus_Name");
 		builder.Property(rs => rs.DateChanged).HasColumnName("DateChanged");
-		builder.Property(rs => rs.ChangedByUser).HasColumnName("ChangedBy");
+		builder.Property(rs => rs.ChangedByUserId).HasColumnName("ChangedBy");
 	} 
 }

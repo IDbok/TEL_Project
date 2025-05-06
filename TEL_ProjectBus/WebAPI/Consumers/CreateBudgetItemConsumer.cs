@@ -1,6 +1,6 @@
 ﻿using MassTransit;
-using TEL_ProjectBus.Messages.Events;
 using TEL_ProjectBus.WebAPI.Messages.Commands;
+using TEL_ProjectBus.WebAPI.Messages.Events;
 
 namespace TEL_ProjectBus.WebAPI.Consumers;
 

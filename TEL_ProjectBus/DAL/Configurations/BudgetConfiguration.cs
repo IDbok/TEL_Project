@@ -8,13 +8,15 @@ public class BudgetConfiguration : IEntityTypeConfiguration<Budget>
 {
 	public void Configure(EntityTypeBuilder<Budget> builder)
 	{
+		builder.ToTable("Budget");
+
 		builder.HasKey(b => b.Id);
 
-		builder.Property(b => b.BudgetName)
+		builder.Property(b => b.Name)
 			   .HasMaxLength(255);
 
-		builder.HasMany(b => b.Expenses)
-			   .WithOne(e => e.Budget)
-			   .HasForeignKey(e => e.BudgetId);
+		builder.HasOne(p => p.Project)
+			   .WithMany()
+			   .HasForeignKey(b => b.ProjectId);
 	}
 }

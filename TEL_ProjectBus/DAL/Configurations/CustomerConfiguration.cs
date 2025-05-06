@@ -8,6 +8,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
 	public void Configure(EntityTypeBuilder<Customer> builder)
 	{
+		builder.ToTable("Customer");
+
 		builder.HasKey(e => e.Id);
 		builder.Property(e => e.Name)
 			.HasMaxLength(100);
@@ -20,9 +22,5 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
 		builder.Property(e => e.ContactPerson)
 			.HasMaxLength(255);
-
-		builder.HasMany(e => e.Projects)
-			  .WithOne()
-			  .HasForeignKey(p => p.CustomerId);
 	}
 }

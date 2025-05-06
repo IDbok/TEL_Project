@@ -8,6 +8,8 @@ public class BudgetVersionParameterConfiguration : IEntityTypeConfiguration<Budg
 {
 	public void Configure(EntityTypeBuilder<BudgetVersionParameter> builder)
 	{
+		builder.ToTable("BudgetVersion_Parameters");
+
 		builder.HasKey(bvp => bvp.Id);
 
 		builder.Property(bvp => bvp.VersionName).HasMaxLength(100);

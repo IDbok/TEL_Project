@@ -6,5 +6,10 @@ namespace TEL_ProjectBus.DAL.Configurations.Dictionaries;
 
 public class BudgetGroupConfiguration : IEntityTypeConfiguration<BudgetGroup>
 {
-	public void Configure(EntityTypeBuilder<BudgetGroup> builder) => builder.HasKey(bg => bg.Id);
+	public void Configure(EntityTypeBuilder<BudgetGroup> builder)
+	{
+		builder.ToTable("Ref_BudgetGroup");
+
+		builder.HasKey(bg => bg.Id);
+	}
 }

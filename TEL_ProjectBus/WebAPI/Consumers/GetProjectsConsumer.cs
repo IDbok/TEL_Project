@@ -59,7 +59,7 @@ public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
 				},
 				// рандомное значение для ProjectProgress от 0 до 100
 				ProjectProgress = new Random().Next(0, 100),
-				ProjectStatus = x.Status.ToString(),
+				//ProjectStatus = x.Status.ToString(),
 			}),
 			TotalCount = totalCount,
 			PageNumber = query.PageNumber,

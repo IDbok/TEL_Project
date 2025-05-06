@@ -8,6 +8,8 @@ public class TaskAttachmentConfiguration : IEntityTypeConfiguration<TaskAttachme
 {
 	public void Configure(EntityTypeBuilder<TaskAttachment> builder)
 	{
+		builder.ToTable("TaskAttachments");
+
 		builder.HasKey(ta => ta.Id);
 
 		builder.Property(ta => ta.Description)

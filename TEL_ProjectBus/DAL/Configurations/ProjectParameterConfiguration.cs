@@ -8,12 +8,15 @@ public class ProjectParameterConfiguration : IEntityTypeConfiguration<ProjectPar
 {
 	public void Configure(EntityTypeBuilder<ProjectParameter> builder)
 	{
+		builder.ToTable("ProjectParameters");
+
 		builder.HasKey(pp => pp.Id);
 
 		builder.Property(pp => pp.Description).HasMaxLength(4000);
 
 		builder.HasOne(pp => pp.Project)
 			   .WithMany()
-			   .HasForeignKey(pp => pp.ProjectId);
+			   .HasForeignKey(pp => pp.ProjectId)
+				.OnDelete(DeleteBehavior.NoAction);
 	}
 }

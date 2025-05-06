@@ -8,7 +8,7 @@ public class BudgetApprove : AuditableEntity
 	public long Id { get; set; }
 	public long BudgetId { get; set; }
 	public int RoleId { get; set; } // todo: проверить как будет работать связь с ролями
-	public Guid? ApproverId { get; set; }
+	public string? ApproverId { get; set; }
 	public Guid ApproveStatusId { get; set; }
 	public bool Approved { get; set; }
 	public string? Comment { get; set; }

@@ -38,8 +38,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	try
 	{
 		using var conn = new SqlConnection(connectionString);
-		conn.Open();
-		Console.WriteLine("Успешно подключились!");
+		//conn.Open();
+		// Console.WriteLine("Успешно подключились!");
 	}
 	catch (Exception ex)
 	{

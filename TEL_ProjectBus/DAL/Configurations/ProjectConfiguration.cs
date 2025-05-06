@@ -8,6 +8,8 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 {
 	public void Configure(EntityTypeBuilder<Project> builder)
 	{
+		builder.ToTable("Project");
+
 		builder.HasKey(p => p.Id);
 
 		builder.Property(p => p.ProjectName)
@@ -17,8 +19,8 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 		builder.Property(p => p.ProjectCode)
 			   .HasMaxLength(200);
 
-		builder.HasMany(p => p.Budgets)
-			   .WithOne()
-			   .HasForeignKey(b => b.ProjectId);
+		builder.HasOne(e => e.Customer)
+			  .WithMany()
+			  .HasForeignKey(p => p.CustomerId);
 	}
 }

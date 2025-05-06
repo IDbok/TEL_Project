@@ -8,6 +8,8 @@ public class TaskParameterConfiguration : IEntityTypeConfiguration<TaskParameter
 {
 	public void Configure(EntityTypeBuilder<TaskParameter> builder)
 	{
+		builder.ToTable("TaskParameters");
+
 		builder.HasKey(t => t.Id);
 
 		builder.HasOne(tp => tp.Task)
@@ -23,6 +25,6 @@ public class TaskParameterConfiguration : IEntityTypeConfiguration<TaskParameter
 		builder.Property(e => e.ProjectId).HasColumnName("ID_Project");
 		builder.Property(e => e.HumanHoursResource).HasColumnName("HumanHoursResource");
 		builder.Property(e => e.DateChanged).HasColumnName("DateChanged");
-		builder.Property(e => e.ChangedByUser).HasColumnName("ChangedBy");
+		builder.Property(e => e.ChangedByUserId).HasColumnName("ChangedBy");
 	}
 }
