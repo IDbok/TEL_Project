@@ -1,0 +1,14 @@
+[
+  {
+    "Id": 1,
+    "StageName": "PreSale"
+  },
+  {
+    "Id": 2,
+    "StageName": "Execution"
+  },
+  {
+    "Id": 3,
+    "StageName": "Closing"
+  }
+]

@@ -13,7 +13,7 @@ public class ProjectApproveStatusConfiguration : IEntityTypeConfiguration<Projec
 		builder.HasKey(pas => pas.Id);
 
 		builder.HasOne(pas => pas.Project)
-			   .WithMany()
+			   .WithMany(p => p.ApproveStatuses)
 			   .HasForeignKey(pas => pas.ProjectId);
 
 		builder.HasOne(pas => pas.ApproveStatus)

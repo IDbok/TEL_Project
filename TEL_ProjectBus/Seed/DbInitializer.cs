@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.DAL.Entities.Budgets;
 using TEL_ProjectBus.DAL.Entities.Customers;
 using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.DAL.Entities.Reference;
 
 namespace Infrastructure;
 public static class DbInitializer
 {
 	public static void Seed(AppDbContext context, UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null)
 	{
-		// проверить существование БД, если её нет — создать
 		context.Database.EnsureDeleted();
 		context.Database.EnsureCreated();
-
-		if (true)
-			return;
 
 		if (context.Customers.Any() || context.Projects.Any() || context.Budgets.Any())
 			return;
@@ -26,47 +24,72 @@ public static class DbInitializer
 			PropertyNameCaseInsensitive = true
 		};
 
-		var folderPath = @"C:\Users\bokar\source\repos\TEL_Project\TEL_ProjectBus\TestData\";
+		var folderPath = @"C:\Users\bokar\source\repos\TEL_Project\TEL_ProjectBus\Seed\TestData\";
 
-		// --- Роли и пользователи ---
 		if (userManager != null && roleManager != null)
 		{
-			// создаём тестовые роли и пользователей под каждую роль
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "admin", "Admin@123", "Admin").Wait();
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "testuser", "Test@123", "User").Wait();
 		}
 
+		context.Database.OpenConnection();
+
+		// --- Справочники ---
+		var classifiersJson = File.ReadAllText(folderPath + "test_classifiers.json");
+		var classifiers = JsonSerializer.Deserialize<List<Classifier>>(classifiersJson, options);
+
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Classifier] ON");
+		context.Classifiers.AddRange(classifiers);
+		context.SaveChanges();
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Classifier] OFF");
+
+		var budgetGroupsJson = File.ReadAllText(folderPath + "test_budget_groups.json");
+		var budgetGroups = JsonSerializer.Deserialize<List<BudgetGroup>>(budgetGroupsJson, options);
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Ref_BudgetGroup] ON");
+		context.BudgetGroups.AddRange(budgetGroups);
+		context.SaveChanges();
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Ref_BudgetGroup] OFF");
+
 		// --- Клиенты ---
 		var customersJson = File.ReadAllText(folderPath + "test_customers.json");
 		var customers = JsonSerializer.Deserialize<List<Customer>>(customersJson, options);
-		foreach (var customer in customers) // <-- вот здесь исправлено
+		foreach (var customer in customers)
 		{
 			customer.DateCreated = DateTime.SpecifyKind((DateTime)customer.DateCreated, DateTimeKind.Utc);
-			customer.DateChanged = DateTime.SpecifyKind(customer.DateChanged, DateTimeKind.Utc);
+			customer.DateChanged = DateTime.SpecifyKind((DateTime)customer.DateChanged, DateTimeKind.Utc);
 		}
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Customer] ON");
 		context.Customers.AddRange(customers);
+		context.SaveChanges();
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Customer] OFF");
 
 		// --- Проекты ---
-		var projectsJson = File.ReadAllText(folderPath + "test_projects_with_3_customers.json");
+		var projectsJson = File.ReadAllText(folderPath + "test_projects.json");
 		var projects = JsonSerializer.Deserialize<List<Project>>(projectsJson, options);
-		foreach (var project in projects) // <-- здесь исправлено
+		foreach (var project in projects)
 		{
 			project.DateInitiation = DateTime.SpecifyKind(project.DateInitiation, DateTimeKind.Utc);
 		}
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] ON");
 		context.Projects.AddRange(projects);
+		context.SaveChanges();
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] OFF");
 
 		// --- Бюджеты ---
-		var budgetsJson = File.ReadAllText(folderPath + "test_budgets_for_two_projects.json");
+		var budgetsJson = File.ReadAllText(folderPath + "test_budgets.json");
 		var budgets = JsonSerializer.Deserialize<List<Budget>>(budgetsJson, options);
-		foreach (var budget in budgets) // <-- здесь исправлено
+		foreach (var budget in budgets)
 		{
-			budget.DateChanged = DateTime.SpecifyKind(budget.DateChanged, DateTimeKind.Utc);
+			budget.DateChanged = DateTime.SpecifyKind((DateTime)budget.DateChanged, DateTimeKind.Utc);
 		}
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Budget] ON");
 		context.Budgets.AddRange(budgets);
-
 		context.SaveChanges();
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Budget] OFF");
 
+		context.Database.CloseConnection();
 	}
+
 
 	private static async Task CreateUserAndRoleIfNotExists(
 		UserManager<User> userManager,

@@ -1,0 +1,14 @@
+[
+  {
+      "Id": 1,
+      "PhaseName": "Phase-1"
+  },
+  {
+    "Id": 2,
+    "PhaseName": "Phase-2"
+  },
+  {
+    "Id": 3,
+    "PhaseName": "Phase-3"
+  }
+]

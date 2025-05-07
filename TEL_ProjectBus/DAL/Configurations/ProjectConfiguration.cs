@@ -20,7 +20,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 			   .HasMaxLength(200);
 
 		builder.HasOne(e => e.Customer)
-			  .WithMany()
+			  .WithMany(c => c.Projects)
 			  .HasForeignKey(p => p.CustomerId);
 	}
 }

@@ -16,7 +16,7 @@ public class BudgetConfiguration : IEntityTypeConfiguration<Budget>
 			   .HasMaxLength(255);
 
 		builder.HasOne(p => p.Project)
-			   .WithMany()
+			   .WithMany(p => p.Budgets)
 			   .HasForeignKey(b => b.ProjectId);
 	}
 }

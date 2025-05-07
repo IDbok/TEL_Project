@@ -1,0 +1,18 @@
+[
+    {
+        "Id": 1,
+        "StatusName": "AtWork"
+    },
+    {
+        "Id": 2,
+        "StatusName": "HoldOn"
+    },
+    {
+        "Id": 3,
+        "StatusName": "Ended"
+    },
+    {
+        "Id": 4,
+        "StatusName": "Cancelled"
+    }
+]

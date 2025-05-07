@@ -9,7 +9,7 @@ namespace TEL_ProjectBus.DAL.Entities.Projects;
 public class Project : AuditableEntity
 {
 	public int Id { get; set; }
-	public int ClassifierId { get; set; }
+	public long ClassifierId { get; set; }
 	public int CustomerId { get; set; }
 	public string ProjectName { get; set; } = string.Empty;
 	public string ProjectCode { get; set; } = string.Empty;
@@ -23,6 +23,4 @@ public class Project : AuditableEntity
 	public ICollection<ProjectApproveStatus> ApproveStatuses { get; set; } = [];
 	public ICollection<ProjectParameter> Parameters { get; set; } = [];
 	public ICollection<ProjectPortfolioCross> PortfolioLinks { get; } = [];
-
-	public int ProjectProgress { get; set; } = 0;
 }

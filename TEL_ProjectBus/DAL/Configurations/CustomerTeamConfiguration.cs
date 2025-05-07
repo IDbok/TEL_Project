@@ -25,7 +25,7 @@ public class CustomerTeamConfiguration : IEntityTypeConfiguration<CustomerTeam>
 			.HasMaxLength(255);
 
 		builder.HasOne(ct => ct.Customer)
-			   .WithMany()
+			   .WithMany(c => c.Teams)
 			   .HasForeignKey(ct => ct.CustomerId);
 	}
 }

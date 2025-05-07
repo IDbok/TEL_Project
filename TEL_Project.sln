@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEL_ProjectBus", "TEL_Proje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEL_ProjectBus.Tests", "TEL_ProjectBus.Tests\TEL_ProjectBus.Tests.csproj", "{66773291-A90E-4F73-86EA-9891E405604D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEL_ProjectBus.TestConsole", "TEL_ProjectBus.TestConsole\TEL_ProjectBus.TestConsole.csproj", "{3A8DA5F5-04DD-4D31-B50F-152FB2ECF966}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{66773291-A90E-4F73-86EA-9891E405604D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66773291-A90E-4F73-86EA-9891E405604D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66773291-A90E-4F73-86EA-9891E405604D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A8DA5F5-04DD-4D31-B50F-152FB2ECF966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A8DA5F5-04DD-4D31-B50F-152FB2ECF966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A8DA5F5-04DD-4D31-B50F-152FB2ECF966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A8DA5F5-04DD-4D31-B50F-152FB2ECF966}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

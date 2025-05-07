@@ -13,6 +13,6 @@ public class Customer : AuditableEntity
 	public DateTime? DateCreated { get; set; }
 
 	public ICollection<Project> Projects { get; set; } = [];
-	public ICollection<CustomerTeam> CustomerTeams { get; set; } = [];
+	public ICollection<CustomerTeam> Teams { get; set; } = [];
 }
 

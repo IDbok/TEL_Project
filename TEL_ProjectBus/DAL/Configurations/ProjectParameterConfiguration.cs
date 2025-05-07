@@ -15,7 +15,7 @@ public class ProjectParameterConfiguration : IEntityTypeConfiguration<ProjectPar
 		builder.Property(pp => pp.Description).HasMaxLength(4000);
 
 		builder.HasOne(pp => pp.Project)
-			   .WithMany()
+			   .WithMany(p => p.Parameters)
 			   .HasForeignKey(pp => pp.ProjectId)
 				.OnDelete(DeleteBehavior.NoAction);
 	}

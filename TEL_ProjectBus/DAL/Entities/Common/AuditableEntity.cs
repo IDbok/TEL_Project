@@ -7,7 +7,7 @@ namespace TEL_ProjectBus.DAL.Entities.Common;
 /// </summary>
 public abstract class AuditableEntity
 {
-	public DateTime DateChanged { get; set; }
-	public string ChangedByUserId { get; set; } = null!;
-	[NotMapped] public User ChangedByUser { get; set; } = null!;
+	public DateTime? DateChanged { get; set; }
+	public string? ChangedByUserId { get; set; } = null!;
+	[NotMapped] public User? ChangedByUser { get; set; } = null!;
 }
