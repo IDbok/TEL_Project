@@ -6,6 +6,7 @@ using TEL_ProjectBus.WebAPI.Messages.Queries;
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/[controller]")]
 public class BudgetQueryController : BaseApiController
 {

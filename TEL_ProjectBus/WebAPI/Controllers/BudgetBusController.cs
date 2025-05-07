@@ -1,10 +1,12 @@
 ﻿using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TEL_ProjectBus.WebAPI.Messages.Commands;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/[controller]")]
 public class BudgetBusController : BaseApiController
 {
