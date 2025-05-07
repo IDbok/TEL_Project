@@ -34,28 +34,35 @@ public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
 		{
 			Items = projects.Select(x => new ProjectDto
 			{
-				//ProjectId = x.Id,
+				Id = x.Id,
 				ProjectName = x.ProjectName,
 				ProjectCode = x.ProjectCode,
 				DateInitiation = x.DateInitiation,
-				//CustomerId = x.CustomerId
-				Phases = new List<PhaseDto>()
+
+				Parameters = new List<ProjectParameterDto>()
 				{
-					new PhaseDto
+					new ProjectParameterDto
 					{
-						PhaseName = "Phase 1",
-						PhaseStatus = "In Progress"
+						Description = $"Param to {x.ProjectName}",
+						ProjectBegin = DateTime.Now,
+						ProjectEnd = DateTime.Now.AddDays(30),
+						ProjectPhase = new PhaseDto
+						{
+							Id = 1,
+							PhaseName = "Phase 1"
+						}
 					},
-					new PhaseDto
+					new ProjectParameterDto
 					{
-						PhaseName = "Phase 2",
-						PhaseStatus = "In Progress"
+						Description = $"Param to {x.ProjectName}",
+						ProjectBegin = DateTime.Now,
+						ProjectEnd = DateTime.Now.AddDays(30),
+						ProjectPhase = new PhaseDto
+						{
+							Id = 2,
+							PhaseName = "Phase 2"
+						}
 					},
-					new PhaseDto
-					{
-						PhaseName = "Phase 3",
-						PhaseStatus = "In Progress"
-					}
 				},
 			}),
 			TotalCount = totalCount,

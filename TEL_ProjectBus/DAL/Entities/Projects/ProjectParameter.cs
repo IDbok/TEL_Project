@@ -7,7 +7,7 @@ public class ProjectParameter : AuditableEntity
 {
 	public long Id { get; set; }
 	public int ProjectId { get; set; }
-	public Guid ProjectOwner { get; set; }
+	public string ProjectOwner { get; set; }
 	public int ClassifierId { get; set; }
 	public int ProjectPhaseId { get; set; }
 	public int ProjectStageId { get; set; }
