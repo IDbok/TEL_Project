@@ -29,6 +29,30 @@
   </ItemGroup>
 	
 <ItemGroup>
+    <Content Update="Seed\TestData\project_phases.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Seed\TestData\project_stages.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Seed\TestData\project_statuses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Seed\TestData\test_budgets.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Seed\TestData\test_budget_groups.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Seed\TestData\test_Classifiers.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Seed\TestData\test_customers.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Seed\TestData\test_projects.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="web.config">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

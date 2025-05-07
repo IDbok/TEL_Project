@@ -24,7 +24,7 @@ public static class DbInitializer
 			PropertyNameCaseInsensitive = true
 		};
 
-		var folderPath = @"C:\Users\bokar\source\repos\TEL_Project\TEL_ProjectBus\Seed\TestData\";
+		var folderPath = Path.Combine(AppContext.BaseDirectory, "Seed", "TestData");
 
 		if (userManager != null && roleManager != null)
 		{
@@ -35,7 +35,7 @@ public static class DbInitializer
 		context.Database.OpenConnection();
 
 		// --- Справочники ---
-		var classifiersJson = File.ReadAllText(folderPath + "test_classifiers.json");
+		var classifiersJson = File.ReadAllText(Path.Combine(folderPath , "test_classifiers.json"));
 		var classifiers = JsonSerializer.Deserialize<List<Classifier>>(classifiersJson, options);
 
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Classifier] ON");
@@ -43,7 +43,7 @@ public static class DbInitializer
 		context.SaveChanges();
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Classifier] OFF");
 
-		var budgetGroupsJson = File.ReadAllText(folderPath + "test_budget_groups.json");
+		var budgetGroupsJson = File.ReadAllText(Path.Combine(folderPath, "test_budget_groups.json"));
 		var budgetGroups = JsonSerializer.Deserialize<List<BudgetGroup>>(budgetGroupsJson, options);
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Ref_BudgetGroup] ON");
 		context.BudgetGroups.AddRange(budgetGroups);
@@ -51,7 +51,7 @@ public static class DbInitializer
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Ref_BudgetGroup] OFF");
 
 		// --- Клиенты ---
-		var customersJson = File.ReadAllText(folderPath + "test_customers.json");
+		var customersJson = File.ReadAllText(Path.Combine(folderPath,  "test_customers.json"));
 		var customers = JsonSerializer.Deserialize<List<Customer>>(customersJson, options);
 		foreach (var customer in customers)
 		{
@@ -64,7 +64,7 @@ public static class DbInitializer
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Customer] OFF");
 
 		// --- Проекты ---
-		var projectsJson = File.ReadAllText(folderPath + "test_projects.json");
+		var projectsJson = File.ReadAllText(Path.Combine(folderPath, "test_projects.json"));
 		var projects = JsonSerializer.Deserialize<List<Project>>(projectsJson, options);
 		foreach (var project in projects)
 		{
@@ -76,7 +76,7 @@ public static class DbInitializer
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] OFF");
 
 		// --- Бюджеты ---
-		var budgetsJson = File.ReadAllText(folderPath + "test_budgets.json");
+		var budgetsJson = File.ReadAllText(Path.Combine(folderPath, "test_budgets.json"));
 		var budgets = JsonSerializer.Deserialize<List<Budget>>(budgetsJson, options);
 		foreach (var budget in budgets)
 		{
