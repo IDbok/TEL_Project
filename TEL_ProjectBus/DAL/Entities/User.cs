@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TEL_ProjectBus.DAL.Entities.Common;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities;
 
-public class User : IdentityUser
+public class User : IdentityUser, IHasIdentity<string>
 {
 	public string Account { get; set; } = string.Empty;
 	public string FirstName { get; set; } = string.Empty;

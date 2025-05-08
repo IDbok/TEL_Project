@@ -1,9 +1,10 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Tasks;
 
-public class Task : AuditableEntity
+public class Task : AuditableEntity, IHasIdentity<long>
 {
 	public long Id { get; set; }
 	public string Name { get; set; } = string.Empty;

@@ -1,9 +1,10 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Reference;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Budgets;
 
-public class BudgetApprove : AuditableEntity
+public class BudgetApprove : AuditableEntity, IHasIdentity<long>
 {
 	public long Id { get; set; }
 	public long BudgetId { get; set; }

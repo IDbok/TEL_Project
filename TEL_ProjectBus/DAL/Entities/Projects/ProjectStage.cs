@@ -1,8 +1,9 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Projects;
 
-public class ProjectStage : AuditableEntity
+public class ProjectStage : AuditableEntity, IHasIdentity<int>
 {
 	public int Id { get; set; }
 	public string StageName { get; set; } = string.Empty;

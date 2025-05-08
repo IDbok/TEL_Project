@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.DAL.Entities.Tasks;
+using TEL_ProjectBus.DAL.Extensions;
 
 namespace TEL_ProjectBus.DAL.Configurations.Dictionaries;
 
@@ -17,7 +18,8 @@ public class RefTaskStatusConfiguration : IEntityTypeConfiguration<RefTaskStatus
 			   .IsRequired();
 
 		builder.Property(rs => rs.TaskStatusName).HasColumnName("TaskStatus_Name");
-		builder.Property(rs => rs.DateChanged).HasColumnName("DateChanged");
-		builder.Property(rs => rs.ChangedByUserId).HasColumnName("ChangedBy");
-	} 
+
+		builder.ConfigureIntId();
+		builder.ConfigureAudit();
+	}
 }

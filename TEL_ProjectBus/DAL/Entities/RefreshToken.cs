@@ -1,6 +1,8 @@
-﻿namespace TEL_ProjectBus.DAL.Entities;
+﻿using TEL_ProjectBus.DAL.Interfaces;
 
-public class RefreshToken
+namespace TEL_ProjectBus.DAL.Entities;
+
+public class RefreshToken: IHasIdentity<int>
 {
 	public int Id { get; set; }
 	public string Token { get; set; } = null!;

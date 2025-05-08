@@ -1,8 +1,9 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Tasks;
 
-public class TaskStatus : AuditableEntity
+public class TaskStatus : AuditableEntity, IHasIdentity<long>
 {
 	public long Id { get; set; }
 	public long TaskId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.DAL.Extensions;
 
 namespace TEL_ProjectBus.DAL.Configurations.Dictionaries;
 
@@ -16,8 +17,9 @@ public class ProjectStatusConfiguration : IEntityTypeConfiguration<ProjectStatus
 			   .HasMaxLength(100)
 			   .IsRequired();
 
-		builder.Property(ps => ps.StatusName).HasColumnName("ProjectStatus_Name");
-		builder.Property(ps => ps.DateChanged).HasColumnName("DateChanged");
-		builder.Property(ps => ps.ChangedByUserId).HasColumnName("ChangedBy");
+		builder.Property(ps => ps.StatusName).HasColumnName("StatusName");
+
+		builder.ConfigureIntId();
+		builder.ConfigureAudit();
 	}
 }

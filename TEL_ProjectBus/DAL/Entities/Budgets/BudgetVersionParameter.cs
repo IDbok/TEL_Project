@@ -1,8 +1,10 @@
-﻿namespace TEL_ProjectBus.DAL.Entities.Budgets;
+﻿using TEL_ProjectBus.DAL.Interfaces;
 
-public class BudgetVersionParameter
+namespace TEL_ProjectBus.DAL.Entities.Budgets;
+
+public class BudgetVersionParameter : IHasIdentity<long>
 {
-	public Guid Id { get; set; }
+	public long Id { get; set; }
 	public long BudgetId { get; set; }
 	public string VersionName { get; set; } = string.Empty;
 

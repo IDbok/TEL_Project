@@ -1,10 +1,11 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Projects;
 using TEL_ProjectBus.DAL.Entities.Reference;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Budgets;
 
-public class Budget : AuditableEntity
+public class Budget : AuditableEntity, IHasIdentity<long>
 {
 	public long Id { get; set; }
 	public int BudgetGroupId { get; set; }
@@ -20,6 +21,7 @@ public class Budget : AuditableEntity
 	public string? EC { get; set; }
 	public decimal RgpPercent { get; set; }
 	public int Version { get; set; }
+	public decimal? CPTCCPcs { get; set; }
 	public decimal? Probability { get; set; }
 	public DateOnly? DatePlan { get; set; }
 	public decimal? CalcCPTCCPlan { get; set; }

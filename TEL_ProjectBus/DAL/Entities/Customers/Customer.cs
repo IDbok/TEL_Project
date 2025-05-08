@@ -1,9 +1,10 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Customers;
 
-public class Customer : AuditableEntity
+public class Customer : AuditableEntity, IHasIdentity<int>
 {
 	public int Id { get; set; }
 	public string Name { get; set; } = string.Empty;

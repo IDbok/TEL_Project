@@ -1,6 +1,8 @@
-﻿namespace TEL_ProjectBus.DAL.Entities.Budgets;
+﻿using TEL_ProjectBus.DAL.Interfaces;
 
-public class ProjectVOBudgetCross
+namespace TEL_ProjectBus.DAL.Entities.Budgets;
+
+public class ProjectVOBudgetCross : IHasIdentity<int>
 {
 	public int Id { get; set; }
 	public long BudgetId { get; set; }

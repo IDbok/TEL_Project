@@ -2,11 +2,12 @@
 using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Customers;
 using TEL_ProjectBus.DAL.Entities.Reference;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Projects;
 
 
-public class Project : AuditableEntity
+public class Project : AuditableEntity, IHasIdentity<int>
 {
 	public int Id { get; set; }
 	public long ClassifierId { get; set; }

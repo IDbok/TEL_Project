@@ -1,5 +1,6 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Tasks;
 
@@ -7,7 +8,7 @@ namespace TEL_ProjectBus.DAL.Entities.Tasks;
 
 // cвязь с проектом через TaskParametr => да, но необязательна нужна.
 // Связь задания с проектом обязательно через user
-public class TaskParameter : AuditableEntity
+public class TaskParameter : AuditableEntity, IHasIdentity<long>
 {
 	public long Id { get; set; }
 	public long TaskId { get; set; }

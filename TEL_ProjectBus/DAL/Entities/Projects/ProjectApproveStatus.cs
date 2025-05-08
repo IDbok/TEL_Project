@@ -1,9 +1,10 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Reference;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Projects;
 
-public class ProjectApproveStatus : AuditableEntity
+public class ProjectApproveStatus : AuditableEntity, IHasIdentity<long>
 {
 	public long Id { get; set; }
 	public int ProjectId { get; set; }

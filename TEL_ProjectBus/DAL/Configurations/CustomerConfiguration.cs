@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TEL_ProjectBus.DAL.Entities.Customers;
+using TEL_ProjectBus.DAL.Extensions;
 
 namespace TEL_ProjectBus.DAL.Configurations;
 
@@ -22,5 +23,14 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
 		builder.Property(e => e.ContactPerson)
 			.HasMaxLength(255);
+
+		builder.Property(e => e.Name).HasColumnName("Customer_Name");
+		builder.Property(e => e.Address).HasColumnName("Customer_Address");
+		builder.Property(e => e.CompanyName).HasColumnName("Customer_CompanyName");
+		builder.Property(e => e.ContactPerson).HasColumnName("Customer_ContactPerson");
+		builder.Property(e => e.DateCreated).HasColumnName("DateCreated");
+
+		builder.ConfigureIntId();
+		builder.ConfigureAudit();
 	}
 }

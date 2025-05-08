@@ -1,8 +1,9 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Tasks;
 
-public class TaskAttachment : AuditableEntity
+public class TaskAttachment : AuditableEntity, IHasIdentity<int>
 {
 	public int Id { get; set; }
 	public long TaskId { get; set; }

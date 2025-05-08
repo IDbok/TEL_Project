@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.DAL.Extensions;
 
 namespace TEL_ProjectBus.DAL.Configurations;
 
@@ -22,5 +23,16 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 		builder.HasOne(e => e.Customer)
 			  .WithMany(c => c.Projects)
 			  .HasForeignKey(p => p.CustomerId);
+
+		builder.Property(p => p.ProjectName).HasColumnName("ProjectName");
+		builder.Property(p => p.ProjectCode).HasColumnName("ProjectCode");
+		builder.Property(p => p.DateInitiation).HasColumnName("DateInitiation");
+		builder.Property(p => p.ClassifierId).HasColumnName("ID_Classifier");
+		builder.Property(p => p.CustomerId).HasColumnName("ID_Customer");
+		builder.Property(p => p.DateCreated).HasColumnName("DateCreated");
+
+		builder.Property(p => p.Id).HasColumnName("ID_Project");
+		builder.ConfigureAudit();
+
 	}
 }

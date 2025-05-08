@@ -1,13 +1,14 @@
 ﻿using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Reference;
+using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Projects;
 
-public class ProjectParameter : AuditableEntity
+public class ProjectParameter : AuditableEntity, IHasIdentity<long>
 {
 	public long Id { get; set; }
 	public int ProjectId { get; set; }
-	public string ProjectOwner { get; set; }
+	public string ProjectOwnerId { get; set; } = null!;
 	public int ClassifierId { get; set; }
 	public int ProjectPhaseId { get; set; }
 	public int ProjectStageId { get; set; }
@@ -17,7 +18,7 @@ public class ProjectParameter : AuditableEntity
 	public string? Description { get; set; }
 
 	public Project Project { get; set; } = null!;
-	public User ProjectOwnerUser { get; set; } = null!;
+	public User ProjectOwner { get; set; } = null!;
 	public Classifier Classifier { get; set; } = null!;
 	public ProjectPhase ProjectPhase { get; set; } = null!;
 	public ProjectStage ProjectStage { get; set; } = null!;
