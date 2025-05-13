@@ -25,7 +25,7 @@ public class BudgetBusController : BaseApiController
 	/// <param name="command"></param>
 	/// <returns></returns>
 	[HttpPost("create-budget-item")]
-	public async Task<IActionResult> CreateBudgetItem(CreateBudgetItemCommand command)
+	public async Task<IActionResult> CreateBudgetItem(UpdateProjectProfileCommand command)
 	{
 		await _publishEndpoint.Publish(command);
 		return Accepted();
@@ -66,7 +66,7 @@ public class BudgetBusController : BaseApiController
 	/// <param name="command"></param>
 	/// <returns></returns>
 	[HttpPost("create-budget-line")]
-	public async Task<IActionResult> CreateBudgetLine(CreateBudgetItemCommand command)
+	public async Task<IActionResult> CreateBudgetLine(UpdateProjectProfileCommand command)
 	{
 		//await _publishEndpoint.Publish(command);
 		return Accepted();

@@ -13,7 +13,7 @@ public class ProjectStageConfiguration : IEntityTypeConfiguration<ProjectStage>
 
 		builder.HasKey(ps => ps.Id);
 
-		builder.Property(ps => ps.StageName)
+		builder.Property(ps => ps.Name)
 			.HasColumnName("StageName");
 
 		builder.ConfigureIntId();

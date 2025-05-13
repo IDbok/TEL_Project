@@ -4,8 +4,6 @@ using TEL_ProjectBus.WebAPI.Common;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
-[Authorize]
-[AllowAnonymous]
 [ApiController]
 public abstract class BaseApiController : ControllerBase
 {

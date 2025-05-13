@@ -3,16 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.WebAPI.Messages.Queries;
 
-namespace TEL_ProjectBus.WebAPI.Consumers;
+namespace TEL_ProjectBus.WebAPI.Consumers.Projects;
 
 public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
 {
 	private readonly AppDbContext _dbContext;
 
-	public GetProjectsConsumer(AppDbContext dbContext)
-	{
-		_dbContext = dbContext;
-	}
+	public GetProjectsConsumer(AppDbContext dbContext) => _dbContext = dbContext;
 
 	public async Task Consume(ConsumeContext<GetProjectsQuery> context)
 	{
@@ -39,31 +36,10 @@ public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
 				ProjectCode = x.ProjectCode,
 				DateInitiation = x.DateInitiation,
 
-				Parameters = new List<ProjectParameterDto>()
+				Phase = new PhaseDto
 				{
-					new ProjectParameterDto
-					{
-						Description = $"Param to {x.ProjectName}",
-						ProjectBegin = DateTime.Now,
-						ProjectEnd = DateTime.Now.AddDays(30),
-						ProjectPhase = new PhaseDto
-						{
-							Id = 1,
-							PhaseName = "Phase 1"
-						}
-					},
-					new ProjectParameterDto
-					{
-						Description = $"Param to {x.ProjectName}",
-						ProjectBegin = DateTime.Now,
-						ProjectEnd = DateTime.Now.AddDays(30),
-						ProjectPhase = new PhaseDto
-						{
-							Id = 2,
-							PhaseName = "Phase 2"
-						}
-					},
-				},
+					PhaseName = "Phase 1"
+				}
 			}),
 			TotalCount = totalCount,
 			PageNumber = query.PageNumber,

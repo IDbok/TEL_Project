@@ -29,6 +29,30 @@ public class AuthController : BaseApiController
 	}
 
 	[AllowAnonymous]
+	[HttpPost("login-test-user")]
+	public async Task<IActionResult> LoginTestUser()
+	{
+		LoginDto loginDto = new LoginDto("testuser1", "Test@123");
+
+		var user = await _userManager.FindByNameAsync(loginDto.Username);
+
+		if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+			return Unauthorized();
+
+		var accessToken = GenerateJwtToken(user);
+		var refreshToken = GenerateRefreshToken(user.Id);
+
+		await _context.RefreshTokens.AddAsync(refreshToken);
+		await _context.SaveChangesAsync();
+
+		return ApiOk(new
+		{
+			token = accessToken,
+			refreshToken = refreshToken.Token
+		});
+	}
+
+	[AllowAnonymous]
 	[HttpPost("login")]
 	public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
 	{
@@ -178,7 +202,8 @@ public class AuthController : BaseApiController
 		var claims = new List<Claim>
 	   {
 		   new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-		   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+		   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+		   new Claim(ClaimTypes.NameIdentifier, user.Id)
 	   };
 
 		var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();

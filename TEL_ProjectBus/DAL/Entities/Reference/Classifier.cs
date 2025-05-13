@@ -9,4 +9,5 @@ public class Classifier : AuditableEntity, IHasIdentity<long>
 	public long Id { get; set; }
 	public string ClassifierCode { get; set; } = string.Empty;
 	public ICollection<Project> Projects { get; set; } = [];
+	public ICollection<ProjectParameter> ProjectParameters { get; set; } = [];
 }

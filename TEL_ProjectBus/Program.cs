@@ -10,7 +10,8 @@ using System.Reflection;
 using System.Text;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
-using TEL_ProjectBus.WebAPI.Consumers;
+using TEL_ProjectBus.WebAPI.Consumers.Budgets;
+using TEL_ProjectBus.WebAPI.Consumers.Projects;
 using TEL_ProjectBus.WebAPI.Messages.Queries;
 
 // Использую Request/Response паттерн - запросы и ответы асинхронно
@@ -43,7 +44,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	}
 	catch (Exception ex)
 	{
-		Console.WriteLine($"Ошибка подключения: {ex.Message}");
+		Console.WriteLine($"Ошибка подключения к БД: {ex.Message}");
 	}
 });
 
@@ -77,6 +78,31 @@ builder.Services.AddSwaggerGen(c =>
 		Version = "v1"
 	});
 
+	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+	{
+		Description = "JWT в?заголовке Authorization. Пример: \"Bearer {token}\"",
+		Name = "Authorization",
+		In = ParameterLocation.Header,
+		Type = SecuritySchemeType.Http,
+		Scheme = "bearer",
+		BearerFormat = "JWT"
+	});
+
+	c.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{
+			new OpenApiSecurityScheme
+			{
+				Reference = new OpenApiReference
+				{
+					Type = ReferenceType.SecurityScheme,
+					Id   = "Bearer"
+				}
+			},
+			Array.Empty<string>()
+		}
+	});
+
 	// Добавляем саммари и описание к контроллерам
 	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -91,11 +117,13 @@ builder.Services.AddMassTransit(x =>
 	// Регистрируем обработчики сообщений
 	x.AddConsumer<GetBudgetByIdConsumer>();
 	x.AddConsumer<GetProjectsConsumer>();
+	x.AddConsumer<GetProjectProfileConsumer>();
 	//x.AddConsumer<CurrentTimeConsumer>();
 
 	// Регистрация RequestClient
 	x.AddRequestClient<GetBudgetByIdQuery>();
 	x.AddRequestClient<GetProjectsQuery>();
+	x.AddRequestClient<GetProjectProfileQuery>();
 
 	if (useInMemory)
 		x.UsingInMemory((context, cfg) =>
@@ -109,27 +137,27 @@ builder.Services.AddMassTransit(x =>
 		});
 	else
 		x.UsingRabbitMq((context, cfg) =>
-	{
-		cfg.Host("rabbitmq://localhost", h =>
 		{
-			h.Username("guest");
-			h.Password("guest");
-		});
-
-
-		cfg.ReceiveEndpoint("get-budget-by-id-queue", e =>
-		{
-			e.ConfigureConsumeTopology = false;
-			e.Bind("TEL_ProjectBus.Messages.Queries:GetBudgetByIdQuery", x =>
+			cfg.Host("rabbitmq://localhost", h =>
 			{
-				x.ExchangeType = "fanout";
-				// routingKey не нужен для fanout
+				h.Username("guest");
+				h.Password("guest");
 			});
-			e.ConfigureConsumer<GetBudgetByIdConsumer>(context);
-		});
 
-		cfg.ConfigureEndpoints(context);
-	});
+
+			cfg.ReceiveEndpoint("get-budget-by-id-queue", e =>
+			{
+				e.ConfigureConsumeTopology = false;
+				e.Bind("TEL_ProjectBus.Messages.Queries:GetBudgetByIdQuery", x =>
+				{
+					x.ExchangeType = "fanout";
+					// routingKey не нужен для fanout
+				});
+				e.ConfigureConsumer<GetBudgetByIdConsumer>(context);
+			});
+
+			cfg.ConfigureEndpoints(context);
+		});
 });
 
 // Добавляем Identity-сервис
@@ -147,12 +175,14 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 
 // Добавляем Middleware для проверки JWT
-builder.Services.AddAuthentication(options =>
-{
-	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer("Jwt", options =>
+//builder.Services.AddAuthentication(options =>
+//{
+//	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer("Jwt", options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
 {
 	// Настраиваем JWT-аутентификацию
 	var jwtSettings = builder.Configuration.GetSection("JwtSettings");

@@ -2,11 +2,11 @@
 using TEL_ProjectBus.WebAPI.Messages.Commands;
 using TEL_ProjectBus.WebAPI.Messages.Events;
 
-namespace TEL_ProjectBus.WebAPI.Consumers;
+namespace TEL_ProjectBus.WebAPI.Consumers.Budgets;
 
-public class CreateBudgetItemConsumer : IConsumer<CreateBudgetItemCommand>
+public class CreateBudgetItemConsumer : IConsumer<UpdateProjectProfileCommand>
 {
-	public async Task Consume(ConsumeContext<CreateBudgetItemCommand> context)
+	public async Task Consume(ConsumeContext<UpdateProjectProfileCommand> context)
 	{
 		var command = context.Message;
 
@@ -17,7 +17,7 @@ public class CreateBudgetItemConsumer : IConsumer<CreateBudgetItemCommand>
 		await context.Publish(new BudgetItemCreatedEvent
 		{
 			BudgetItemId = newBudgetItemId,
-			BudgetName = command.BudgetName,
+			//BudgetName = command.BudgetName,
 			CreatedAt = DateTime.UtcNow
 		});
 	}

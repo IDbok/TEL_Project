@@ -53,8 +53,8 @@ public class BudgetQueryController : BaseApiController
 	/// <summary>
 	/// Возвращает бюджет по указанному идентификатору.
 	/// </summary>
-	[HttpGet("budgets/{id:guid}")]
-	public async Task<IActionResult> GetBudgetById(Guid id)
+	[HttpGet("budgets/{id:long}")]
+	public async Task<IActionResult> GetBudgetById(long id)
 	{
 		_logger.LogInformation($"[BudgetQueryController] Sending GetBudgetByIdQuery for {id}");
 

@@ -21,12 +21,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Dockerfile">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 	
 <ItemGroup>
     <Content Update="Seed\TestData\project_phases.json">
@@ -61,6 +55,10 @@
 <ItemGroup>
   <Folder Include="DAL\Entities\UserManagement\" />
   <Folder Include="WebAPI\Extensions\" />
+</ItemGroup>
+	
+<ItemGroup>
+  <ProjectReference Include="..\TEL_ProjectBus.Common\TEL_ProjectBus.Common.csproj" />
 </ItemGroup>
 
 

@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using TEL_ProjectBus.WebAPI.Messages.Queries;
 
-namespace TEL_ProjectBus.WebAPI.Consumers;
+namespace TEL_ProjectBus.WebAPI.Consumers.Budgets;
 
 public class GetBudgetByIdConsumer(ILogger<GetBudgetByIdConsumer> logger) : IConsumer<GetBudgetByIdQuery>
 {

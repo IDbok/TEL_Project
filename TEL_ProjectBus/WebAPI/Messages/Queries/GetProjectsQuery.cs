@@ -6,4 +6,5 @@ public record GetProjectsQuery
 	public int PageSize { get; init; } = 20;
 	public string ProjectNameFilter { get; init; } = "";
 	public string ProjectCodeFilter { get; init; } = "";
+	public string UserId { get; init; } = "";
 }

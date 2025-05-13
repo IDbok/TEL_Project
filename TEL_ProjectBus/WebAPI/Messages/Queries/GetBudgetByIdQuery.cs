@@ -2,5 +2,5 @@
 
 public record GetBudgetByIdQuery
 {
-	public Guid BudgetItemId { get; init; }
+	public long BudgetItemId { get; init; }
 }

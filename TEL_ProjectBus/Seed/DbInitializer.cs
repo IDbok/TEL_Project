@@ -30,6 +30,7 @@ public static class DbInitializer
 		{
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "admin", "Admin@123", "Admin").Wait();
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "testuser", "Test@123", "User").Wait();
+			EnsureUserWithFixedId(userManager, roleManager, "00000000-0000-0000-0000-000000000001", "testuser1", "Test@123", "User").Wait();
 		}
 
 		context.Database.OpenConnection();
@@ -75,6 +76,20 @@ public static class DbInitializer
 		context.SaveChanges();
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] OFF");
 
+		// --- Параметры проектов ---
+		var projectParamsJson = File.ReadAllText(Path.Combine(folderPath, "test_project_params.json"));
+		var projectParams = JsonSerializer.Deserialize<List<ProjectParameter>>(projectParamsJson, options);
+		foreach (var projectParam in projectParams)
+		{
+			projectParam.ProjectBegin = DateTime.SpecifyKind(projectParam.ProjectBegin, DateTimeKind.Utc);
+			projectParam.ProjectEnd = DateTime.SpecifyKind(projectParam.ProjectEnd, DateTimeKind.Utc);
+			projectParam.DateChanged = DateTime.SpecifyKind((DateTime)projectParam.DateChanged, DateTimeKind.Utc);
+		}
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ProjectParameters] ON");
+		context.ProjectParameters.AddRange(projectParams);
+		context.SaveChanges();
+		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ProjectParameters] OFF");
+
 		// --- Бюджеты ---
 		var budgetsJson = File.ReadAllText(Path.Combine(folderPath, "test_budgets.json"));
 		var budgets = JsonSerializer.Deserialize<List<Budget>>(budgetsJson, options);
@@ -115,6 +130,39 @@ public static class DbInitializer
 			await userManager.CreateAsync(user, password);
 			await userManager.AddToRoleAsync(user, role);
 		}
+	}
+
+	private static async Task<User> EnsureUserWithFixedId(
+	UserManager<User> userManager,
+	RoleManager<IdentityRole> roleManager,
+	string id,          // нужный Id
+	string userName,
+	string password,
+	string role)
+	{
+		// если роль ещё не создавалась
+		if (!await roleManager.RoleExistsAsync(role))
+			await roleManager.CreateAsync(new IdentityRole(role));
+
+		// ищем именно по Id
+		var user = await userManager.FindByIdAsync(id);
+		if (user == null)
+		{
+			user = new User
+			{
+				Id = id,                     // ← фиксируем Id
+				UserName = userName,
+				NormalizedUserName = userName.ToUpper(),
+				Email = $"{userName}@example.com",
+				NormalizedEmail = $"{userName}@example.com".ToUpper(),
+				EmailConfirmed = true
+			};
+			await userManager.CreateAsync(user, password);
+		}
+
+		// роль всё равно привязываем
+		await userManager.AddToRoleAsync(user, role);
+		return user;
 	}
 
 }
