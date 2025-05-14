@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -8,8 +9,10 @@ using TEL_ProjectBus.WebAPI.Messages.Queries;
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [Authorize]
+//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("api/[controller]")]
+
 public class ProjectQueryController : BaseApiController
 {
 	private readonly IRequestClient<GetProjectsQuery> _getProjectsClient;
@@ -35,12 +38,6 @@ public class ProjectQueryController : BaseApiController
 	{
 		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToArray();
-
-		var result = await HttpContext.AuthenticateAsync();
-		if (result.Succeeded)
-		{
-			var id = result.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
-		}
 
 		var query = new GetProjectsQuery
 		{

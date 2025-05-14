@@ -200,14 +200,12 @@ public class AuthController : BaseApiController
 	{
 		var roles = _userManager.GetRolesAsync(user).Result;
 		var claims = new List<Claim>
-	   {
-		   new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-		   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-		   new Claim(ClaimTypes.NameIdentifier, user.Id)
-	   };
-
-		var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
-		claims.AddRange(roleClaims);
+		{
+		   new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+		   new Claim(ClaimTypes.Name, user.UserName),
+		   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+		};
+		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]!));
 		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

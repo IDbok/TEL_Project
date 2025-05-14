@@ -1,8 +1,7 @@
-using Infrastructure;
+п»їusing Infrastructure;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -14,62 +13,148 @@ using TEL_ProjectBus.WebAPI.Consumers.Budgets;
 using TEL_ProjectBus.WebAPI.Consumers.Projects;
 using TEL_ProjectBus.WebAPI.Messages.Queries;
 
-// Использую Request/Response паттерн - запросы и ответы асинхронно
-// Controller: входная точка запроса (REST API).
-// Consumer: обработчик запроса (слушает очередь).
-// RequestClient: отправляет запрос в очередь.
-// MassTransit: библиотека для работы с шиной сообщений.
+// РСЃРїРѕР»СЊР·СѓСЋ Request/Response РїР°С‚С‚РµСЂРЅ - Р·Р°РїСЂРѕСЃС‹ Рё РѕС‚РІРµС‚С‹ Р°СЃРёРЅС…СЂРѕРЅРЅРѕ
+// Controller: РІС…РѕРґРЅР°СЏ С‚РѕС‡РєР° Р·Р°РїСЂРѕСЃР° (REST API).
+// Consumer: РѕР±СЂР°Р±РѕС‚С‡РёРє Р·Р°РїСЂРѕСЃР° (СЃР»СѓС€Р°РµС‚ РѕС‡РµСЂРµРґСЊ).
+// RequestClient: РѕС‚РїСЂР°РІР»СЏРµС‚ Р·Р°РїСЂРѕСЃ РІ РѕС‡РµСЂРµРґСЊ.
+// MassTransit: Р±РёР±Р»РёРѕС‚РµРєР° РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С€РёРЅРѕР№ СЃРѕРѕР±С‰РµРЅРёР№.
 
-// REST Controller -> IRequestClient<GetBudgetByIdQuery> -> MassTransit Bus -> RabbitMQ -> GetBudgetByIdConsumer -> возвращает GetBudgetByIdResponse
+// REST Controller -> IRequestClient<GetBudgetByIdQuery> -> MassTransit Bus -> RabbitMQ -> GetBudgetByIdConsumer -> РІРѕР·РІСЂР°С‰Р°РµС‚ GetBudgetByIdResponse
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddEndpointsApiExplorer();
+
+if (builder.Environment.IsDevelopment())
+	builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ  DB  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
 	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 	//options.UseNpgsql(connectionString);
 	options.UseSqlServer(connectionString, sqlOptions =>
 	{
-		sqlOptions.EnableRetryOnFailure(); // временный сбой
+		sqlOptions.EnableRetryOnFailure(); // РІСЂРµРјРµРЅРЅС‹Р№ СЃР±РѕР№
 	})
-	.EnableSensitiveDataLogging() // параметры запросов
-	.EnableDetailedErrors();     // стек при ошибках
-
-	try
-	{
-		using var conn = new SqlConnection(connectionString);
-		//conn.Open();
-		// Console.WriteLine("Успешно подключились!");
-	}
-	catch (Exception ex)
-	{
-		Console.WriteLine($"Ошибка подключения к БД: {ex.Message}");
-	}
+	.EnableSensitiveDataLogging() // РїР°СЂР°РјРµС‚СЂС‹ Р·Р°РїСЂРѕСЃРѕРІ
+	.EnableDetailedErrors();     // СЃС‚РµРє РїСЂРё РѕС€РёР±РєР°С…
 });
+
+#endregion
+
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ Identity  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
+// Р”РѕР±Р°РІР»СЏРµРј Identity-СЃРµСЂРІРёСЃ
+builder.Services
+	.AddIdentity<User, IdentityRole>(options =>
+{
+	// РќР°СЃС‚СЂРѕР№РєР° С‚СЂРµР±РѕРІР°РЅРёР№ Рє РїР°СЂРѕР»СЋ
+	options.Password.RequireDigit = true;
+	options.Password.RequireUppercase = false;
+	options.Password.RequireLowercase = false;
+	options.Password.RequireNonAlphanumeric = false;
+	options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders(); // РїРѕРґРєР»СЋС‡Р°РµРј С‚РѕРєРµРЅС‹ РґР»СЏ СЃР±СЂРѕСЃР° РїР°СЂРѕР»СЏ, РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ email Рё С‚.Рґ.
+#endregion
+
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ  JWTвЂ‘Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёСЏ  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]!));
+// Р”РѕР±Р°РІР»СЏРµРј Middleware РґР»СЏ РїСЂРѕРІРµСЂРєРё JWT
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; // в†ђ В«РіР»Р°РІРЅР°СЏВ»
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // РїСЂРѕРІРµСЂРєРё
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // 401/403
+})
+.AddJwtBearer(options =>
+{
+	// РќР°СЃС‚СЂР°РёРІР°РµРј JWT-Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёСЋ
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidIssuer = jwtSettings["Issuer"],
+		ValidAudience = jwtSettings["Audience"],
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateIssuerSigningKey = true,
+		LifetimeValidator = (notBefore, expires, token, parameters) => expires > DateTime.UtcNow, // todo: РїСЂРѕРІРµСЂРёС‚СЊ
+		IssuerSigningKey = key
+	};
+});
+
+#endregion
+
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ  MassTransit  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
+var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
+
+var host = builder.Configuration["RabbitMq:Host"];
+var user = builder.Configuration["RabbitMq:User"];
+var pass = builder.Configuration["RabbitMq:Password"];
+
+if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
+{
+	throw new ArgumentException("RabbitMQ connection parameters are not set.");
+}
+
+// РќР°СЃС‚СЂР°РёРІР°РµРј MassTransit СЃ RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+	x.SetKebabCaseEndpointNameFormatter(); // РСЃРїРѕР»СЊР·СѓРµРј kebab-case РґР»СЏ РёРјРµРЅРѕРІР°РЅРёСЏ РѕС‡РµСЂРµРґРµР№
+
+	// Р РµРіРёСЃС‚СЂРёСЂСѓРµРј РѕР±СЂР°Р±РѕС‚С‡РёРєРё СЃРѕРѕР±С‰РµРЅРёР№
+	x.AddConsumer<GetBudgetByIdConsumer>();
+	x.AddConsumer<GetProjectsConsumer>();
+	x.AddConsumer<GetProjectProfileConsumer>();
+	//x.AddConsumer<CurrentTimeConsumer>();
+
+	// Р РµРіРёСЃС‚СЂР°С†РёСЏ RequestClient
+	x.AddRequestClient<GetBudgetByIdQuery>();
+	x.AddRequestClient<GetProjectsQuery>();
+	x.AddRequestClient<GetProjectProfileQuery>();
+
+	if (useInMemory)
+		x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+	else
+		x.UsingRabbitMq((context, cfg) =>
+		{
+			cfg.Host(host, h =>
+			{
+				h.Username(user);
+				h.Password(pass);
+			});
+
+			cfg.ConfigureEndpoints(context);
+		});
+});
+
+#endregion
+
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ  CORS  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
+var allowedOrigins = builder.Configuration
+	.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowLocalhost", builder =>
+	options.AddPolicy("Cors", builder =>
 	{
-		builder.WithOrigins("http://localhost:5000", "http://localhost:4082")
+		builder.WithOrigins(allowedOrigins)
 			   .AllowAnyHeader()
 			   .AllowAnyMethod()
 			   .AllowCredentials();
 	});
 });
 
+#endregion
 
-var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ  Swagger  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
-// Add services to the container.
-builder.Logging.AddConsole().SetMinimumLevel(LogLevel.Debug);
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-
-// Добавляем Swagger и загружаем XML-документацию
+// Р”РѕР±Р°РІР»СЏРµРј Swagger Рё Р·Р°РіСЂСѓР¶Р°РµРј XML-РґРѕРєСѓРјРµРЅС‚Р°С†РёСЋ
 builder.Services.AddSwaggerGen(c =>
 {
 	c.SwaggerDoc("v1", new OpenApiInfo
@@ -80,7 +165,7 @@ builder.Services.AddSwaggerGen(c =>
 
 	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
-		Description = "JWT в?заголовке Authorization. Пример: \"Bearer {token}\"",
+		Description = "JWT Bearer token",
 		Name = "Authorization",
 		In = ParameterLocation.Header,
 		Type = SecuritySchemeType.Http,
@@ -93,169 +178,55 @@ builder.Services.AddSwaggerGen(c =>
 		{
 			new OpenApiSecurityScheme
 			{
-				Reference = new OpenApiReference
-				{
-					Type = ReferenceType.SecurityScheme,
-					Id   = "Bearer"
-				}
+				Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id   = "Bearer" }
 			},
 			Array.Empty<string>()
 		}
 	});
 
-	// Добавляем саммари и описание к контроллерам
+	// Р”РѕР±Р°РІР»СЏРµРј СЃР°РјРјР°СЂРё Рё РѕРїРёСЃР°РЅРёРµ Рє РєРѕРЅС‚СЂРѕР»Р»РµСЂР°Рј
 	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 	c.IncludeXmlComments(xmlPath);
 });
 
-// Настраиваем MassTransit с RabbitMQ
-builder.Services.AddMassTransit(x =>
-{
-	x.SetKebabCaseEndpointNameFormatter(); // Используем kebab-case для именования очередей
+#endregion
 
-	// Регистрируем обработчики сообщений
-	x.AddConsumer<GetBudgetByIdConsumer>();
-	x.AddConsumer<GetProjectsConsumer>();
-	x.AddConsumer<GetProjectProfileConsumer>();
-	//x.AddConsumer<CurrentTimeConsumer>();
-
-	// Регистрация RequestClient
-	x.AddRequestClient<GetBudgetByIdQuery>();
-	x.AddRequestClient<GetProjectsQuery>();
-	x.AddRequestClient<GetProjectProfileQuery>();
-
-	if (useInMemory)
-		x.UsingInMemory((context, cfg) =>
-		{
-			cfg.ReceiveEndpoint("get-budget-by-id-queue", e =>
-			{
-				e.ConfigureConsumer<GetBudgetByIdConsumer>(context);
-			});
-
-			cfg.ConfigureEndpoints(context);
-		});
-	else
-		x.UsingRabbitMq((context, cfg) =>
-		{
-			cfg.Host("rabbitmq://localhost", h =>
-			{
-				h.Username("guest");
-				h.Password("guest");
-			});
-
-
-			cfg.ReceiveEndpoint("get-budget-by-id-queue", e =>
-			{
-				e.ConfigureConsumeTopology = false;
-				e.Bind("TEL_ProjectBus.Messages.Queries:GetBudgetByIdQuery", x =>
-				{
-					x.ExchangeType = "fanout";
-					// routingKey не нужен для fanout
-				});
-				e.ConfigureConsumer<GetBudgetByIdConsumer>(context);
-			});
-
-			cfg.ConfigureEndpoints(context);
-		});
-});
-
-// Добавляем Identity-сервис
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-{
-	// Настройка требований к паролю
-	options.Password.RequireDigit = true;
-	options.Password.RequireUppercase = false;
-	options.Password.RequireLowercase = false;
-	options.Password.RequireNonAlphanumeric = false;
-	options.Password.RequiredLength = 6;
-})
-.AddEntityFrameworkStores<AppDbContext>()
-.AddDefaultTokenProviders(); // подключаем токены для сброса пароля, подтверждения email и т.д.
-
-
-// Добавляем Middleware для проверки JWT
-//builder.Services.AddAuthentication(options =>
-//{
-//	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer("Jwt", options =>
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
-{
-	// Настраиваем JWT-аутентификацию
-	var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-	var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]!));
-
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidateIssuerSigningKey = true,
-		ValidIssuer = jwtSettings["Issuer"],
-		ValidAudience = jwtSettings["Audience"],
-		LifetimeValidator = (notBefore, expires, token, parameters) => expires > DateTime.UtcNow, // todo: проверить
-		IssuerSigningKey = key
-	};
-})
-// убираем, т.к. через работаем через iis 
-//.AddNegotiate("AD", options =>
-//{
-//	options.PersistKerberosCredentials = false;
-//	options.PersistNtlmCredentials = false;
-//	// options.Events = new NegotiateEvents { ... }; // можно добавить хендлеры
-//})
-;
-
-// Включаем авторизацию
-builder.Services.AddAuthorizationBuilder()
-	//.AddPolicy("ADPolicy", policy =>
-	//		policy.AddAuthenticationSchemes("AD").RequireAuthenticatedUser())
-	.AddPolicy("AdminOnly", policy =>
-			policy.RequireRole("Admin"))
-;
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ  Middleware  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
-app.UseHttpsRedirection();// Перенаправляет HTTP ? HTTPS
-
-app.UseCors("AllowLocalhost");
-
-
-app.UseAuthentication(); // Проверяет JWT в каждом запросе (достаёт и расшифровывает токен, добавляет User в HttpContext)
-app.UseAuthorization();  // Проверяет, разрешён ли доступ к endpoint'у (смотрит, есть ли у User права на выполнение запроса (например, роль Admin))
-
-app.MapControllers(); // Подключает маршрутизацию контроллеров
-
-try
+if (app.Environment.IsDevelopment())
 {
+	app.UseDeveloperExceptionPage(); // todo: С‡С‚Рѕ СЌС‚Рѕ?
+	app.UseSwagger();
+	app.UseSwaggerUI();
+}
+
+if (!app.Environment.IsDevelopment())
+	app.UseHttpsRedirection();// РџРµСЂРµРЅР°РїСЂР°РІР»СЏРµС‚ HTTP ? HTTPS
+app.UseCors("Cors");
+app.UseAuthentication(); // РџСЂРѕРІРµСЂСЏРµС‚ JWT РІ РєР°Р¶РґРѕРј Р·Р°РїСЂРѕСЃРµ (РґРѕСЃС‚Р°С‘С‚ Рё СЂР°СЃС€РёС„СЂРѕРІС‹РІР°РµС‚ С‚РѕРєРµРЅ, РґРѕР±Р°РІР»СЏРµС‚ User РІ HttpContext)
+app.UseAuthorization();  // РџСЂРѕРІРµСЂСЏРµС‚, СЂР°Р·СЂРµС€С‘РЅ Р»Рё РґРѕСЃС‚СѓРї Рє endpoint'Сѓ (СЃРјРѕС‚СЂРёС‚, РµСЃС‚СЊ Р»Рё Сѓ User РїСЂР°РІР° РЅР° РІС‹РїРѕР»РЅРµРЅРёРµ Р·Р°РїСЂРѕСЃР° (РЅР°РїСЂРёРјРµСЂ, СЂРѕР»СЊ Admin))
+app.MapControllers(); // РџРѕРґРєР»СЋС‡Р°РµС‚ РјР°СЂС€СЂСѓС‚РёР·Р°С†РёСЋ РєРѕРЅС‚СЂРѕР»Р»РµСЂРѕРІ
+
+#endregion
+
+#region в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ  DBВ seed  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+if(false)
 	using (var scope = app.Services.CreateScope())
 	{
 		var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-		//db.Database.Migrate(); // применит все миграции
+		//db.Database.Migrate(); // РїСЂРёРјРµРЅРёС‚ РІСЃРµ РјРёРіСЂР°С†РёРё
 
-		var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-		var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-		DbInitializer.Seed(db, userManager, roleManager); // добавит начальные данные
+		DbInitializer.Seed(db, 
+			scope.ServiceProvider.GetRequiredService<UserManager<User>>(), 
+			scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>()
+			);
 	}
-}
-catch (Exception ex)
-{
-	// логируем ошибки
-	var logger = app.Services.GetRequiredService<ILogger<Program>>();
-	logger.LogError(ex, "Ошибка при инициализации базы данных.");
-}
 
+#endregion
 
 app.Run();
-
-// todo: добавить роли и пользователя администратора в БД через seed
-// todo: проверить необходимо ли преобразовывать таблицу ролей
-
-// todo: сейчас использую Windows Auth вместо LDAP. Поэтому приложение необходимо запускать под IIS. Надо с разобраться, как это делается
-// todo: для работы с IIS необходимо настроить генерацию web.config файла, либо просто добавить его в корень
