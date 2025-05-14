@@ -215,7 +215,8 @@ app.MapControllers(); // Подключает маршрутизацию кон�
 #endregion
 
 #region ──────────────────────────────  DB seed  ────────────────────────────────
-if(false)
+var useDbSeed = builder.Configuration.GetValue<bool>("UseDbSeed");
+if (useDbSeed)
 	using (var scope = app.Services.CreateScope())
 	{
 		var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
