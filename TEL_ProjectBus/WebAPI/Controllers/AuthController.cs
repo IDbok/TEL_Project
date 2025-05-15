@@ -214,7 +214,7 @@ public class AuthController : BaseApiController
 			issuer: _configuration["JwtSettings:Issuer"],
 			audience: _configuration["JwtSettings:Audience"],
 			claims: claims,
-			expires: DateTime.Now.AddHours(2),
+			expires: DateTime.Now.AddHours(9),
 			signingCredentials: creds
 		);
 
