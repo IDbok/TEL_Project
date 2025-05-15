@@ -6,7 +6,6 @@ using TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
-[ApiController]
 [AllowAnonymous]
 [Route("api/[controller]")]
 public class BudgetBusController : BaseApiController

@@ -13,8 +13,8 @@ public class Project : AuditableEntity, IHasIdentity<int>
 	public int Id { get; set; }
 	public long ClassifierId { get; set; }
 	public int CustomerId { get; set; }
-	public string ProjectName { get; set; } = string.Empty;
-	public string ProjectCode { get; set; } = string.Empty;
+	public string Name { get; set; } = string.Empty;
+	public string Code { get; set; } = string.Empty;
 	public DateTime DateInitiation { get; set; }
 	public DateTime? DateCreated { get; set; }
 

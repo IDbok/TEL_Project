@@ -9,8 +9,6 @@ using TEL_ProjectBus.WebAPI.Messages.Queries;
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [Authorize]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[ApiController]
 [Route("api/[controller]")]
 
 public class ProjectQueryController : BaseApiController
@@ -58,8 +56,8 @@ public class ProjectQueryController : BaseApiController
 	/// Возвращает паспорт проекта по указанному идентификатору.
 	/// </summary>
 	[AllowAnonymous]
-	[HttpGet("projects/{id:long}/profile")]
-	public async Task<IActionResult> GetProjectProfileById(long id)
+	[HttpGet("projects/{id:int}/profile")]
+	public async Task<IActionResult> GetProjectProfileById(int id)
 	{
 		_logger.LogInformation($"[ProjectQueryController] Sending GetBudgetByIdQuery for {id}");
 

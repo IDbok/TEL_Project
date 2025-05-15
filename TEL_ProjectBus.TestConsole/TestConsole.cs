@@ -114,8 +114,8 @@ void CreatProjectJson()
 		var project = new Project
 		{
 			Id = i + 1,
-			ProjectName = $"Project {i + 1}",
-			ProjectCode = $"Code {i + 1}",
+			Name = $"Project {i + 1}",
+			Code = $"Code {i + 1}",
 			DateInitiation = DateTime.Now,
 			CustomerId = random.Next(1, 4),
 			ClassifierId = random.Next(1, 40),

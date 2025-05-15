@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEL_ProjectBus.TestConsole"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEL_ProjectBus.Common", "TEL_ProjectBus.Common\TEL_ProjectBus.Common.csproj", "{9450FBA8-FDC3-465F-A859-DCBA7A6F08B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEL_ProjectBus.WebAPI", "TEL_ProjectBus.WebAPI\TEL_ProjectBus.WebAPI.csproj", "{1DF2310E-5697-4EC3-A5A5-470705D4011A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{9450FBA8-FDC3-465F-A859-DCBA7A6F08B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9450FBA8-FDC3-465F-A859-DCBA7A6F08B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9450FBA8-FDC3-465F-A859-DCBA7A6F08B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1DF2310E-5697-4EC3-A5A5-470705D4011A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1DF2310E-5697-4EC3-A5A5-470705D4011A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1DF2310E-5697-4EC3-A5A5-470705D4011A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1DF2310E-5697-4EC3-A5A5-470705D4011A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

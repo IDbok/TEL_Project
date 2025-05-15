@@ -2,23 +2,21 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
-using TEL_ProjectBus.WebAPI.Messages.Queries;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
-[ApiController]
 [AllowAnonymous]
 [Route("api/[controller]")]
 public class ProjectBusController : BaseApiController
 {
-	private readonly IPublishEndpoint _publishEndpoint;
 	private readonly IRequestClient<UpdateProjectProfileCommand> _updateProjectProfileClient;
-	private readonly ILogger<ProjectQueryController> _logger;
+	private readonly ILogger<ProjectBusController> _logger;
 
 
-	public ProjectBusController(IPublishEndpoint publishEndpoint, ILogger<ProjectQueryController> logger)
+	public ProjectBusController(IRequestClient<UpdateProjectProfileCommand> requestClient,
+		ILogger<ProjectBusController> logger )
 	{
-		_publishEndpoint = publishEndpoint;
+		_updateProjectProfileClient = requestClient;
 		_logger = logger;
 	}
 
@@ -29,11 +27,11 @@ public class ProjectBusController : BaseApiController
 	/// </summary>
 	/// <param name="command"></param>
 	/// <returns></returns>
-	[HttpPut("update-budget-item")]
+	[HttpPut("projects/update-profile")]
 	public async Task<IActionResult> UpdateProjectProfileItem(UpdateProjectProfileCommand command)
 	{
 		var response = await _updateProjectProfileClient.GetResponse<UpdateProjectProfileResponse>(command);
-		//await _publishEndpoint.Publish(command);
+		
 		if (response.Message.IsSuccess)
 		{
 			return Accepted(response.Message);

@@ -110,7 +110,7 @@ builder.Services.AddMassTransit(x =>
 	x.AddConsumer<GetBudgetByIdConsumer>();
 	x.AddConsumer<GetProjectsConsumer>();
 	x.AddConsumer<GetProjectProfileConsumer>();
-	//x.AddConsumer<CurrentTimeConsumer>();
+	x.AddConsumer<UpdateProjectProfileConsumer>();
 
 	// Регистрация RequestClient
 	x.AddRequestClient<GetBudgetByIdQuery>();

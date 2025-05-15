@@ -88,8 +88,8 @@ public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
 			Items = projects.Select(x => new ProjectDto
 			{
 				Id = x.Id,
-				ProjectName = x.ProjectName,
-				ProjectCode = x.ProjectCode,
+				ProjectName = x.Name,
+				ProjectCode = x.Code,
 				DateInitiation = x.DateInitiation,
 
 				Phase = new PhaseDto

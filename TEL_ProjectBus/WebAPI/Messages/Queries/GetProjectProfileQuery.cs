@@ -4,6 +4,6 @@ namespace TEL_ProjectBus.WebAPI.Messages.Queries;
 
 public record GetProjectProfileQuery
 {
-	public long ProjectId { get; init; }
+	public int ProjectId { get; init; }
 
 }

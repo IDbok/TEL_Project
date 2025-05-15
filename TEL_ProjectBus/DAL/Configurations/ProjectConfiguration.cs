@@ -13,19 +13,19 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 
 		builder.HasKey(p => p.Id);
 
-		builder.Property(p => p.ProjectName)
+		builder.Property(p => p.Name)
 			   .HasMaxLength(100)
 			   .IsRequired();
 
-		builder.Property(p => p.ProjectCode)
+		builder.Property(p => p.Code)
 			   .HasMaxLength(200);
 
 		builder.HasOne(e => e.Customer)
 			  .WithMany(c => c.Projects)
 			  .HasForeignKey(p => p.CustomerId);
 
-		builder.Property(p => p.ProjectName).HasColumnName("ProjectName");
-		builder.Property(p => p.ProjectCode).HasColumnName("ProjectCode");
+		builder.Property(p => p.Name).HasColumnName("ProjectName");
+		builder.Property(p => p.Code).HasColumnName("ProjectCode");
 		builder.Property(p => p.DateInitiation).HasColumnName("DateInitiation");
 		builder.Property(p => p.ClassifierId).HasColumnName("ID_Classifier");
 		builder.Property(p => p.CustomerId).HasColumnName("ID_Customer");
