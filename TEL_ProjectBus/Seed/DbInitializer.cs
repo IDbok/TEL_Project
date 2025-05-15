@@ -31,6 +31,7 @@ public static class DbInitializer
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "admin", "Admin@123", "Admin").Wait();
 			CreateUserAndRoleIfNotExists(userManager, roleManager, "testuser", "Test@123", "User").Wait();
 			EnsureUserWithFixedId(userManager, roleManager, "00000000-0000-0000-0000-000000000001", "testuser1", "Test@123", "User").Wait();
+			EnsureUserWithFixedId(userManager, roleManager, "00000000-0000-0000-0000-000000000002", "testuser2", "Test@123", "User").Wait();
 		}
 
 		context.Database.OpenConnection();

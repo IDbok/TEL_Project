@@ -12,7 +12,8 @@ const int classifierCount = 3000; // 1-40 - проекты, 41-2000 - бюдже
 const int projectStageCount = 3;
 const int projectPhaseCount = 3; 
 const int projectStatusCount = 4;
-const string testUserId = "00000000-0000-0000-0000-000000000001";
+const string testUser1Id = "00000000-0000-0000-0000-000000000001";
+const string testUser2Id = "00000000-0000-0000-0000-000000000002";
 
 //CreatBudgetTestJson();
 //CreatProjectJson();
@@ -39,7 +40,7 @@ void CreateProjectParamsJson()
 			{
 				Id = itemId,
 				ProjectId = i,
-				ProjectOwnerId = testUserId,
+				ProjectOwnerId = random.NextDouble() < 0.8 ? testUser1Id : testUser2Id,
 				ClassifierId = classifierIdStart++,
 				//ProjectPhaseId = random.Next(1, projectPhaseCount),
 				//ProjectStageId = random.Next(1, projectStageCount),

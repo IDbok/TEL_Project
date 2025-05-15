@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TEL_ProjectBus.WebAPI.Messages.Commands;
+using TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 using TEL_ProjectBus.WebAPI.Messages.Queries;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
@@ -43,4 +43,6 @@ public class ProjectBusController : BaseApiController
 			return BadRequest(response.Message);
 		}
 	}
+
+	
 }

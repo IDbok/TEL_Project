@@ -1,4 +1,5 @@
-﻿using TEL_ProjectBus.DAL.Entities.Budgets;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using TEL_ProjectBus.DAL.Entities.Budgets;
 using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Customers;
 using TEL_ProjectBus.DAL.Entities.Reference;
@@ -19,6 +20,8 @@ public class Project : AuditableEntity, IHasIdentity<int>
 
 	public Classifier Classifier { get; set; } = null!;
 	public Customer Customer { get; set; } = null!;
+
+	[NotMapped] public ProjectParameter Parameter { get; set; } = null!;
 
 	public ICollection<Budget> Budgets { get; set; } = [];
 	public ICollection<ProjectApproveStatus> ApproveStatuses { get; set; } = [];
