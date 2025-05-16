@@ -11,7 +11,8 @@ using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.WebAPI.Consumers.Budgets;
 using TEL_ProjectBus.WebAPI.Consumers.Projects;
-using TEL_ProjectBus.WebAPI.Messages.Queries;
+using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
+using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 // Использую Request/Response паттерн - запросы и ответы асинхронно
 // Controller: входная точка запроса (REST API).

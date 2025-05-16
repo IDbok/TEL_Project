@@ -1,4 +1,4 @@
-﻿namespace TEL_ProjectBus.WebAPI.Messages.Commands;
+﻿namespace TEL_ProjectBus.WebAPI.Messages.Commands.Budgets;
 
 public record UpdateBudgetItemCommand
 {

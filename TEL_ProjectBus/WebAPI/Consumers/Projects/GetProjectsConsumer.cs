@@ -4,6 +4,7 @@ using TEL_ProjectBus.Common.Extensions;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.WebAPI.Messages.Queries;
+using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Consumers.Projects;
 

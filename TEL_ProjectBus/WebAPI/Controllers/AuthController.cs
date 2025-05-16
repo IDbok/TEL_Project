@@ -10,9 +10,11 @@ using System.Security.Cryptography;
 using System.Text;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
+using TEL_ProjectBus.WebAPI.Controllers.Common;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : BaseApiController
@@ -52,6 +54,13 @@ public class AuthController : BaseApiController
 		});
 	}
 
+	/// <summary>
+	/// Выполняет вход пользователя с использованием предоставленных учетных данных.
+	/// В случае успешной авторизации генерирует токены доступа и обновления, и возвращает их клиенту.
+	/// </summary>
+	/// <param name="loginDto">Объект, содержащий имя пользователя и пароль.</param>
+	/// <returns>Возвращает токен доступа и токен обновления, если аутентификация прошла успешно. 
+	/// В случае неудачи — статус 401 (Unauthorized).</returns>
 	[AllowAnonymous]
 	[HttpPost("login")]
 	public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -74,6 +83,13 @@ public class AuthController : BaseApiController
 		});
 	}
 
+	/// <summary>
+	/// Выполняет аутентификацию пользователя через Active Directory (AD).
+	/// Если пользователь существует, генерирует токены доступа и обновления, и возвращает их. 
+	/// В случае отсутствия пользователя в системе, создает нового пользователя и добавляет его в базу данных.
+	/// </summary>
+	/// <returns>Возвращает токен доступа и токен обновления, если аутентификация прошла успешно. 
+	/// В случае неудачи — статус 401 (Unauthorized).</returns>
 	[AllowAnonymous]
 	[HttpPost("login-ad")]
 	public async Task<IActionResult> LoginAd()
@@ -151,7 +167,12 @@ public class AuthController : BaseApiController
 		});
 	}
 
-	[HttpPost("logout")]
+	/// <summary>
+	/// Выполняет выход пользователя из системы, аннулируя все активные refresh токены.
+	/// </summary>
+	/// <returns>Возвращает статус 200 (OK), если выход из системы выполнен успешно. 
+	/// В случае неудачи — статус 401 (Unauthorized).</returns>
+	[HttpPost("logout")] // todo: проверить работу метода. По идее, токен должен перестать действовать. А он всё ещё работает
 	public async Task<IActionResult> Logout()
 	{
 		var username = User.Identity?.Name;
@@ -171,6 +192,13 @@ public class AuthController : BaseApiController
 		return ApiOk("Logged out successfully");
 	}
 
+	/// <summary>
+	/// Обновляет токен доступа с использованием refresh токена.
+	/// Если refresh токен действителен, генерирует новый access токен и новый refresh токен.
+	/// </summary>
+	/// <param name="refreshToken">Refresh токен для обновления.</param>
+	/// <returns>Возвращает новый токен доступа и новый refresh токен, если refresh токен действителен.
+	/// В случае ошибки — статус 401 (Unauthorized).</returns>
 	[HttpPost("refresh-token")]
 	public async Task<IActionResult> Refresh([FromBody] string refreshToken)
 	{

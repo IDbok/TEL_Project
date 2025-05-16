@@ -2,7 +2,7 @@
 using TEL_ProjectBus.BLL.Mappers;
 using TEL_ProjectBus.BLL.Projects;
 using TEL_ProjectBus.DAL.DbContext;
-using TEL_ProjectBus.WebAPI.Messages.Queries;
+using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Consumers.Projects;
 

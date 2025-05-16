@@ -1,4 +1,4 @@
-﻿namespace TEL_ProjectBus.WebAPI.Messages.Queries;
+﻿namespace TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 public record GetProjectsQuery
 {

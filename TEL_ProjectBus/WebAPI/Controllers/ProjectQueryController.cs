@@ -1,10 +1,9 @@
 ﻿using MassTransit;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TEL_ProjectBus.WebAPI.Messages.Queries;
+using TEL_ProjectBus.WebAPI.Controllers.Common;
+using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
@@ -26,7 +25,15 @@ public class ProjectQueryController : BaseApiController
 		_logger = logger;
 	}
 
-	[Authorize]
+	/// <summary>
+	/// Получает список проектов доступных авторизованному пользователю
+	/// с учетом фильтрации и пагинации.
+	/// </summary>
+	/// <param name="pageNumber">Номер страницы для пагинации (по умолчанию 1).</param>
+	/// <param name="pageSize">Размер страницы для пагинации (по умолчанию 20).</param>
+	/// <param name="projectName">Фильтр по имени проекта (по умолчанию пустое значение).</param>
+	/// <param name="projectCode">Фильтр по коду проекта (по умолчанию пустое значение).</param>
+	/// <returns>Возвращает список проектов в соответствии с указанными параметрами фильтрации и пагинации.</returns>
 	[HttpGet("projects")]
 	public async Task<IActionResult> GetProjects(
 		[FromQuery] int pageNumber = 1,
@@ -55,7 +62,9 @@ public class ProjectQueryController : BaseApiController
 	/// <summary>
 	/// Возвращает паспорт проекта по указанному идентификатору.
 	/// </summary>
-	[AllowAnonymous]
+	/// <param name="id">Идентификатор проекта.</param>
+	/// <returns>Возвращает данные профиля проекта по указанному ID. 
+	/// В случае ошибки или таймаута — соответствующий статус (например, 504 — Request Timeout или 404 — Not Found).</returns>
 	[HttpGet("projects/{id:int}/profile")]
 	public async Task<IActionResult> GetProjectProfileById(int id)
 	{

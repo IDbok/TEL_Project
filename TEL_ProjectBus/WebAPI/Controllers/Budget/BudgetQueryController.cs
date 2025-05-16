@@ -1,9 +1,10 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TEL_ProjectBus.WebAPI.Messages.Queries;
+using TEL_ProjectBus.WebAPI.Controllers.Common;
+using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 
-namespace TEL_ProjectBus.WebAPI.Controllers;
+namespace TEL_ProjectBus.WebAPI.Controllers.Budget;
 
 [ApiExplorerSettings(IgnoreApi = true)]
 [ApiController]
