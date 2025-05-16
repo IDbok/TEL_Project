@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using TEL_ProjectBus.BLL.DTOs;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 
 namespace TEL_ProjectBus.WebAPI.Consumers.Budgets;

@@ -10,5 +10,5 @@ public record ProjectDto
 	public string? Customer { get; init; } = default!; // Заказчик
 	public DateTime DateInitiation { get; init; } = default!; // переход от PreSale к Execution
 	public DateTime? DateCreated { get; init; } = default!; // дата создания проекта
-	public List<BudgetDto> BudgetLines { get; init; } = default!; // JSON строка с бюджетами
+	public List<BudgetLineDto> BudgetLines { get; init; } = default!; // JSON строка с бюджетами
 }

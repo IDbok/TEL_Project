@@ -6,7 +6,6 @@ using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 
 namespace TEL_ProjectBus.WebAPI.Controllers.Budget;
 
-[ApiExplorerSettings(IgnoreApi = true)]
 [ApiController]
 [AllowAnonymous]
 [Route("api/[controller]")]
@@ -14,6 +13,7 @@ public class BudgetQueryController : BaseApiController
 {
 	private readonly IRequestClient<GetBudgetsQuery> _getBudgetsClient;
 	private readonly IRequestClient<GetBudgetByIdQuery> _getBudgetByIdClient;
+	private readonly IRequestClient<GetBudgetsByProjectIdQuery> _getBudgetsByProjectIdClient;
 	private readonly ILogger<BudgetQueryController> _logger;
 
 	public BudgetQueryController(
@@ -26,28 +26,14 @@ public class BudgetQueryController : BaseApiController
 		_logger = logger;
 	}
 
-
 	/// <summary>
-	/// Возвращает список бюджетов в соответствии с фильтрами на страничку (кол-во строк на странице и её номер страницы указываются в параметрах запроса).
+	/// Возвращает список строк бюджета проекта по указанному идентификатору.
 	/// </summary>
-	[HttpGet("budgets")]
-	public async Task<IActionResult> GetBudgets(
-		[FromQuery] int pageNumber = 1,
-		[FromQuery] int pageSize = 20,
-		[FromQuery] string budgetName = "",
-		[FromQuery] string articleNumber1C = "",
-		[FromQuery] string role = "")
+	[HttpGet("projects/{id:int}/budgets")]
+	public async Task<IActionResult> GetBudgetsByProjectId(int projectId)
 	{
-		var query = new GetBudgetsQuery
-		{
-			PageNumber = pageNumber,
-			PageSize = pageSize,
-			BudgetNameFilter = budgetName,
-			ArticleNumber1CFilter = articleNumber1C,
-			RoleFilter = role
-		};
-
-		var response = await _getBudgetsClient.GetResponse<GetBudgetsResponse>(query);
+		var response = await _getBudgetByIdClient.GetResponse<GetBudgetsByProjectIdResponse>(
+			new GetBudgetsByProjectIdQuery { ProjectId = projectId }, timeout: TimeSpan.FromSeconds(30));
 
 		return ApiOk(response.Message);
 	}
@@ -55,28 +41,14 @@ public class BudgetQueryController : BaseApiController
 	/// <summary>
 	/// Возвращает бюджет по указанному идентификатору.
 	/// </summary>
-	[HttpGet("budgets/{id:long}")]
-	public async Task<IActionResult> GetBudgetById(long id)
+	[ApiExplorerSettings(IgnoreApi = true)] 
+	[HttpGet("budgets/{id:int}")]
+	public async Task<IActionResult> GetBudgetById(int id)
 	{
-		_logger.LogInformation($"[BudgetQueryController] Sending GetBudgetByIdQuery for {id}");
+		var response = await _getBudgetByIdClient.GetResponse<GetBudgetByIdResponse>(
+			new GetBudgetByIdQuery { BudgetItemId = id }, timeout: TimeSpan.FromSeconds(30));
 
-		try
-		{
-			var response = await _getBudgetByIdClient.GetResponse<GetBudgetByIdResponse>(
-				new GetBudgetByIdQuery { BudgetItemId = id }, timeout: TimeSpan.FromSeconds(30));
-
-			return ApiOk(response.Message);
-		}
-		catch (RequestTimeoutException ex)
-		{
-			_logger.LogError(ex, "[BudgetQueryController] Timeout when requesting Budget by ID {Id}", id);
-			return StatusCode(504, "Request Timeout: " + ex.Message);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex, "[BudgetQueryController] Error when requesting Budget by ID {Id}", id);
-			return StatusCode(500, "Internal Server Error: " + ex.Message);
-		}
+		return ApiOk(response.Message);
 	}
 
 }
