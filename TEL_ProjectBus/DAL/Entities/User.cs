@@ -14,4 +14,6 @@ public class User : IdentityUser, IHasIdentity<string>
 	public DateTime DateCreated { get; set; } = DateTime.UtcNow;
 	public DateTime? DateChanged { get; set; } = null;
 	public Guid? ChangedBy { get; set; } = null;
+
+	public string FullName => $"{FirstName} {LastName}"; // Полное имя пользователя
 }

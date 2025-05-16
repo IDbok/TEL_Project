@@ -5,7 +5,7 @@ public record ProjectDto
 	public string Name { get; init; } = default!;
 	public string Code { get; init; } = default!;
 	public long ClassifierCode { get; init; } = default!;
-	public string Responsible { get; init; } = default!; // ПМ
+	public string Responsible { get; init; } = default!; // ПМ => email ??  авторизация через ADO
 	public string? Phase { get; init; } = default!; // Этап
 	public string? Customer { get; init; } = default!; // Заказчик
 	public DateTime DateInitiation { get; init; } = default!; // переход от PreSale к Execution

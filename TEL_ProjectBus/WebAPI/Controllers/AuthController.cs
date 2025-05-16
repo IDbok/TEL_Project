@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.WebAPI.Controllers.Common;
@@ -41,17 +43,10 @@ public class AuthController : BaseApiController
 		if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
 			return Unauthorized();
 
-		var accessToken = GenerateJwtToken(user);
-		var refreshToken = GenerateRefreshToken(user.Id);
-
-		await _context.RefreshTokens.AddAsync(refreshToken);
+		var resoinse = await GetLoginResponseAsync(user);
+		await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
 		await _context.SaveChangesAsync();
-
-		return ApiOk(new
-		{
-			token = accessToken,
-			refreshToken = refreshToken.Token
-		});
+		return ApiOk(resoinse);
 	}
 
 	/// <summary>
@@ -70,17 +65,10 @@ public class AuthController : BaseApiController
 		if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
 			return Unauthorized();
 
-		var accessToken = GenerateJwtToken(user);
-		var refreshToken = GenerateRefreshToken(user.Id);
-
-		await _context.RefreshTokens.AddAsync(refreshToken);
+		var resoinse = await GetLoginResponseAsync(user);
+		await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
 		await _context.SaveChangesAsync();
-
-		return ApiOk(new
-		{
-			token = accessToken,
-			refreshToken = refreshToken.Token
-		});
+		return ApiOk(resoinse);
 	}
 
 	/// <summary>
@@ -154,17 +142,10 @@ public class AuthController : BaseApiController
 			return Unauthorized("Пользователь заблокирован");
 		}
 
-		var accessToken = GenerateJwtToken(user);
-		var refreshToken = GenerateRefreshToken(user.Id);
-
-		await _context.RefreshTokens.AddAsync(refreshToken);
+		var resoinse = await GetLoginResponseAsync(user);
+		await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
 		await _context.SaveChangesAsync();
-
-		return ApiOk(new
-		{
-			token = accessToken,
-			refreshToken = refreshToken.Token
-		});
+		return ApiOk(resoinse);
 	}
 
 	/// <summary>
@@ -211,17 +192,24 @@ public class AuthController : BaseApiController
 
 		tokenEntity.IsRevoked = true;
 
-		var newAccessToken = GenerateJwtToken(tokenEntity.User);
-		var newRefresh = GenerateRefreshToken(tokenEntity.UserId);
-
-		await _context.RefreshTokens.AddAsync(newRefresh);
+		var resoinse = await GetLoginResponseAsync(tokenEntity.User);
+		await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
 		await _context.SaveChangesAsync();
+		return ApiOk(resoinse);
+	}
 
-		return ApiOk(new
+	private async Task<LoginResponse> GetLoginResponseAsync(User user)
+	{
+		var accessToken = GenerateJwtToken(user);
+		var refreshToken = GenerateRefreshToken(user.Id);
+		var roles = await _userManager.GetRolesAsync(user);
+
+		return new LoginResponse
 		{
-			token = newAccessToken,
-			refreshToken = newRefresh.Token
-		});
+			AccessToken = accessToken,
+			RefreshToken = refreshToken,
+			UserRoles = roles.ToArray()
+		};
 	}
 
 	private string GenerateJwtToken(User user)
@@ -263,4 +251,14 @@ public class AuthController : BaseApiController
 }
 
 public record LoginDto(string Username, string Password);
+public record LoginResponse
+{
+	public string AccessToken { get; init; } = default!;
+	[JsonIgnore]
+	public RefreshToken RefreshToken { get; init; } = default!;
+	public string RefreshTokenString => RefreshToken.Token;
+	public string UserFullname => RefreshToken.User.FullName;
+	public string[] UserRoles { get; init; } = default!;
+
+}
 
