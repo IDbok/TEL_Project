@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.BLL.DTOs;
+using TEL_ProjectBus.BLL.Mappers;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities.Projects;
 
@@ -9,6 +10,15 @@ public class ProjectService
 {
 	private readonly AppDbContext _dbContext;
 	public ProjectService(AppDbContext db) => _dbContext = db;
+
+	public async Task<int> CreateNewProjectAsync(ProjectDto project)
+	{
+		var newProject = ProjectMapper.ToEntity(project);
+		await _dbContext.Projects.AddAsync(newProject);
+		await _dbContext.SaveChangesAsync();
+		return newProject.Id;
+	}
+
 	public async Task<Project> GetProjectAsync(int projectId, CancellationToken cancellationToken)
 	{
 		var p = await _dbContext.Projects

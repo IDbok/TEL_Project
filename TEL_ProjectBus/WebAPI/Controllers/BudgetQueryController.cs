@@ -5,6 +5,7 @@ using TEL_ProjectBus.WebAPI.Messages.Queries;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
+[ApiExplorerSettings(IgnoreApi = true)]
 [ApiController]
 [AllowAnonymous]
 [Route("api/[controller]")]

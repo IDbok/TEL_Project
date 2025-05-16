@@ -2,6 +2,7 @@
 
 namespace TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
-public record UpdateProjectProfileResponse : BasResponseBase
+public record CreateProjectResponse : BasResponseBase
 {
+	public int ProjectId { get; init; }
 }
