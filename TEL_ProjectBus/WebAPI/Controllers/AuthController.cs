@@ -19,18 +19,8 @@ namespace TEL_ProjectBus.WebAPI.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : BaseApiController
+public class AuthController(UserManager<User> _userManager, IConfiguration _configuration, AppDbContext _context) : BaseApiController
 {
-	private readonly UserManager<User> _userManager;
-	private readonly IConfiguration _configuration;
-	private readonly AppDbContext _context;
-
-	public AuthController(UserManager<User> userManager, IConfiguration configuration, AppDbContext context)
-	{
-		_userManager = userManager;
-		_configuration = configuration;
-		_context = context;
-	}
 
 	[AllowAnonymous]
 	[HttpPost("login-test-user")]

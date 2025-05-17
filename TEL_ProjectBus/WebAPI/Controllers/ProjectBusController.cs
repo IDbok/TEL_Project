@@ -8,22 +8,11 @@ namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]
-public class ProjectBusController : BaseApiController
+public class ProjectBusController(IRequestClient<UpdateProjectProfileCommand> _updateProjectProfileClient,
+	IRequestClient<CreateProjectCommand> _createProjectClient,
+	ILogger<ProjectBusController> _logger)
+	: BaseApiController
 {
-	private readonly IRequestClient<UpdateProjectProfileCommand> _updateProjectProfileClient;
-	private readonly IRequestClient<CreateProjectCommand> _createProjectClient;
-	private readonly ILogger<ProjectBusController> _logger;
-
-
-	public ProjectBusController(IRequestClient<UpdateProjectProfileCommand> requestClient,
-		IRequestClient<CreateProjectCommand> createProjectClient,
-		ILogger<ProjectBusController> logger )
-	{
-		_updateProjectProfileClient = requestClient;
-		_createProjectClient = createProjectClient;
-		_logger = logger;
-	}
-
 	/// <summary>
 	/// Обновляет паспорт проекта на основе данных команды UpdateProjectProfileCommand.
 	/// </summary>

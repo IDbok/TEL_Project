@@ -10,21 +10,11 @@ namespace TEL_ProjectBus.WebAPI.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 
-public class ProjectQueryController : BaseApiController
+public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProjectsClient,
+	IRequestClient<GetProjectProfileQuery> _getProjectProfileByIdClient,
+	ILogger<ProjectQueryController> _logger
+	) : BaseApiController
 {
-	private readonly IRequestClient<GetProjectsQuery> _getProjectsClient;
-	private readonly IRequestClient<GetProjectProfileQuery> _getProjectProfileByIdClient;
-	private readonly ILogger<ProjectQueryController> _logger;
-
-	public ProjectQueryController(IRequestClient<GetProjectsQuery> getProjectsClient,
-		IRequestClient<GetProjectProfileQuery> getProjectProfileByIdClient,
-		ILogger<ProjectQueryController> logger)
-	{
-		_getProjectsClient = getProjectsClient;
-		_getProjectProfileByIdClient = getProjectProfileByIdClient;
-		_logger = logger;
-	}
-
 	/// <summary>
 	/// Получает список проектов доступных авторизованному пользователю
 	/// с учетом фильтрации и пагинации.

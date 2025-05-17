@@ -10,15 +10,8 @@ namespace TEL_ProjectBus.WebAPI.Controllers.Budget;
 [ApiExplorerSettings(IgnoreApi = true)]
 [AllowAnonymous]
 [Route("api/[controller]")]
-public class BudgetBusController : BaseApiController
+public class BudgetBusController(IPublishEndpoint _publishEndpoint) : BaseApiController
 {
-	private readonly IPublishEndpoint _publishEndpoint;
-
-	public BudgetBusController(IPublishEndpoint publishEndpoint)
-	{
-		_publishEndpoint = publishEndpoint;
-	}
-
 	/// <summary>
 	/// Создаёт новую бюджетную запись (BudgetItem), используя переданную команду CreateBudgetItemCommand, 
 	/// и публикует соответствующее сообщение через IPublishEndpoint.

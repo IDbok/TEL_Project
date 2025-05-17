@@ -9,23 +9,13 @@ namespace TEL_ProjectBus.WebAPI.Controllers.Budget;
 [ApiController]
 [AllowAnonymous]
 [Route("api/[controller]")]
-public class BudgetQueryController : BaseApiController
+public class BudgetQueryController(IRequestClient<GetBudgetsQuery> _getBudgetsClient,
+	IRequestClient<GetBudgetByIdQuery> _getBudgetByIdClient,
+	IRequestClient<GetBudgetsByProjectIdQuery> _getBudgetsByProjectIdClient,
+	ILogger<BudgetQueryController> _logger
+	)
+	: BaseApiController
 {
-	private readonly IRequestClient<GetBudgetsQuery> _getBudgetsClient;
-	private readonly IRequestClient<GetBudgetByIdQuery> _getBudgetByIdClient;
-	private readonly IRequestClient<GetBudgetsByProjectIdQuery> _getBudgetsByProjectIdClient;
-	private readonly ILogger<BudgetQueryController> _logger;
-
-	public BudgetQueryController(
-		IRequestClient<GetBudgetsQuery> getBudgetsClient,
-		IRequestClient<GetBudgetByIdQuery> getBudgetByIdClient,
-		ILogger<BudgetQueryController> logger)
-	{
-		_getBudgetsClient = getBudgetsClient;
-		_getBudgetByIdClient = getBudgetByIdClient;
-		_logger = logger;
-	}
-
 	/// <summary>
 	/// Возвращает список строк бюджета проекта по указанному идентификатору.
 	/// </summary>
