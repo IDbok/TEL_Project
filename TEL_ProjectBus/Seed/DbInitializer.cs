@@ -11,7 +11,24 @@ using TEL_ProjectBus.DAL.Entities.Reference;
 namespace Infrastructure;
 public static class DbInitializer
 {
-	public static void Seed(AppDbContext context, UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null)
+	private static string[] testRoles = new[]
+	{
+		"Admin", // оставил, вдруг понадобится
+		"PM",  // Project Manager
+		"PL",  // Project Leader
+		"SD",  // Sales Director
+		"SM",  // Sales Manager
+		"SiM", // Site Manager
+		"PE",  // Engineer
+		"RO",  // Resource Owner
+		"LC",  // Logistics Coordinator
+		"DM",  // Design Manager
+		"IM",  // Installation Manager
+		"AM",  // Administrative Manager
+		"SSD"  // Segment Sales Director
+	};
+
+	public static async Task Seed(AppDbContext context, UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null)
 	{
 		context.Database.EnsureDeleted();
 		context.Database.EnsureCreated();
@@ -28,10 +45,21 @@ public static class DbInitializer
 
 		if (userManager != null && roleManager != null)
 		{
-			CreateUserAndRoleIfNotExists(userManager, roleManager, "admin", "Admin@123", "Admin").Wait();
-			CreateUserAndRoleIfNotExists(userManager, roleManager, "testuser", "Test@123", "User").Wait();
-			EnsureUserWithFixedId(userManager, roleManager, "00000000-0000-0000-0000-000000000001", "testuser1", "Test@123", "User").Wait();
-			EnsureUserWithFixedId(userManager, roleManager, "00000000-0000-0000-0000-000000000002", "testuser2", "Test@123", "User").Wait();
+			for (int i = 0; i < testRoles.Length; i++)
+			{
+				var role = testRoles[i];
+
+				// фиксированный GUID: 000...001, 002, 003 … до 999 ролей хватит
+				var guid = $"00000000-0000-0000-0000-000000000{(i + 1).ToString("D3")}";
+
+				await EnsureUserWithFixedIdAsync(
+					userManager,
+					roleManager,
+					guid,
+					$"{role.ToLower()}_test",
+					"Test@123",
+					role);
+			}
 		}
 
 		context.Database.OpenConnection();
@@ -133,7 +161,7 @@ public static class DbInitializer
 		}
 	}
 
-	private static async Task<User> EnsureUserWithFixedId(
+	private static async Task<User> EnsureUserWithFixedIdAsync(
 	UserManager<User> userManager,
 	RoleManager<IdentityRole> roleManager,
 	string id,          // нужный Id

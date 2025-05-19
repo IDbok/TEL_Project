@@ -43,6 +43,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	.EnableDetailedErrors();     // стек при ошибках
 });
 
+builder.Services.AddDbContext<CleanIdentityDbContext>(options =>
+{
+	var conn = builder.Configuration.GetConnectionString("CleanIdentityConnection");
+	options.UseSqlServer(conn);
+});
+
 #endregion
 
 #region ─────────────────────────────── Identity  ───────────────────────────────
@@ -224,10 +230,16 @@ if (useDbSeed)
 		var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 		//db.Database.Migrate(); // применит все миграции
 
-		DbInitializer.Seed(db, 
+		await DbInitializer.Seed(db, 
 			scope.ServiceProvider.GetRequiredService<UserManager<User>>(), 
 			scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>()
 			);
+
+		// новая «чистая» база
+		var cleanDb = scope.ServiceProvider.GetRequiredService<CleanIdentityDbContext>();
+
+		//await cleanDb.Database.EnsureDeletedAsync();
+		await cleanDb.Database.EnsureCreatedAsync();
 	}
 
 #endregion
