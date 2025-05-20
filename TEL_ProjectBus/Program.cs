@@ -37,6 +37,7 @@ if (builder.Environment.IsDevelopment())
 	builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 #region ──────────────────────────────────  DB  ──────────────────────────────────
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
 	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -47,12 +48,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	})
 	.EnableSensitiveDataLogging() // параметры запросов
 	.EnableDetailedErrors();     // стек при ошибках
-});
-
-builder.Services.AddDbContext<CleanIdentityDbContext>(options =>
-{
-	var conn = builder.Configuration.GetConnectionString("CleanIdentityConnection");
-	options.UseSqlServer(conn);
 });
 
 #endregion
@@ -257,12 +252,6 @@ if (useDbSeed)
 			scope.ServiceProvider.GetRequiredService<UserManager<User>>(), 
 			scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>()
 			);
-
-		// новая «чистая» база
-		//var cleanDb = scope.ServiceProvider.GetRequiredService<CleanIdentityDbContext>();
-
-		////await cleanDb.Database.EnsureDeletedAsync();
-		//await cleanDb.Database.EnsureCreatedAsync();
 	}
 
 #endregion
