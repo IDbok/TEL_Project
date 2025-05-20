@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TEL_ProjectBus.WebAPI.Common;
 using TEL_ProjectBus.WebAPI.Controllers.Common;
 using TEL_ProjectBus.WebAPI.Messages.Commands.Budgets;
 
@@ -59,17 +58,4 @@ public class BudgetBusController(IRequestClient<CreateBudgetCommand> _createClie
 		return SendResponse(resp);
 	}
 
-
-	private IActionResult SendResponse<T>(Response<T> resp)
-		where T : BasResponseBase
-	{
-		if (resp.Message.IsSuccess)
-		{
-			return ApiOk(resp.Message);
-		}
-		else
-		{
-			return BadRequest(resp.Message);
-		}
-	}
 }

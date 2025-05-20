@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using TEL_ProjectBus.WebAPI.Common;
 
@@ -11,5 +11,18 @@ public abstract class BaseApiController : ControllerBase
 	{
 		var response = new ApiResponse<T>(data);
 		return Ok(response);
+	}
+
+	protected IActionResult SendResponse<T>(Response<T> resp)
+		where T : ResponseBase
+	{
+		if (resp.Message.IsSuccess)
+		{
+			return ApiOk(resp.Message);
+		}
+		else
+		{
+			return BadRequest(resp.Message);
+		}
 	}
 }

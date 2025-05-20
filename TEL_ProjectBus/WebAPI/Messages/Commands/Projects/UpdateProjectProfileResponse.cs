@@ -2,6 +2,6 @@
 
 namespace TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
-public record UpdateProjectProfileResponse : BasResponseBase
+public record UpdateProjectProfileResponse : ResponseBase
 {
 }

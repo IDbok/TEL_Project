@@ -25,7 +25,7 @@ public class BudgetQueryController(IRequestClient<GetBudgetsQuery> _getBudgetsCl
 		var response = await _getBudgetsByProjectIdClient.GetResponse<GetBudgetsByProjectIdResponse>(
 			new GetBudgetsByProjectIdQuery { ProjectId = projectId }, timeout: TimeSpan.FromSeconds(30));
 
-		return ApiOk(response.Message);
+		return SendResponse(response);
 	}
 
 	/// <summary>
@@ -37,7 +37,7 @@ public class BudgetQueryController(IRequestClient<GetBudgetsQuery> _getBudgetsCl
 		var response = await _getBudgetByIdClient.GetResponse<GetBudgetByIdResponse>(
 			new GetBudgetByIdQuery { BudgetItemId = id }, timeout: TimeSpan.FromSeconds(30));
 
-		return ApiOk(response.Message);
+		return SendResponse(response);
 	}
 
 }

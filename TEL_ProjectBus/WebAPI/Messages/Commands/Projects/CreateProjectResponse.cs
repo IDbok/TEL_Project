@@ -2,7 +2,7 @@
 
 namespace TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
-public record CreateProjectResponse : BasResponseBase
+public record CreateProjectResponse : ResponseBase
 {
 	public int ProjectId { get; init; }
 }

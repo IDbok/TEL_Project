@@ -1,6 +1,6 @@
 ﻿namespace TEL_ProjectBus.WebAPI.Common;
 
-public record BasResponseBase
+public record ResponseBase
 {
 	public bool IsSuccess { get; init; }
 	public string Message { get; init; } = string.Empty;

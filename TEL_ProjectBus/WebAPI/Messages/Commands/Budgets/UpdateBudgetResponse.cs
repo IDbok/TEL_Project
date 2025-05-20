@@ -2,6 +2,6 @@
 
 namespace TEL_ProjectBus.WebAPI.Messages.Commands.Budgets;
 
-public record UpdateBudgetResponse : BasResponseBase
+public record UpdateBudgetResponse : ResponseBase
 {
 }

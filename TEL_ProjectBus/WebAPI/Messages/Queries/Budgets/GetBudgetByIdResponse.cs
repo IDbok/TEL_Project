@@ -3,7 +3,7 @@ using TEL_ProjectBus.WebAPI.Common;
 
 namespace TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 
-public record GetBudgetByIdResponse : BasResponseBase
+public record GetBudgetByIdResponse : ResponseBase
 {
-	public BudgetLineDto BudgetLine { get; init; } = new();
+	public BudgetLineDto? BudgetLine { get; init; }
 }

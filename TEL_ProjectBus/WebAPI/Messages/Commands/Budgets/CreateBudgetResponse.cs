@@ -2,7 +2,7 @@
 
 namespace TEL_ProjectBus.WebAPI.Messages.Commands.Budgets;
 
-public record CreateBudgetResponse : BasResponseBase
+public record CreateBudgetResponse : ResponseBase
 {
 	public long BudgetId { get; init; }
 }

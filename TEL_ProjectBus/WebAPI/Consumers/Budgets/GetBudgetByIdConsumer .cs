@@ -20,9 +20,10 @@ public class GetBudgetByIdConsumer(BudgetService budgetService, ILogger<GetBudge
 			if (dto == null)
 			{
 				logger.LogWarning($"[GetBudgetByIdConsumer] Budget with ID {budgetItemId} not found.");
-				await context.RespondAsync<GetBudgetByIdResponse>(new
+				await context.RespondAsync(new GetBudgetByIdResponse
 				{
-					ErrorMessage = $"Budget with ID {budgetItemId} not found."
+					IsSuccess = false,
+					Message = $"Budget with ID {budgetItemId} not found."
 				});
 				return;
 			}
@@ -32,9 +33,10 @@ public class GetBudgetByIdConsumer(BudgetService budgetService, ILogger<GetBudge
 		catch (Exception ex)
 		{
 			logger.LogError(ex, $"[GetBudgetByIdConsumer] Error while processing GetBudgetByIdQuery: {ex.Message}");
-			await context.RespondAsync<GetBudgetByIdResponse>(new
+			await context.RespondAsync(new GetBudgetByIdResponse
 			{
-				ErrorMessage = ex.Message
+				IsSuccess = false,
+				Message = ex.Message
 			});
 		}
 	}
