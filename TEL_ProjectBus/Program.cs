@@ -259,10 +259,10 @@ if (useDbSeed)
 			);
 
 		// новая «чистая» база
-		var cleanDb = scope.ServiceProvider.GetRequiredService<CleanIdentityDbContext>();
+		//var cleanDb = scope.ServiceProvider.GetRequiredService<CleanIdentityDbContext>();
 
-		//await cleanDb.Database.EnsureDeletedAsync();
-		await cleanDb.Database.EnsureCreatedAsync();
+		////await cleanDb.Database.EnsureDeletedAsync();
+		//await cleanDb.Database.EnsureCreatedAsync();
 	}
 
 #endregion
