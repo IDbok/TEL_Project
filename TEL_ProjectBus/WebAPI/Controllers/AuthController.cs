@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Infrastructure;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +22,27 @@ namespace TEL_ProjectBus.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class AuthController(UserManager<User> _userManager, IConfiguration _configuration, AppDbContext _context) : BaseApiController
 {
-
+	public record TestRoleDto
+	{
+		public string Role { get; init; } = "Admin";
+	}
+	/// <summary>
+	/// Авторизация пользователя под конкретную роль.  
+	/// Доступные роли: Admin, PM, PL, SD, SM, SiM, PE, RO, LC, DM, IM, AM, SSD
+	/// </summary>
 	[AllowAnonymous]
 	[HttpPost("login-test-user")]
-	public async Task<IActionResult> LoginTestUser()
+	public async Task<IActionResult> LoginTestUser([FromBody] TestRoleDto request)
 	{
-		LoginDto loginDto = new LoginDto("testuser1", "Test@123");
+		if (!DbInitializer.testRoles.Contains(request.Role))
+			return Unauthorized($"Invalid role: {request.Role}");
 
-		var user = await _userManager.FindByNameAsync(loginDto.Username);
+		var userName = $"{request.Role.ToLower()}_test";
+		var password = DbInitializer.testUserPassword;
 
-		if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+		var user = await _userManager.FindByNameAsync(userName);
+
+		if (user == null || !await _userManager.CheckPasswordAsync(user, password))
 			return Unauthorized();
 
 		var resoinse = await GetLoginResponseAsync(user);

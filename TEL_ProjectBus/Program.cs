@@ -7,12 +7,18 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using TEL_ProjectBus.BLL.Budgets;
+using TEL_ProjectBus.BLL.Mappers.MappingProfiles;
+using TEL_ProjectBus.BLL.Projects;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.WebAPI.Consumers.Budgets;
 using TEL_ProjectBus.WebAPI.Consumers.Projects;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
+
+// todo: избавиться от наследования в контрактах. + добавить автомаппер / после согласования архитектуры проекта и самих контрактов 
+
 
 // Использую Request/Response паттерн - запросы и ответы асинхронно
 // Controller: входная точка запроса (REST API).
@@ -51,6 +57,14 @@ builder.Services.AddDbContext<CleanIdentityDbContext>(options =>
 
 #endregion
 
+#region ──────────────────────────────  Services  ────────────────────────────────
+
+//builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddScoped<BudgetService>(); // или AddScoped<IBudgetService, BudgetService>()
+builder.Services.AddScoped<ProjectService>();
+
+#endregion
+
 #region ─────────────────────────────── Identity  ───────────────────────────────
 
 // Добавляем Identity-сервис
@@ -67,6 +81,7 @@ builder.Services
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders(); // подключаем токены для сброса пароля, подтверждения email и т.д.
 #endregion
+
 
 #region ───────────────────────────  JWT‑аутентификация  ──────────────────────────
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -114,11 +129,16 @@ builder.Services.AddMassTransit(x =>
 	x.SetKebabCaseEndpointNameFormatter(); // Используем kebab-case для именования очередей
 
 	// Регистрируем обработчики сообщений
+	x.AddConsumer<CreateBudgetConsumer>();
 	x.AddConsumer<GetBudgetByIdConsumer>();
+	x.AddConsumer<GetBudgetsByProjectIdConsumer>();
+	x.AddConsumer<UpdateBudgetConsumer>();
+	x.AddConsumer<DeleteBudgetConsumer>();
+
+	x.AddConsumer<CreateProjectConsumer>();
 	x.AddConsumer<GetProjectsConsumer>();
 	x.AddConsumer<GetProjectProfileConsumer>();
 	x.AddConsumer<UpdateProjectProfileConsumer>();
-	x.AddConsumer<CreateProjectConsumer>();
 
 	// Регистрация RequestClient
 	x.AddRequestClient<GetBudgetByIdQuery>();
@@ -199,6 +219,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 #endregion
+
+
+
 
 builder.Services.AddControllers();
 

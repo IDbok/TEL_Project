@@ -8,11 +8,8 @@ using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Consumers.Projects;
 
-public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
+public class GetProjectsConsumer(AppDbContext db) : IConsumer<GetProjectsQuery>
 {
-	private readonly AppDbContext _dbContext;
-
-	public GetProjectsConsumer(AppDbContext dbContext) => _dbContext = dbContext;
 
 	public async Task Consume(ConsumeContext<GetProjectsQuery> context)
 	{
@@ -38,7 +35,7 @@ public class GetProjectsConsumer : IConsumer<GetProjectsQuery>
 		//		LastChanged = up.LastChanged
 		//	};
 
-		var projectsQuery = await _dbContext.Projects        // 📌 таблица Projects
+		var projectsQuery = await db.Projects        // 📌 таблица Projects
 			.Select(p => new
 			{
 				Project = p,

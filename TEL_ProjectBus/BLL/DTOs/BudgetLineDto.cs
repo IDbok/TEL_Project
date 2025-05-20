@@ -2,29 +2,38 @@
 
 public record BudgetLineDto
 {
-	public Guid BudgetLineId { get; init; }
-	public string ExpenseItem1C { get; set; }
-	public int? VisOnPipeline { get; set; }
-	public string WBSTemplate { get; set; }
-	public string BudgetName { get; set; }
-	public string Role { get; set; }
-	public int? Hours { get; set; }
-	public string Nomenclature { get; set; }
-	public string Classifier { get; set; }
-	public int? Quantity { get; set; }
-	public string EC { get; set; }
-	public decimal? CPTCCPcs { get; set; }
-	public int? RGPPCS { get; set; }
-	public int Probability { get; set; }
-	public DateTime DataPlan { get; set; }
-	public decimal? CPTCCPlan { get; set; }
-	public DateTime DataFact { get; set; }
-	public decimal? CPTCCFact { get; set; }
-	public decimal? PriceTCCPcs { get; set; }
-	public decimal? PriceTCC { get; set; }
-	public decimal? CV { get; set; }
-	public decimal? SV { get; set; }
-	public decimal? EV { get; set; }
-	public decimal? CPI { get; set; }
-	public decimal? SPI { get; set; }
+	public long Id { get; set; }
+	public BudgetGroupDto BudgetGroup { get; init; } = new();
+	public int ProjectId { get; init; }
+	public string? ERPId { get; init;}
+	public int? ClassifierId { get; init; }
+	public bool VisOnPipeline { get; init; }
+	public string Name { get; init; } = string.Empty;
+	public int RoleId { get; init; }
+	public decimal ManHoursCost { get; init; }
+	public string? Description { get; init; }
+	public decimal? Amount { get; init; }
+	public int Version { get; init; }
+	public decimal? Probability { get; init; }
+
+	public DateOnly? DatePlan { get; init; }
+	public DateOnly? DateFact { get; init; }
+
+	public string? EC { get; init; }
+	public decimal RgpPercent { get; init; }
+	public decimal? CPTCCPcs { get; init; }
+	public decimal? CalcCPTCCPlan { get; init; }
+	public decimal? CPTCCFact { get; init; }
+	public decimal? CalcPriceTCPcs { get; init; }
+	public decimal? CalcPriceTCC { get; init; }
+	public decimal? CalcCV { get; init; }
+	public decimal? CalcSV { get; init; }
+	public decimal? CalcEV { get; init; }
+	public decimal? CalcCPI { get; init; }
+	public decimal? CalcSPI { get; init; }
+
+	public void SetBudgetId(long id)
+	{
+		Id = id;
+	}
 }

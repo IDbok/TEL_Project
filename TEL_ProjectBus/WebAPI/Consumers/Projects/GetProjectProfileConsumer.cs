@@ -6,17 +6,13 @@ using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Consumers.Projects;
 
-public class GetProjectProfileConsumer
+public class GetProjectProfileConsumer(ProjectService pService)
 	: IConsumer<GetProjectProfileQuery>
 {
-	private readonly AppDbContext _dbContext;
-
-	public GetProjectProfileConsumer(AppDbContext db) => _dbContext = db;
-
 	public async Task Consume(ConsumeContext<GetProjectProfileQuery> ctx)
 	{
 
-		var p = await new ProjectService(_dbContext)
+		var p = await pService
 			.GetProjectAsync(ctx.Message.ProjectId, ctx.CancellationToken);
 
 		await ctx.RespondAsync(ProjectProfileMapper.ToDto<GetProjectProfileResponse>(p,p.Parameter));

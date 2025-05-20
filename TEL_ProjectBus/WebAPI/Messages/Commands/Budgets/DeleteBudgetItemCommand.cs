@@ -1,6 +1,6 @@
 ﻿namespace TEL_ProjectBus.WebAPI.Messages.Commands.Budgets;
 
-public record DeleteBudgetItemCommand
+public record DeleteBudgetCommand
 {
-	public Guid BudgetItemId { get; init; }
+	public long BudgetId { get; init; }
 }

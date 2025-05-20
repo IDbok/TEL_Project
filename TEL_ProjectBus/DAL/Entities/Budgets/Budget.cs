@@ -10,7 +10,7 @@ public class Budget : AuditableEntity, IHasIdentity<long>
 	public long Id { get; set; }
 	public int BudgetGroupId { get; set; }
 	public int ProjectId { get; set; }
-	public string? ERPId { get; set; }
+	public string? ERPId { get; set; } // todo: вопрос по архитектуре, как будет работать связь с ERP. В какой момент будер происходить связь с ERP?
 	public int? ClassifierId { get; set; }
 	public bool VisOnPipeline { get; set; }
 	public string Name { get; set; } = string.Empty;
@@ -18,14 +18,16 @@ public class Budget : AuditableEntity, IHasIdentity<long>
 	public decimal ManHoursCost { get; set; }
 	public string? Description { get; set; }
 	public decimal? Amount { get; set; }
+	public int Version { get; set; }
+	public decimal? Probability { get; set; }
+
+	public DateOnly? DatePlan { get; set; }
+	public DateOnly? DateFact { get; set; }
+
 	public string? EC { get; set; }
 	public decimal RgpPercent { get; set; }
-	public int Version { get; set; }
 	public decimal? CPTCCPcs { get; set; }
-	public decimal? Probability { get; set; }
-	public DateOnly? DatePlan { get; set; }
 	public decimal? CalcCPTCCPlan { get; set; }
-	public DateOnly? DateFact { get; set; }
 	public decimal? CPTCCFact { get; set; }
 	public decimal? CalcPriceTCPcs { get; set; }
 	public decimal? CalcPriceTCC { get; set; }

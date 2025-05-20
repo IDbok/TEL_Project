@@ -1,0 +1,82 @@
+﻿[
+  {
+    "Id": 1,
+    "Name": "Менеджмент проекта",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 2,
+    "Name": "Pre-sale",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 3,
+    "Name": "Проектирование (Design)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 4,
+    "Name": "Строительно-монтажные работы (Installation works)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 5,
+    "Name": "Пуско-наладка (commissioning works)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 6,
+    "Name": "Логистика (delivery and logistic)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 7,
+    "Name": "Основное оборудование и материалы (main equipment and materials)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 8,
+    "Name": "Дополнительные затраты (extra cost)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 9,
+    "Name": "Затраты на риски проекта (project risk costs)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  },
+  {
+    "Id": 10,
+    "Name": "Дополнительные соглашения (При проваливании из интерфейса БЮДЖЕТ в строку ДОПОЛНИТЕЛЬНОЕ СОГЛАШЕНИЕ, мы попадаем в окно бюджета этого ДС)",
+    "Budgets": [],
+    "DateChanged": null,
+    "ChangedByUserId": null,
+    "ChangedByUser": null
+  }
+]

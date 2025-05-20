@@ -11,7 +11,7 @@ using TEL_ProjectBus.DAL.Entities.Reference;
 namespace Infrastructure;
 public static class DbInitializer
 {
-	private static string[] testRoles = new[]
+	public static string[] testRoles = new[]
 	{
 		"Admin", // оставил, вдруг понадобится
 		"PM",  // Project Manager
@@ -27,6 +27,8 @@ public static class DbInitializer
 		"AM",  // Administrative Manager
 		"SSD"  // Segment Sales Director
 	};
+
+	public static string testUserPassword = "Test@123";
 
 	public static async Task Seed(AppDbContext context, UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null)
 	{
@@ -45,21 +47,7 @@ public static class DbInitializer
 
 		if (userManager != null && roleManager != null)
 		{
-			for (int i = 0; i < testRoles.Length; i++)
-			{
-				var role = testRoles[i];
-
-				// фиксированный GUID: 000...001, 002, 003 … до 999 ролей хватит
-				var guid = $"00000000-0000-0000-0000-000000000{(i + 1).ToString("D3")}";
-
-				await EnsureUserWithFixedIdAsync(
-					userManager,
-					roleManager,
-					guid,
-					$"{role.ToLower()}_test",
-					"Test@123",
-					role);
-			}
+			await CreateTestUsers(userManager, roleManager);
 		}
 
 		context.Database.OpenConnection();
@@ -73,7 +61,7 @@ public static class DbInitializer
 		context.SaveChanges();
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Classifier] OFF");
 
-		var budgetGroupsJson = File.ReadAllText(Path.Combine(folderPath, "test_budget_groups.json"));
+		var budgetGroupsJson = File.ReadAllText(Path.Combine(folderPath, "budget_groups.json"));
 		var budgetGroups = JsonSerializer.Deserialize<List<BudgetGroup>>(budgetGroupsJson, options);
 		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Ref_BudgetGroup] ON");
 		context.BudgetGroups.AddRange(budgetGroups);
@@ -134,6 +122,24 @@ public static class DbInitializer
 		context.Database.CloseConnection();
 	}
 
+	private static async Task CreateTestUsers(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+	{
+		for (int i = 0; i < testRoles.Length; i++)
+		{
+			var role = testRoles[i];
+
+			// фиксированный GUID: 000...001, 002, 003 … до 999 ролей хватит
+			var guid = $"00000000-0000-0000-0000-000000000{(i + 1).ToString("D3")}";
+
+			await EnsureUserWithFixedIdAsync(
+				userManager,
+				roleManager,
+				guid,
+				$"{role.ToLower()}_test",
+				testUserPassword,
+				role);
+		}
+	}
 
 	private static async Task CreateUserAndRoleIfNotExists(
 		UserManager<User> userManager,

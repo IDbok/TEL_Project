@@ -8,7 +8,7 @@ using TEL_ProjectBus.DAL.Entities.Reference;
 using TEL_ProjectBus.DAL.Enums;
 
 const int projectCount = 30;
-const int classifierCount = 3000; // 1-40 - проекты, 41-2000 - бюджет, 2001-2200 - параметры
+const int classifierCount = 3000; // 1-40 - проекты, 41-2000 - бюджет, 2001-2200 - параметры, 2501-2600 - новые бюджеты
 const int projectStageCount = 3;
 const int projectPhaseCount = 3; 
 const int projectStatusCount = 4;
@@ -61,24 +61,6 @@ void CreateProjectParamsJson()
 	SaveJson(jsonpath, itemList);
 }
 
-void CreateBudgetGroupJson()
-{
-	var jsonpath = @"C:\Users\bokar\source\repos\TEL_Project\TEL_ProjectBus\Seed\TestData\test_budget_groups.json";
-	// Create a new Project objects for tests
-	var itemsCount = 3;
-	var random = new Random();
-	var itemList = new List<BudgetGroup>();
-	for (int i = 0; i < itemsCount; i++)
-	{
-		var item = new BudgetGroup
-		{
-			Id = i + 1,
-			Name = $"BudgetGroup {i + 1}",
-		};
-		itemList.Add(item);
-	}
-	SaveJson(jsonpath, itemList);
-}
 
 void CreatClassifierJson()
 {

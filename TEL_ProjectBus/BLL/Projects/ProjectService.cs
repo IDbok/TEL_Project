@@ -6,15 +6,12 @@ using TEL_ProjectBus.DAL.Entities.Projects;
 
 namespace TEL_ProjectBus.BLL.Projects;
 
-public class ProjectService
+public class ProjectService(AppDbContext _dbContext)
 {
-	private readonly AppDbContext _dbContext;
-	public ProjectService(AppDbContext db) => _dbContext = db;
-
-	public async Task<int> CreateNewProjectAsync(ProjectDto project)
+	public async Task<int> CreateNewProjectAsync(ProjectDto project, CancellationToken cancellationToken)
 	{
 		var newProject = ProjectMapper.ToEntity(project);
-		await _dbContext.Projects.AddAsync(newProject);
+		await _dbContext.Projects.AddAsync(newProject, cancellationToken);
 		await _dbContext.SaveChangesAsync();
 		return newProject.Id;
 	}
@@ -51,5 +48,19 @@ public class ProjectService
 		// Compare data with the command
 
 		//await _dbContext.SaveChangesAsync(cancellationToken);
+	}
+	public async Task<List<BudgetLineDto>> GetProjectBudgetAsync(int projectId, CancellationToken cancellationToken)
+	{
+		var budgets = await _dbContext.Budgets
+						 .AsNoTracking()
+						 .Include(b => b.Classifier)
+						 .Include(b => b.BudgetGroup)
+						 .Where(b => b.ProjectId == projectId)
+						 .ToListAsync(cancellationToken);
+
+		if (budgets is null || budgets.Count == 0)
+			throw new Exception($"Project with ID {projectId} has no budgets.");
+
+		return BudgetMapper.ToDto<BudgetLineDto>(budgets);
 	}
 }

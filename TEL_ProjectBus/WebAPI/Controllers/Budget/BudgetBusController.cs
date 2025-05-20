@@ -1,95 +1,75 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TEL_ProjectBus.WebAPI.Common;
 using TEL_ProjectBus.WebAPI.Controllers.Common;
 using TEL_ProjectBus.WebAPI.Messages.Commands.Budgets;
-using TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Controllers.Budget;
 
-[ApiExplorerSettings(IgnoreApi = true)]
 [AllowAnonymous]
 [Route("api/[controller]")]
-public class BudgetBusController(IPublishEndpoint _publishEndpoint) : BaseApiController
+public class BudgetBusController(IRequestClient<CreateBudgetCommand> _createClient, 
+	IRequestClient<UpdateBudgetCommand> _updateClient,
+	IRequestClient<DeleteBudgetCommand> _deleteClient,
+	ILogger<BudgetBusController> _logger
+	) : BaseApiController
 {
 	/// <summary>
-	/// Создаёт новую бюджетную запись (BudgetItem), используя переданную команду CreateBudgetItemCommand, 
-	/// и публикует соответствующее сообщение через IPublishEndpoint.
+	/// Создаёт новую бюджетную запись (BudgetItem), используя переданную команду CreateBudgetCommand.
 	/// Возвращает статус «202 Accepted» в случае успешной публикации.
 	/// </summary>
 	/// <param name="command"></param>
 	/// <returns></returns>
-	[HttpPost("create-budget-item")]
-	public async Task<IActionResult> CreateBudgetItem(UpdateProjectProfileCommand command)
+	[HttpPost("budgets/create")]
+	public async Task<IActionResult> Create([FromBody] CreateBudgetCommand command)
 	{
-		await _publishEndpoint.Publish(command);
-		return Accepted();
+		var resp = await _createClient.GetResponse<CreateBudgetResponse>(command);
+		return SendResponse(resp);
 	}
 
 	/// <summary>
-	/// Обновляет существующую бюджетную запись на основе данных команды UpdateBudgetItemCommand 
-	/// и отправляет обновлённую информацию через IPublishEndpoint.
+	/// Обновляет существующую бюджетную запись на основе данных команды UpdateBudgetCommand.
 	/// Возвращает статус «202 Accepted», если операция завершена успешно.
 	/// </summary>
+	/// <param name="id"></param>
 	/// <param name="command"></param>
 	/// <returns></returns>
-	[HttpPut("update-budget-item")]
-	public async Task<IActionResult> UpdateBudgetItem(UpdateBudgetItemCommand command)
+	[HttpPut("budgets/{id:long}/update")]
+	public async Task<IActionResult> Update(long id, [FromBody] UpdateBudgetCommand command)
 	{
-		await _publishEndpoint.Publish(command);
-		return Accepted();
+		command.SetBudgetId(id);
+
+		var resp = await _updateClient.GetResponse<UpdateBudgetResponse>(command);
+
+		return SendResponse(resp);
 	}
 
 	/// <summary>
-	/// Удаляет бюджетную запись, идентифицированную по id (типа Guid).
-	/// Для удаления генерируется команда DeleteBudgetItemCommand, которая публикуется через IPublishEndpoint.
+	/// Удаляет бюджетную запись, идентифицированную по id (типа long).
 	/// При успешной операции возвращается статус «202 Accepted».
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	[HttpDelete("delete-budget-item/{id:guid}")]
-	public async Task<IActionResult> DeleteBudgetItem(Guid id)
+	[HttpDelete("budgets/{id:long}/delete")]
+	public async Task<IActionResult> Delete(long id)
 	{
-		await _publishEndpoint.Publish(new DeleteBudgetItemCommand { BudgetItemId = id });
-		return Accepted();
+		var resp = await _deleteClient.GetResponse<DeleteBudgetResponse>(new DeleteBudgetCommand { BudgetId = id });
+
+		return SendResponse(resp);
 	}
 
-	/// <summary>
-	/// Создаёт новую бюджетную строку (BudgetLine) на основе команды ...
-	/// Возвращает статус «202 Accepted»
-	/// </summary>
-	/// <param name="command"></param>
-	/// <returns></returns>
-	[HttpPost("create-budget-line")]
-	public async Task<IActionResult> CreateBudgetLine(UpdateProjectProfileCommand command)
-	{
-		//await _publishEndpoint.Publish(command);
-		return Accepted();
-	}
 
-	/// <summary>
-	/// Обновляет существующую бюджетную строку на основании данных команды ... 
-	/// При успешном выполнении возвращает статус «202 Accepted».
-	/// </summary>
-	/// <param name="command"></param>
-	/// <returns></returns>
-	[HttpPut("update-budget-line")]
-	public async Task<IActionResult> UpdateBudgetLine(UpdateBudgetItemCommand command)
+	private IActionResult SendResponse<T>(Response<T> resp)
+		where T : BasResponseBase
 	{
-		//await _publishEndpoint.Publish(command);
-		return Accepted();
-	}
-
-	/// <summary>
-	/// Удаляет бюджетную строку, получая её идентификатор id типа Guid.
-	/// Возвращает статус «202 Accepted».
-	/// </summary>
-	/// <param name="id"></param>
-	/// <returns></returns>
-	[HttpDelete("delete-budget-line/{id:guid}")]
-	public async Task<IActionResult> DeleteBudgetLine(Guid id)
-	{
-		//await _publishEndpoint.Publish(new DeleteBudgetItemCommand { BudgetItemId = id });
-		return Accepted();
+		if (resp.Message.IsSuccess)
+		{
+			return ApiOk(resp.Message);
+		}
+		else
+		{
+			return BadRequest(resp.Message);
+		}
 	}
 }

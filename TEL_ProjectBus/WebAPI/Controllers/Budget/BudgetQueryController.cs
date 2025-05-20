@@ -19,10 +19,10 @@ public class BudgetQueryController(IRequestClient<GetBudgetsQuery> _getBudgetsCl
 	/// <summary>
 	/// Возвращает список строк бюджета проекта по указанному идентификатору.
 	/// </summary>
-	[HttpGet("projects/{id:int}/budgets")]
-	public async Task<IActionResult> GetBudgetsByProjectId(int projectId)
+	[HttpGet("projects/{projectId:int}/budgets")]
+	public async Task<IActionResult> GetByProjectId(int projectId)
 	{
-		var response = await _getBudgetByIdClient.GetResponse<GetBudgetsByProjectIdResponse>(
+		var response = await _getBudgetsByProjectIdClient.GetResponse<GetBudgetsByProjectIdResponse>(
 			new GetBudgetsByProjectIdQuery { ProjectId = projectId }, timeout: TimeSpan.FromSeconds(30));
 
 		return ApiOk(response.Message);
@@ -31,9 +31,8 @@ public class BudgetQueryController(IRequestClient<GetBudgetsQuery> _getBudgetsCl
 	/// <summary>
 	/// Возвращает бюджет по указанному идентификатору.
 	/// </summary>
-	[ApiExplorerSettings(IgnoreApi = true)] 
 	[HttpGet("budgets/{id:int}")]
-	public async Task<IActionResult> GetBudgetById(int id)
+	public async Task<IActionResult> GetById(int id)
 	{
 		var response = await _getBudgetByIdClient.GetResponse<GetBudgetByIdResponse>(
 			new GetBudgetByIdQuery { BudgetItemId = id }, timeout: TimeSpan.FromSeconds(30));
