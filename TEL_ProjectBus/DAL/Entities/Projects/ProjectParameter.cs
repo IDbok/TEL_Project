@@ -12,9 +12,6 @@ public class ProjectParameter : AuditableEntity, IHasIdentity<long>
 	public int ProjectId { get; set; }
 	public string ProjectOwnerId { get; set; } = null!;
 	public long ClassifierId { get; set; }
-	//public int ProjectPhaseId { get; set; }
-	//public int ProjectStageId { get; set; }
-	//public int ProjectStatusId { get; set; }
 	public DateTime ProjectBegin { get; set; }
 	public DateTime ProjectEnd { get; set; }
 	public string? Description { get; set; }

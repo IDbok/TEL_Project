@@ -1,4 +1,5 @@
-﻿using TEL_ProjectBus.DAL.Entities.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Projects;
 using TEL_ProjectBus.DAL.Entities.Reference;
 using TEL_ProjectBus.DAL.Interfaces;
@@ -39,6 +40,6 @@ public class Budget : AuditableEntity, IHasIdentity<long>
 
 	public BudgetGroup BudgetGroup { get; set; } = null!;
 	public Project Project { get; set; } = null!;
-	public Classifier? Classifier { get; set; } = null!;
+	[NotMapped]public Classifier? Classifier { get; set; } = null!;
 }
 

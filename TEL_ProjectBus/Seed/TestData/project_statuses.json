@@ -1,18 +1,30 @@
-[
-    {
-        "Id": 1,
-        "StatusName": "AtWork"
-    },
-    {
-        "Id": 2,
-        "StatusName": "HoldOn"
-    },
-    {
-        "Id": 3,
-        "StatusName": "Ended"
-    },
-    {
-        "Id": 4,
-        "StatusName": "Cancelled"
-    }
+﻿[
+  {
+    "Id": 1,
+    "Name": "В работе",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
+  },
+  {
+    "Id": 2,
+    "Name": "На удержании",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
+  },
+  {
+    "Id": 3,
+    "Name": "Завершён",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
+  },
+  {
+    "Id": 4,
+    "Name": "Отклонён",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
+  }
 ]

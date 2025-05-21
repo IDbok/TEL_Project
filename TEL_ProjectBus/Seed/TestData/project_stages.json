@@ -1,14 +1,23 @@
-[
+﻿[
   {
     "Id": 1,
-    "StageName": "PreSale"
+    "Name": "Продажи",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
   },
   {
     "Id": 2,
-    "StageName": "Execution"
+    "Name": "Выполнение",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
   },
   {
     "Id": 3,
-    "StageName": "Closing"
+    "Name": "Закрытие",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
   }
 ]

@@ -4,7 +4,7 @@
     "Name": "Менеджмент проекта",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -12,7 +12,7 @@
     "Name": "Pre-sale",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -20,7 +20,7 @@
     "Name": "Проектирование (Design)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -28,7 +28,7 @@
     "Name": "Строительно-монтажные работы (Installation works)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -36,7 +36,7 @@
     "Name": "Пуско-наладка (commissioning works)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -44,7 +44,7 @@
     "Name": "Логистика (delivery and logistic)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -52,7 +52,7 @@
     "Name": "Основное оборудование и материалы (main equipment and materials)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -60,7 +60,7 @@
     "Name": "Дополнительные затраты (extra cost)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -68,7 +68,7 @@
     "Name": "Затраты на риски проекта (project risk costs)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   },
   {
@@ -76,7 +76,7 @@
     "Name": "Дополнительные соглашения (При проваливании из интерфейса БЮДЖЕТ в строку ДОПОЛНИТЕЛЬНОЕ СОГЛАШЕНИЕ, мы попадаем в окно бюджета этого ДС)",
     "Budgets": [],
     "DateChanged": null,
-    "ChangedByUserId": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
     "ChangedByUser": null
   }
 ]

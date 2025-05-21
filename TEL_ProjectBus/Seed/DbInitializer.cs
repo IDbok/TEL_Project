@@ -30,13 +30,19 @@ public static class DbInitializer
 
 	public static string testUserPassword = "Test@123";
 
-	public static async Task Seed(AppDbContext context, UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null)
+	public static async Task Seed(AppDbContext context, 
+		UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null, 
+		bool recreateDb = false, bool clearDbData = false)
+		
 	{
-		context.Database.EnsureDeleted();
-		context.Database.EnsureCreated();
+		if ((recreateDb))
+		{
+			context.Database.EnsureDeleted();
+			context.Database.EnsureCreated();
+		}
 
-		if (context.Customers.Any() || context.Projects.Any() || context.Budgets.Any())
-			return;
+		if (clearDbData && !recreateDb)          // чистим, если БД оставляем
+			await ClearDataAsync(context);
 
 		var options = new JsonSerializerOptions
 		{
@@ -55,31 +61,32 @@ public static class DbInitializer
 		// --- Справочники ---
 		var classifiersJson = File.ReadAllText(Path.Combine(folderPath , "test_classifiers.json"));
 		var classifiers = JsonSerializer.Deserialize<List<Classifier>>(classifiersJson, options);
-
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Classifier] ON");
-		context.Classifiers.AddRange(classifiers);
-		context.SaveChanges();
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Classifier] OFF");
+		SeedData(context, classifiers, "Classifier");
 
 		var budgetGroupsJson = File.ReadAllText(Path.Combine(folderPath, "budget_groups.json"));
 		var budgetGroups = JsonSerializer.Deserialize<List<BudgetGroup>>(budgetGroupsJson, options);
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Ref_BudgetGroup] ON");
-		context.BudgetGroups.AddRange(budgetGroups);
-		context.SaveChanges();
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Ref_BudgetGroup] OFF");
+		SeedData(context, budgetGroups, "Ref_BudgetGroup");
+
+		var projectPhaseJson = File.ReadAllText(Path.Combine(folderPath, "project_phases.json"));
+		var projectPhases = JsonSerializer.Deserialize<List<ProjectPhase>>(projectPhaseJson, options);
+		SeedData(context, projectPhases, "Ref_ProjectPhase");
+
+		var projectStageJson = File.ReadAllText(Path.Combine(folderPath, "project_stages.json"));
+		var projectStages = JsonSerializer.Deserialize<List<ProjectStage>>(projectStageJson, options);
+		SeedData(context, projectStages, "Ref_ProjectStage");
+
+		var projectStatusJson = File.ReadAllText(Path.Combine(folderPath, "project_statuses.json"));
+		var projectStatuses = JsonSerializer.Deserialize<List<ProjectStatus>>(projectStatusJson, options);
+		SeedData(context, projectStatuses, "Ref_ProjectStatus");
 
 		// --- Клиенты ---
 		var customersJson = File.ReadAllText(Path.Combine(folderPath,  "test_customers.json"));
 		var customers = JsonSerializer.Deserialize<List<Customer>>(customersJson, options);
 		foreach (var customer in customers)
 		{
-			customer.DateCreated = DateTime.SpecifyKind((DateTime)customer.DateCreated, DateTimeKind.Utc);
 			customer.DateChanged = DateTime.SpecifyKind((DateTime)customer.DateChanged, DateTimeKind.Utc);
 		}
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Customer] ON");
-		context.Customers.AddRange(customers);
-		context.SaveChanges();
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Customer] OFF");
+		SeedData(context, customers, "Customer");
 
 		// --- Проекты ---
 		var projectsJson = File.ReadAllText(Path.Combine(folderPath, "test_projects.json"));
@@ -88,10 +95,11 @@ public static class DbInitializer
 		{
 			project.DateInitiation = DateTime.SpecifyKind(project.DateInitiation, DateTimeKind.Utc);
 		}
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] ON");
-		context.Projects.AddRange(projects);
-		context.SaveChanges();
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] OFF");
+		SeedData(context, projects, "Project");
+		//context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] ON");
+		//context.Projects.AddRange(projects);
+		//context.SaveChanges();
+		//context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Project] OFF");
 
 		// --- Параметры проектов ---
 		var projectParamsJson = File.ReadAllText(Path.Combine(folderPath, "test_project_params.json"));
@@ -102,24 +110,55 @@ public static class DbInitializer
 			projectParam.ProjectEnd = DateTime.SpecifyKind(projectParam.ProjectEnd, DateTimeKind.Utc);
 			projectParam.DateChanged = DateTime.SpecifyKind((DateTime)projectParam.DateChanged, DateTimeKind.Utc);
 		}
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ProjectParameters] ON");
-		context.ProjectParameters.AddRange(projectParams);
-		context.SaveChanges();
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ProjectParameters] OFF");
+		SeedData(context, projectParams, "ProjectParameters");
+		//context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ProjectParameters] ON");
+		//context.ProjectParameters.AddRange(projectParams);
+		//context.SaveChanges();
+		//context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ProjectParameters] OFF");
 
 		// --- Бюджеты ---
 		var budgetsJson = File.ReadAllText(Path.Combine(folderPath, "test_budgets.json"));
 		var budgets = JsonSerializer.Deserialize<List<Budget>>(budgetsJson, options);
-		foreach (var budget in budgets)
-		{
-			budget.DateChanged = DateTime.SpecifyKind((DateTime)budget.DateChanged, DateTimeKind.Utc);
-		}
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Budget] ON");
-		context.Budgets.AddRange(budgets);
-		context.SaveChanges();
-		context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Budget] OFF");
+		//foreach (var budget in budgets)
+		//{
+		//	budget.DateChanged = DateTime.SpecifyKind((DateTime)budget.DateChanged, DateTimeKind.Utc);
+		//}
+		SeedData(context, budgets, "Budget");
+		//context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Budget] ON");
+		//context.Budgets.AddRange(budgets);
+		//context.SaveChanges();
+		//context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [Budget] OFF");
 
 		context.Database.CloseConnection();
+	}
+
+	public static void SeedFromJson<T>(
+		this DbContext ctx,
+		string folderPath,
+		string fileName,
+		JsonSerializerOptions options,
+		string tableName)          // "Classifier" или "Ref_BudgetGroup" и т.д.
+		where T : class
+	{
+		var json = File.ReadAllText(Path.Combine(folderPath, fileName));
+		var entities = JsonSerializer.Deserialize<List<T>>(json, options)!;
+
+		ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT [{tableName}] ON");
+		ctx.Set<T>().AddRange(entities);
+		ctx.SaveChanges();
+		ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT {tableName} OFF");
+	}
+
+	public static void SeedData<T>(
+		this DbContext ctx,
+		List<T> entities,
+		string tableName)          // "Classifier" или "Ref_BudgetGroup" и т.д.
+		where T : class
+	{
+		ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT [{tableName}] ON");
+		ctx.Set<T>().AddRange(entities);
+		ctx.SaveChanges();
+		ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT {tableName} OFF");
 	}
 
 	private static async Task CreateTestUsers(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
@@ -139,6 +178,22 @@ public static class DbInitializer
 				testUserPassword,
 				role);
 		}
+	}
+	private static async Task ClearDataAsync(AppDbContext context)
+	{
+		// порядок строгий: сначала «дети», потом «родители»
+		const string sql = @"
+        DELETE FROM [Budget];
+        DELETE FROM [ProjectParameters];
+        DELETE FROM [Project];
+        DELETE FROM [Customer];
+        DELETE FROM [Ref_BudgetGroup];
+        DELETE FROM [Classifier];
+		DELETE FROM [Ref_ProjectPhase];
+		DELETE FROM [Ref_ProjectStage];
+		DELETE FROM [Ref_ProjectStatus];";
+
+		await context.Database.ExecuteSqlRawAsync(sql);
 	}
 
 	private static async Task CreateUserAndRoleIfNotExists(

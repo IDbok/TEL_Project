@@ -37,6 +37,8 @@ public class AppDbContext : IdentityDbContext<User>
 	public DbSet<Classifier> Classifiers { get; set; }
 	public DbSet<ApproveStatus> ApproveStatuses { get; set; }
 	public DbSet<ProjectStage> ProjectStages { get; set; }
+	public DbSet<ProjectPhase> ProjectPhases { get; set; }
+	public DbSet<ProjectStatus> ProjectStatuses { get; set; }
 	public DbSet<RefTaskStatus> RefTaskStatuses { get; set; }
 
 	// Project approval / parameters

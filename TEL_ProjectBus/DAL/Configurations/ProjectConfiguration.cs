@@ -32,7 +32,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 		builder.Property(p => p.DateCreated).HasColumnName("DateCreated");
 
 		builder.Property(p => p.Id).HasColumnName("ID_Project");
-		builder.ConfigureAudit();
+		//builder.ConfigureAudit();
+
+		builder.Property(p => p.ChangedByUserId).HasColumnName("ChangebBy"); // todo: опечатка в БД
+		builder.Property(p => p.DateChanged).HasColumnName("DateChanged");
 
 	}
 }

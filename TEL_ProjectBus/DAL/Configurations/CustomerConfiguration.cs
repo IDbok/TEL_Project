@@ -28,9 +28,12 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 		builder.Property(e => e.Address).HasColumnName("Customer_Address");
 		builder.Property(e => e.CompanyName).HasColumnName("Customer_CompanyName");
 		builder.Property(e => e.ContactPerson).HasColumnName("Customer_ContactPerson");
-		builder.Property(e => e.DateCreated).HasColumnName("DateCreated");
+		builder.Property(e => e.Uuid).HasColumnName("Customer_UUID");
 
 		builder.ConfigureIntId();
-		builder.ConfigureAudit();
+		//builder.ConfigureAudit();
+
+		builder.Property(p => p.ChangedByUserId).HasColumnName("ChangeBy"); // todo: опечатка в БД
+		builder.Property(p => p.DateChanged).HasColumnName("DateChanged");
 	}
 }

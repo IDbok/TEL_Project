@@ -250,7 +250,9 @@ if (useDbSeed)
 
 		await DbInitializer.Seed(db, 
 			scope.ServiceProvider.GetRequiredService<UserManager<User>>(), 
-			scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>()
+			scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(),
+			recreateDb: false, // true - удалить и создать БД заново
+			clearDbData: true // true - очистить данные в БД
 			);
 	}
 

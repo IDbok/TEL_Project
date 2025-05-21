@@ -11,7 +11,7 @@ public class Customer : AuditableEntity, IHasIdentity<int>
 	public string? Address { get; set; }
 	public string CompanyName { get; set; } = string.Empty;
 	public string ContactPerson { get; set; } = string.Empty;
-	public DateTime? DateCreated { get; set; }
+	public string? Uuid { get; set; } = null;
 
 	public ICollection<Project> Projects { get; set; } = [];
 	public ICollection<CustomerTeam> Teams { get; set; } = [];

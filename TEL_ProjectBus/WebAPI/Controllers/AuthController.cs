@@ -27,7 +27,7 @@ public class AuthController(UserManager<User> _userManager, IConfiguration _conf
 		public string Role { get; init; } = "Admin";
 	}
 	/// <summary>
-	/// Авторизация пользователя под конкретную роль.  
+	/// Авторизация пользователя под конкретную роль.
 	/// Доступные роли: Admin, PM, PL, SD, SM, SiM, PE, RO, LC, DM, IM, AM, SSD
 	/// </summary>
 	[AllowAnonymous]
@@ -46,8 +46,8 @@ public class AuthController(UserManager<User> _userManager, IConfiguration _conf
 			return Unauthorized();
 
 		var resoinse = await GetLoginResponseAsync(user);
-		await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
-		await _context.SaveChangesAsync();
+		//await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
+		//await _context.SaveChangesAsync();
 		return ApiOk(resoinse);
 	}
 
@@ -257,9 +257,9 @@ public record LoginResponse
 {
 	public string AccessToken { get; init; } = default!;
 	[JsonIgnore]
-	public RefreshToken RefreshToken { get; init; } = default!;
-	public string RefreshTokenString => RefreshToken.Token;
-	public string UserFullname => RefreshToken.User.FullName;
+	public RefreshToken? RefreshToken { get; init; } = default!;
+	public string? RefreshTokenString => RefreshToken?.Token;
+	public string? UserFullname => RefreshToken?.User.FullName;
 	public string[] UserRoles { get; init; } = default!;
 
 }

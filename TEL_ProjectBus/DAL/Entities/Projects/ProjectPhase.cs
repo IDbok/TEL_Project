@@ -7,6 +7,6 @@ namespace TEL_ProjectBus.DAL.Entities.Projects;
 public class ProjectPhase : AuditableEntity, IHasIdentity<int>
 {
 	public int Id { get; set; }
-	public string PhaseName { get; set; } = string.Empty;
-	public ICollection<ProjectParameter> ProjectParameters { get; set; } = [];
+	public string Name { get; set; } = string.Empty;
+	//public ICollection<ProjectParameter> ProjectParameters { get; set; } = [];
 }

@@ -21,9 +21,9 @@ public class ProjectApproveStatusConfiguration : IEntityTypeConfiguration<Projec
 			   .WithMany(s => s.ProjectApproveStatuses)
 			   .HasForeignKey(pas => pas.ApproveStatusId);
 
-		builder.HasOne(pas => pas.ProjectStage)
-			   .WithMany(ps => ps.ProjectApproveStatuses)
-			   .HasForeignKey(pas => pas.ProjectStageId);
+		//builder.HasOne(pas => pas.ProjectStage) // убираю для избавления от лишних связей с enum сущностями
+		//	   .WithMany(ps => ps.ProjectApproveStatuses)
+		//	   .HasForeignKey(pas => pas.ProjectStageId);
 
 		builder.HasOne(pas => pas.Approver)
 			   .WithMany()

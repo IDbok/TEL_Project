@@ -28,14 +28,12 @@ public class ProjectParameterConfiguration : IEntityTypeConfiguration<ProjectPar
 		builder.Property(p => p.ProjectId).HasColumnName("ID_Project");
 		builder.Property(p => p.ProjectOwnerId).HasColumnName("ProjectOwner");
 		builder.Property(p => p.ClassifierId).HasColumnName("ID_Classifier");
-		//builder.Property(p => p.ProjectPhaseId).HasColumnName("ID_ProjectPhase");
-		//builder.Property(p => p.ProjectStageId).HasColumnName("ID_ProjectStage");
-		//builder.Property(p => p.ProjectStatusId).HasColumnName("ID_ProjectStatus");
 		builder.Property(p => p.ProjectPhase).HasColumnName("ID_ProjectPhase");
 		builder.Property(p => p.ProjectStage).HasColumnName("ID_ProjectStage");
 		builder.Property(p => p.ProjectStatus).HasColumnName("ID_ProjectStatus");
 		builder.Property(p => p.ProjectBegin).HasColumnName("ProjectBegin");
 		builder.Property(p => p.ProjectEnd).HasColumnName("ProjectEnd");
+		builder.Property(p => p.Description).HasColumnName("Project_Description");
 
 		builder.ConfigureLongId();
 		builder.ConfigureAudit();

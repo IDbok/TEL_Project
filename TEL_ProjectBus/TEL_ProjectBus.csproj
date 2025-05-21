@@ -39,15 +39,6 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Seed\TestData\project_phases.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Seed\TestData\project_stages.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Seed\TestData\project_statuses.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Update="Seed\TestData\test_budgets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

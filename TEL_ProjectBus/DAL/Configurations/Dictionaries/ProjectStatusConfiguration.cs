@@ -13,11 +13,11 @@ public class ProjectStatusConfiguration : IEntityTypeConfiguration<ProjectStatus
 
 		builder.HasKey(ps => ps.Id);
 
-		builder.Property(ps => ps.StatusName)
+		builder.Property(ps => ps.Name)
 			   .HasMaxLength(100)
 			   .IsRequired();
 
-		builder.Property(ps => ps.StatusName).HasColumnName("StatusName");
+		builder.Property(ps => ps.Name).HasColumnName("StatusName");
 
 		builder.ConfigureIntId();
 		builder.ConfigureAudit();

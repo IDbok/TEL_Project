@@ -1,14 +1,23 @@
-[
+﻿[
   {
-      "Id": 1,
-      "PhaseName": "Phase-1"
+    "Id": 1,
+    "Name": "Фаза 1",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
   },
   {
     "Id": 2,
-    "PhaseName": "Phase-2"
+    "Name": "Фаза 2",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
   },
   {
     "Id": 3,
-    "PhaseName": "Phase-3"
+    "Name": "Фаза 3",
+    "DateChanged": null,
+    "ChangedByUserId": "00000000-0000-0000-0000-000000000001",
+    "ChangedByUser": null
   }
 ]
