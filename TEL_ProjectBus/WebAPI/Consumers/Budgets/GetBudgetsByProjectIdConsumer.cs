@@ -13,6 +13,8 @@ public class GetBudgetsByProjectIdConsumer(ProjectService projectService, ILogge
 		var budgets = await projectService.GetProjectBudgetAsync(context.Message.ProjectId, context.CancellationToken);
 		await context.RespondAsync(new GetBudgetsByProjectIdResponse
 		{
+			IsSuccess = true,
+			Message = $"Budgets for project {projectId} retrieved successfully.",
 			Budgets = budgets,
 		});
 	}

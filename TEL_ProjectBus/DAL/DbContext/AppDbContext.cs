@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.DAL.Entities.Budgets;
+using TEL_ProjectBus.DAL.Entities.Common;
 using TEL_ProjectBus.DAL.Entities.Customers;
 using TEL_ProjectBus.DAL.Entities.Projects;
 using TEL_ProjectBus.DAL.Entities.Reference;
 using TEL_ProjectBus.DAL.Entities.Tasks;
-
+using TEL_ProjectBus.DAL.Extensions;
 using Task = TEL_ProjectBus.DAL.Entities.Tasks.Task;
 using TaskStatus = TEL_ProjectBus.DAL.Entities.Tasks.TaskStatus;
 
@@ -65,9 +67,29 @@ public class AppDbContext : IdentityDbContext<User>
 	{
 		base.OnModelCreating(modelBuilder);
 
-		// Automatically apply all IEntityTypeConfiguration<T> implementations
-		// found in the same assembly as the DbContext.
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
+		var converter = new StringToGuidConverter();
+
+		foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+				 .Where(t => typeof(AuditableEntity).IsAssignableFrom(t.ClrType)))
+		{
+			var prop = entityType.FindProperty(nameof(AuditableEntity.ChangedByUserId));
+			if (prop is not null)
+			{
+				prop.SetValueConverter(converter);           // сам конвертер
+				prop.SetColumnType("uniqueidentifier");      // чтобы миграция не попыталась изменить тип
+			}
+		}
 	}
+
+	protected override void ConfigureConventions(ModelConfigurationBuilder cb)
+	{
+		base.ConfigureConventions(cb);
+
+		cb.Properties<ClassifierKey>()
+		  .HaveConversion<ClassifierKeyConverter>()
+		  .HaveColumnType("int");  
+	}
+
 }

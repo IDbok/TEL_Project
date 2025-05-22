@@ -6,6 +6,7 @@ using TEL_ProjectBus.DAL.Entities.Projects;
 using TEL_ProjectBus.DAL.Entities.Reference;
 using TEL_ProjectBus.DAL.Enums;
 using TEL_ProjectBus.Common.Extensions;
+using TEL_ProjectBus.DAL.Entities.Common;
 
 namespace TEL_ProjectBus.TestConsole;
 public static class DbTestDataCreator
@@ -32,7 +33,7 @@ public static class DbTestDataCreator
 		{
 			var item = new Classifier
 			{
-				Id = i + 1,
+				Id = new ClassifierKey(i + 1),
 				ClassifierCode = $"Classifier {i + 1}",
 				ChangedByUserId = testUser1Id
 			};
@@ -58,7 +59,7 @@ public static class DbTestDataCreator
 				Code = $"Code {i + 1}",
 				DateInitiation = DateTime.Now,
 				CustomerId = random.Next(1, 4),
-				ClassifierId = random.Next(1, 40),
+				ClassifierId = new ClassifierKey(random.Next(1, 40)),
 				ChangedByUserId = testUser1Id,
 			};
 			projectList.Add(project);
@@ -130,7 +131,7 @@ public static class DbTestDataCreator
 					Id = itemId,
 					ProjectId = i,
 					ProjectOwnerId = random.NextDouble() < 0.8 ? testUser1Id : testUser2Id,
-					ClassifierId = classifierIdStart++,
+					ClassifierId = new ClassifierKey(classifierIdStart++),
 					ProjectPhase = EnumExtensions.ToEnum<ProjectPhaseEnum>(random.Next(1, projectPhaseCount)) ?? ProjectPhaseEnum.Phase2,
 					ProjectStage = EnumExtensions.ToEnum<ProjectStageEnum>(random.Next(1, projectStageCount)) ?? ProjectStageEnum.PreSale,
 					ProjectStatus = EnumExtensions.ToEnum<ProjectStatusEnum>(random.Next(1, projectStatusCount)) ?? ProjectStatusEnum.AtWork,
@@ -166,7 +167,7 @@ public static class DbTestDataCreator
 				BudgetGroupId = random.Next(1, 4),
 				ProjectId = random.Next(1, 3),
 				ERPId = Guid.NewGuid().ToString(),
-				ClassifierId = random.Next(41, 2000),
+				ClassifierId = new ClassifierKey(random.Next(41, 2000)),
 				VisOnPipeline = true,
 				Name = $"Budget {i + 1}",
 				Description = $"Description for Budget {i + 1}",
@@ -176,8 +177,8 @@ public static class DbTestDataCreator
 				RgpPercent = 10.0m,
 				Version = 1,
 				Probability = 0.5m,
-				DatePlan = DateOnly.FromDateTime(DateTime.Now),
-				DateFact = DateOnly.FromDateTime(DateTime.Now),
+				DatePlan = DateTime.Now,
+				DateFact = DateTime.Now,
 				CPTCCFact = 100.0m,
 				CalcPriceTCPcs = 10.0m,
 				CalcPriceTCC = 100.0m,

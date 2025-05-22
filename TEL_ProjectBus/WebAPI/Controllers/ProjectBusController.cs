@@ -6,7 +6,7 @@ using TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
-[Authorize]
+[AllowAnonymous]
 [Route("api/[controller]")]
 public class ProjectBusController(IRequestClient<UpdateProjectProfileCommand> _updateProjectProfileClient,
 	IRequestClient<CreateProjectCommand> _createProjectClient,

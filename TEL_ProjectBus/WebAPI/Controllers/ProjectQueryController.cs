@@ -9,7 +9,6 @@ namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]
-
 public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProjectsClient,
 	IRequestClient<GetProjectProfileQuery> _getProjectProfileByIdClient,
 	ILogger<ProjectQueryController> _logger
@@ -33,6 +32,11 @@ public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProject
 	{
 		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToArray();
+
+		if(string.IsNullOrEmpty(userId))
+		{
+			return Unauthorized("User ID is required.");
+		}
 
 		var query = new GetProjectsQuery
 		{

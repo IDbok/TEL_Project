@@ -77,7 +77,6 @@ builder.Services
 .AddDefaultTokenProviders(); // подключаем токены для сброса пароля, подтверждения email и т.д.
 #endregion
 
-
 #region ───────────────────────────  JWT‑аутентификация  ──────────────────────────
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]!));
@@ -214,9 +213,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 #endregion
-
-
-
 
 builder.Services.AddControllers();
 

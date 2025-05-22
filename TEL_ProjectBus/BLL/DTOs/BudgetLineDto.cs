@@ -1,12 +1,15 @@
-﻿namespace TEL_ProjectBus.BLL.DTOs;
+﻿using TEL_ProjectBus.DAL.Entities.Common;
+using TEL_ProjectBus.DAL.Interfaces;
 
-public record BudgetLineDto
+namespace TEL_ProjectBus.BLL.DTOs;
+
+public record BudgetLineDto 
 {
 	public long Id { get; set; }
 	public BudgetGroupDto BudgetGroup { get; init; } = new();
 	public int ProjectId { get; init; }
 	public string? ERPId { get; init;}
-	public int? ClassifierId { get; init; }
+	public ClassifierKey? ClassifierId { get; init; }
 	public bool VisOnPipeline { get; init; }
 	public string Name { get; init; } = string.Empty;
 	public int RoleId { get; init; }
@@ -16,8 +19,8 @@ public record BudgetLineDto
 	public int Version { get; init; }
 	public decimal? Probability { get; init; }
 
-	public DateOnly? DatePlan { get; init; }
-	public DateOnly? DateFact { get; init; }
+	public DateTime? DatePlan { get; init; }
+	public DateTime? DateFact { get; init; }
 
 	public string? EC { get; init; }
 	public decimal RgpPercent { get; init; }

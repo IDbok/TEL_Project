@@ -20,6 +20,10 @@ public class BudgetConfiguration : IEntityTypeConfiguration<Budget>
 			   .WithMany(p => p.Budgets)
 			   .HasForeignKey(b => b.ProjectId);
 
+		builder.HasOne(p => p.Classifier)
+			   .WithMany(p => p.Budgets)
+			   .HasForeignKey(b => b.ClassifierId);
+
 		builder.Property(b => b.BudgetGroupId).HasColumnName("ID_BudgetGroup");
 		builder.Property(b => b.ProjectId).HasColumnName("ID_Project");
 		builder.Property(b => b.ERPId).HasColumnName("Budget_ERP_ID");

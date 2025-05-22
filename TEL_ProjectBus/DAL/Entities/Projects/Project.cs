@@ -8,10 +8,10 @@ using TEL_ProjectBus.DAL.Interfaces;
 namespace TEL_ProjectBus.DAL.Entities.Projects;
 
 
-public class Project : AuditableEntity, IHasIdentity<int>
+public class Project : AuditableEntity, IHasIdentity<int>, IHasClassifier
 {
 	public int Id { get; set; }
-	public long ClassifierId { get; set; }
+	public ClassifierKey ClassifierId { get; set; }
 	public int CustomerId { get; set; }
 	public string Name { get; set; } = string.Empty;
 	public string Code { get; set; } = string.Empty;

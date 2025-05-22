@@ -6,13 +6,13 @@ using TEL_ProjectBus.DAL.Interfaces;
 
 namespace TEL_ProjectBus.DAL.Entities.Budgets;
 
-public class Budget : AuditableEntity, IHasIdentity<long>
+public class Budget : AuditableEntity, IHasIdentity<long>, IHasOptionalClassifier
 {
 	public long Id { get; set; }
 	public int BudgetGroupId { get; set; }
 	public int ProjectId { get; set; }
 	public string? ERPId { get; set; } // todo: вопрос по архитектуре, как будет работать связь с ERP. В какой момент будер происходить связь с ERP?
-	public int? ClassifierId { get; set; }
+	public ClassifierKey? ClassifierId { get; set; }
 	public bool VisOnPipeline { get; set; }
 	public string Name { get; set; } = string.Empty;
 	public int RoleId { get; set; } // todo: вопрос по архитектуре, как будет работать связь с ролями. Что значит эта связь?
@@ -22,8 +22,8 @@ public class Budget : AuditableEntity, IHasIdentity<long>
 	public int Version { get; set; }
 	public decimal? Probability { get; set; }
 
-	public DateOnly? DatePlan { get; set; }
-	public DateOnly? DateFact { get; set; }
+	public DateTime? DatePlan { get; set; }
+	public DateTime? DateFact { get; set; }
 
 	public string? EC { get; set; }
 	public decimal RgpPercent { get; set; }
@@ -40,6 +40,6 @@ public class Budget : AuditableEntity, IHasIdentity<long>
 
 	public BudgetGroup BudgetGroup { get; set; } = null!;
 	public Project Project { get; set; } = null!;
-	[NotMapped]public Classifier? Classifier { get; set; } = null!;
+	public Classifier? Classifier { get; set; } = null!;
 }
 

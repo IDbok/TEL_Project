@@ -31,9 +31,6 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 		builder.Property(e => e.Uuid).HasColumnName("Customer_UUID");
 
 		builder.ConfigureIntId();
-		//builder.ConfigureAudit();
-
-		builder.Property(p => p.ChangedByUserId).HasColumnName("ChangeBy"); // todo: опечатка в БД
-		builder.Property(p => p.DateChanged).HasColumnName("DateChanged");
+		builder.ConfigureAudit();
 	}
 }

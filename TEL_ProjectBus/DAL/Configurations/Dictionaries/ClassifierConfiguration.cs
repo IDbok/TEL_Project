@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.DAL.Entities.Reference;
 using TEL_ProjectBus.DAL.Extensions;
+using TEL_ProjectBus.DAL.Entities.Common;
 
 namespace TEL_ProjectBus.DAL.Configurations.Dictionaries;
 
@@ -14,7 +15,7 @@ public class ClassifierConfiguration : IEntityTypeConfiguration<Classifier>
 
 		builder.Property(p => p.ClassifierCode).HasColumnName("ClassifierCode");
 
-		builder.ConfigureLongId();
+		builder.ConfigureId<Classifier, ClassifierKey>();
 		builder.ConfigureAudit();
 	}
 }

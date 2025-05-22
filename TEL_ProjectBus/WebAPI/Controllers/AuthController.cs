@@ -34,7 +34,7 @@ public class AuthController(UserManager<User> _userManager, IConfiguration _conf
 	[HttpPost("login-test-user")]
 	public async Task<IActionResult> LoginTestUser([FromBody] TestRoleDto request)
 	{
-		if (!DbInitializer.testRoles.Contains(request.Role))
+		if (!DbInitializer.testRoles.Contains(request.Role, StringComparer.OrdinalIgnoreCase))
 			return Unauthorized($"Invalid role: {request.Role}");
 
 		var userName = $"{request.Role.ToLower()}_test";
@@ -46,8 +46,8 @@ public class AuthController(UserManager<User> _userManager, IConfiguration _conf
 			return Unauthorized();
 
 		var resoinse = await GetLoginResponseAsync(user);
-		//await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
-		//await _context.SaveChangesAsync();
+		await _context.RefreshTokens.AddAsync(resoinse.RefreshToken);
+		await _context.SaveChangesAsync();
 		return ApiOk(resoinse);
 	}
 
