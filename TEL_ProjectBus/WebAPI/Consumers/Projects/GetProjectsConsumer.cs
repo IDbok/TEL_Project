@@ -51,6 +51,8 @@ public class GetProjectsConsumer(AppDbContext db) : IConsumer<GetProjectsQuery>
 
 		 await context.RespondAsync(new GetProjectsResponse
 		{
+			IsSuccess = true,
+			Message = "Projects found.",
 			Items = projects.Select(x => new ProjectDto
 			{
 				Id = x.Id,

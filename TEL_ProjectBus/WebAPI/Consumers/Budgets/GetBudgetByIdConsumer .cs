@@ -28,7 +28,10 @@ public class GetBudgetByIdConsumer(BudgetService budgetService, ILogger<GetBudge
 				return;
 			}
 
-			await context.RespondAsync(new GetBudgetByIdResponse() { BudgetLine = dto } );
+			await context.RespondAsync(new GetBudgetByIdResponse() {
+				IsSuccess = true,
+				Message = "Budget found.",
+				BudgetLine = dto } );
 		}
 		catch (Exception ex)
 		{

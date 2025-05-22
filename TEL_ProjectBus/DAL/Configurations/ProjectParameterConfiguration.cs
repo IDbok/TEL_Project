@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TEL_ProjectBus.DAL.Entities.Projects;
 using TEL_ProjectBus.DAL.Extensions;
 
@@ -24,6 +26,12 @@ public class ProjectParameterConfiguration : IEntityTypeConfiguration<ProjectPar
 			   .WithMany(c => c.ProjectParameters)
 			   .HasForeignKey(pp => pp.ClassifierId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+		var converter = new StringToGuidConverter();
+		builder.Property(p => p.ProjectOwnerId)
+		   .HasColumnName("ProjectOwner")
+		   .HasConversion(converter)      // <-- добавили
+		   .HasColumnType("uniqueidentifier");        // <-- и это
 
 		builder.Property(p => p.ProjectId).HasColumnName("ID_Project");
 		builder.Property(p => p.ProjectOwnerId).HasColumnName("ProjectOwner");

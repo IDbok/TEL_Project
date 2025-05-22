@@ -61,7 +61,7 @@ public static class BudgetMapper
 		return result;
 	}
 
-	public static Budget ToEntity<T>(this T bl)
+	public static Budget ToEntity<T>(this T bl) 
 		where T : BudgetLineDto
 	{
 		if (bl == null) throw new ArgumentNullException(nameof(bl));

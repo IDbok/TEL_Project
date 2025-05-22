@@ -2,6 +2,6 @@
 
 public record ResponseBase
 {
-	public bool IsSuccess { get; init; }
-	public string Message { get; init; } = string.Empty;
+	public required bool IsSuccess { get; init; }
+	public required string Message { get; init; }
 }
