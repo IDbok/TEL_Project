@@ -69,18 +69,18 @@ public class AppDbContext : IdentityDbContext<User>
 
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-		var converter = new StringToGuidConverter();
+		//var converter = new StringToGuidConverter();
 
-		foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-				 .Where(t => typeof(AuditableEntity).IsAssignableFrom(t.ClrType)))
-		{
-			var prop = entityType.FindProperty(nameof(AuditableEntity.ChangedByUserId));
-			if (prop is not null)
-			{
-				prop.SetValueConverter(converter);           // сам конвертер
-				prop.SetColumnType("uniqueidentifier");      // чтобы миграция не попыталась изменить тип
-			}
-		}
+		//foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+		//		 .Where(t => typeof(AuditableEntity).IsAssignableFrom(t.ClrType)))
+		//{
+		//	var prop = entityType.FindProperty(nameof(AuditableEntity.ChangedByUserId));
+		//	if (prop is not null)
+		//	{
+		//		prop.SetValueConverter(converter);           // сам конвертер
+		//		prop.SetColumnType("uniqueidentifier");      // чтобы миграция не попыталась изменить тип
+		//	}
+		//}
 	}
 
 	protected override void ConfigureConventions(ModelConfigurationBuilder cb)

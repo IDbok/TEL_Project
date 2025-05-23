@@ -27,11 +27,11 @@ public class ProjectParameterConfiguration : IEntityTypeConfiguration<ProjectPar
 			   .HasForeignKey(pp => pp.ClassifierId)
 				.OnDelete(DeleteBehavior.NoAction);
 
-		var converter = new StringToGuidConverter();
-		builder.Property(p => p.ProjectOwnerId)
-		   .HasColumnName("ProjectOwner")
-		   .HasConversion(converter)      // <-- добавили
-		   .HasColumnType("uniqueidentifier");        // <-- и это
+		//var converter = new StringToGuidConverter();
+		//builder.Property(p => p.ProjectOwnerId)
+		//   .HasColumnName("ProjectOwner")
+		//   .HasConversion(converter)      // <-- добавили
+		//   .HasColumnType("uniqueidentifier");        // <-- и это
 
 		builder.Property(p => p.ProjectId).HasColumnName("ID_Project");
 		builder.Property(p => p.ProjectOwnerId).HasColumnName("ProjectOwner");

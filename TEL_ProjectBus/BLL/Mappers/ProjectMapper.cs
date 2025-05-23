@@ -28,6 +28,7 @@ public static class ProjectMapper
 			CustomerId = 1, // todo: get from customer
 			DateInitiation = projectDto.DateInitiation,
 			DateCreated = projectDto.DateCreated,
+			ChangedByUserId = "00000000-0000-0000-0000-000000000002", // pm // todo: get from user
 
 		};
 	}

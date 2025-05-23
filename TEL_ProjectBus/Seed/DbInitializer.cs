@@ -7,6 +7,7 @@ using TEL_ProjectBus.DAL.Entities.Budgets;
 using TEL_ProjectBus.DAL.Entities.Customers;
 using TEL_ProjectBus.DAL.Entities.Projects;
 using TEL_ProjectBus.DAL.Entities.Reference;
+using TEL_ProjectBus.DAL.Extensions;
 
 namespace Infrastructure;
 public static class DbInitializer
@@ -48,6 +49,7 @@ public static class DbInitializer
 		{
 			PropertyNameCaseInsensitive = true
 		};
+		options.Converters.Add(new ClassifierKeyJsonConverter());
 
 		var folderPath = Path.Combine(AppContext.BaseDirectory, "Seed", "TestData");
 
@@ -155,10 +157,32 @@ public static class DbInitializer
 		string tableName)          // "Classifier" или "Ref_BudgetGroup" и т.д.
 		where T : class
 	{
-		ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT [{tableName}] ON");
+		var identityInsertEnabled = false;
+		try
+		{
+			ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT [{tableName}] ON");
+			identityInsertEnabled = true;
+		}
+		catch (Exception ex)
+		{
+			// Optionally log: identity insert not enabled, likely no identity column
+			// Console.WriteLine($"IDENTITY_INSERT not enabled for {tableName}: {ex.Message}");
+		}
+
 		ctx.Set<T>().AddRange(entities);
 		ctx.SaveChanges();
-		ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT {tableName} OFF");
+
+		if (identityInsertEnabled)
+		{
+			try
+			{
+				ctx.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT [{tableName}] OFF");
+			}
+			catch
+			{
+				// Optionally log: failed to turn off IDENTITY_INSERT
+			}
+		}
 	}
 
 	private static async Task CreateTestUsers(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)

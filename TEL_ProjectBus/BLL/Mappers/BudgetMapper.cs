@@ -95,6 +95,8 @@ public static class BudgetMapper
 
 			BudgetGroupId = bl.BudgetGroup.Id,
 
+			ChangedByUserId = "00000000-0000-0000-0000-000000000002", // pm // todo: get from user
+
 		};
 	}
 }
