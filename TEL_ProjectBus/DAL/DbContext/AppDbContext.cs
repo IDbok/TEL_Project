@@ -13,7 +13,7 @@ using Task = TEL_ProjectBus.DAL.Entities.Tasks.Task;
 using TaskStatus = TEL_ProjectBus.DAL.Entities.Tasks.TaskStatus;
 
 namespace TEL_ProjectBus.DAL.DbContext;
-public class AppDbContext : IdentityDbContext<User>
+public class AppDbContext : IdentityDbContext<User, Role, string>
 {
 	public AppDbContext(DbContextOptions<AppDbContext> options)
 		: base(options)

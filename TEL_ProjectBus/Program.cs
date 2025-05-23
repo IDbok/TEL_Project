@@ -64,7 +64,7 @@ builder.Services.AddScoped<ProjectService>();
 
 // Добавляем Identity-сервис
 builder.Services
-	.AddIdentity<User, IdentityRole>(options =>
+	.AddIdentity<User, Role>(options =>
 {
 	// Настройка требований к паролю
 	options.Password.RequireDigit = true;
@@ -246,7 +246,7 @@ if (useDbSeed)
 
 		await DbInitializer.Seed(db, 
 			scope.ServiceProvider.GetRequiredService<UserManager<User>>(), 
-			scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(),
+			scope.ServiceProvider.GetRequiredService<RoleManager<Role>>(),
 			recreateDb: false, // true - удалить и создать БД заново
 			clearDbData: true // true - очистить данные в БД
 			);

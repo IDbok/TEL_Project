@@ -29,10 +29,105 @@ public static class DbInitializer
 		"SSD"  // Segment Sales Director
 	};
 
+	public static List<Role> testRoles2 = new()
+{
+	new Role
+	{
+		Name = "Admin",
+		DisplayName = "Admin",
+		DisplayNameRu = "Администратор",
+		Description = "Администратор системы"
+	},
+	new Role
+	{
+		Name = "PM",
+		DisplayName = "Project Manager",
+		DisplayNameRu = "Руководитель проекта",
+		Description = "Руководитель проекта"
+	},
+	new Role
+	{
+		Name = "PL",
+		DisplayName = "Project Leader",
+		DisplayNameRu = "Руководитель группы",
+		Description = "Руководитель группы"
+	},
+	new Role
+	{
+		Name = "SD",
+		DisplayName = "Sales Director",
+		DisplayNameRu = "Директор по продажам",
+		Description = "Директор по продажам"
+	},
+	new Role
+	{
+		Name = "SM",
+		DisplayName = "Sales Manager",
+		DisplayNameRu = "Менеджер по продажам",
+		Description = "Менеджер по продажам"
+	},
+	new Role
+	{
+		Name = "SiM",
+		DisplayName = "Site Manager",
+		DisplayNameRu = "Менеджер по монтажу",
+		Description = "Менеджер по монтажу"
+	},
+	new Role
+	{
+		Name = "PE",
+		DisplayName = "Engineer",
+		DisplayNameRu = "Инженер",
+		Description = "Инженер"
+	},
+	new Role
+	{
+		Name = "RO",
+		DisplayName = "Resource Owner",
+		DisplayNameRu = "Владелец ресурса",
+		Description = "Владелец ресурса"
+	},
+	new Role
+	{
+		Name = "LC",
+		DisplayName = "Logistics Coordinator",
+		DisplayNameRu = "Координатор логистики",
+		Description = "Координатор логистики"
+	},
+	new Role
+	{
+		Name = "DM",
+		DisplayName = "Design Manager",
+		DisplayNameRu = "Менеджер по проектированию",
+		Description = "Менеджер по проектированию"
+	},
+	new Role
+	{
+		Name = "IM",
+		DisplayName = "Installation Manager",
+		DisplayNameRu = "Менеджер по монтажу",
+		Description = "Менеджер по монтажу"
+	},
+	new Role
+	{
+		Name = "AM",
+		DisplayName = "Administrative Manager",
+		DisplayNameRu = "Административный менеджер",
+		Description = "Административный менеджер"
+	},
+	new Role
+	{
+		Name = "SSD",
+		DisplayName = "Segment Sales Director",
+		DisplayNameRu = "Директор по продажам сегмента",
+		Description = "Директор по продажам сегмента"
+	}
+};
+
 	public static string testUserPassword = "Test@123";
 
 	public static async Task Seed(AppDbContext context, 
-		UserManager<User>? userManager = null, RoleManager<IdentityRole>? roleManager = null, 
+		UserManager<User>? userManager = null, RoleManager<Role>? roleManager = null, 
 		bool recreateDb = false, bool clearDbData = false)
 		
 	{
@@ -185,11 +280,11 @@ public static class DbInitializer
 		}
 	}
 
-	private static async Task CreateTestUsers(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+	private static async Task CreateTestUsers(UserManager<User> userManager, RoleManager<Role> roleManager)
 	{
-		for (int i = 0; i < testRoles.Length; i++)
+		for (int i = 0; i < testRoles2.Count; i++)
 		{
-			var role = testRoles[i];
+			var role = testRoles2[i];
 
 			// фиксированный GUID: 000...001, 002, 003 … до 999 ролей хватит
 			var guid = $"00000000-0000-0000-0000-000000000{(i + 1).ToString("D3")}";
@@ -198,7 +293,7 @@ public static class DbInitializer
 				userManager,
 				roleManager,
 				guid,
-				$"{role.ToLower()}_test",
+				$"{role.Name!.ToLower()}_test",
 				testUserPassword,
 				role);
 		}
@@ -248,15 +343,16 @@ public static class DbInitializer
 
 	private static async Task<User> EnsureUserWithFixedIdAsync(
 	UserManager<User> userManager,
-	RoleManager<IdentityRole> roleManager,
+	RoleManager<Role> roleManager,
 	string id,          // нужный Id
 	string userName,
 	string password,
-	string role)
+	Role role)
 	{
+		if(role.Name == null) throw new ArgumentNullException(nameof(role));
 		// если роль ещё не создавалась
-		if (!await roleManager.RoleExistsAsync(role))
-			await roleManager.CreateAsync(new IdentityRole(role));
+		if (!await roleManager.RoleExistsAsync(role.Name!))
+			await roleManager.CreateAsync(role);
 
 		// ищем именно по Id
 		var user = await userManager.FindByIdAsync(id);
@@ -275,7 +371,7 @@ public static class DbInitializer
 		}
 
 		// роль всё равно привязываем
-		await userManager.AddToRoleAsync(user, role);
+		await userManager.AddToRoleAsync(user, role.Name!);
 		return user;
 	}
 
