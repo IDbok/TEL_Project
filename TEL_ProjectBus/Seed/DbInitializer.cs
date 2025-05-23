@@ -128,8 +128,8 @@ public static class DbInitializer
 
 	public static async Task Seed(AppDbContext context, 
 		UserManager<User>? userManager = null, RoleManager<Role>? roleManager = null, 
-		bool recreateDb = false, bool clearDbData = false)
-		
+		bool recreateDb = false, bool clearDbData = false, bool loadTestData = false)
+
 	{
 		if ((recreateDb))
 		{
@@ -140,6 +140,12 @@ public static class DbInitializer
 		if (clearDbData && !recreateDb)          // чистим, если БД оставляем
 			await ClearDataAsync(context);
 
+		if (loadTestData) 
+			await LoadTestData(context, userManager, roleManager);
+	}
+
+	private static async Task LoadTestData(AppDbContext context, UserManager<User>? userManager, RoleManager<Role>? roleManager)
+	{
 		var options = new JsonSerializerOptions
 		{
 			PropertyNameCaseInsensitive = true
@@ -156,7 +162,7 @@ public static class DbInitializer
 		context.Database.OpenConnection();
 
 		// --- Справочники ---
-		var classifiersJson = File.ReadAllText(Path.Combine(folderPath , "test_classifiers.json"));
+		var classifiersJson = File.ReadAllText(Path.Combine(folderPath, "test_classifiers.json"));
 		var classifiers = JsonSerializer.Deserialize<List<Classifier>>(classifiersJson, options);
 		SeedData(context, classifiers, "Classifier");
 
@@ -177,7 +183,7 @@ public static class DbInitializer
 		SeedData(context, projectStatuses, "Ref_ProjectStatus");
 
 		// --- Клиенты ---
-		var customersJson = File.ReadAllText(Path.Combine(folderPath,  "test_customers.json"));
+		var customersJson = File.ReadAllText(Path.Combine(folderPath, "test_customers.json"));
 		var customers = JsonSerializer.Deserialize<List<Customer>>(customersJson, options);
 		foreach (var customer in customers)
 		{

@@ -237,18 +237,23 @@ app.MapControllers(); // Подключает маршрутизацию кон�
 #endregion
 
 #region ──────────────────────────────  DB seed  ────────────────────────────────
-var useDbSeed = builder.Configuration.GetValue<bool>("UseDbSeed");
+var useDbSeed = builder.Configuration.GetValue<bool>("DbSeed:UseDbSeed");
+
 if (useDbSeed)
 	using (var scope = app.Services.CreateScope())
 	{
+		var recreateDb = builder.Configuration.GetValue<bool>("DbSeed:RecreateDb");
+		var clearDbData = builder.Configuration.GetValue<bool>("DbSeed:ClearData");
+		var loadTestData = builder.Configuration.GetValue<bool>("DbSeed:LoadTestData"); 
 		var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 		//db.Database.Migrate(); // применит все миграции
 
 		await DbInitializer.Seed(db, 
 			scope.ServiceProvider.GetRequiredService<UserManager<User>>(), 
 			scope.ServiceProvider.GetRequiredService<RoleManager<Role>>(),
-			recreateDb: false, // true - удалить и создать БД заново
-			clearDbData: true // true - очистить данные в БД
+			recreateDb: recreateDb, // true - удалить и создать БД заново
+			clearDbData: clearDbData, // true - очистить данные в БД,
+			loadTestData: loadTestData
 			);
 	}
 
