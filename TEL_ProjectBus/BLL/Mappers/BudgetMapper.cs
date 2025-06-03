@@ -12,6 +12,7 @@ public static class BudgetMapper
 		if (bl == null) throw new ArgumentNullException(nameof(bl));
 		return new T
 		{
+			Id = bl.Id,
 			Name = bl.Name,
 			ProjectId = bl.ProjectId,
 			ERPId = bl.ERPId,
@@ -67,7 +68,8 @@ public static class BudgetMapper
 		if (bl == null) throw new ArgumentNullException(nameof(bl));
 		return new Budget
 		{
-			Name = bl.Name,
+			Id = bl.Id,
+            Name = bl.Name,
 			ProjectId = bl.ProjectId,
 			ERPId = bl.ERPId,
 			ClassifierId = bl.ClassifierId,
