@@ -39,18 +39,23 @@ public class CustomWebApplicationFactory
             /* --- EF Core: In-Memory -------------------- */
             services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
             services.RemoveAll(typeof(AppDbContext));
+            services.RemoveAll<Microsoft.EntityFrameworkCore.SqlServer          // все «следы» SqlServer-провайдера
+                    .Infrastructure.Internal.ISqlServerSingletonOptions>();
             //var dbDescriptor = services.Single(
             //    d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
             //services.Remove(dbDescriptor);
 
+            /* Создаём ВНУТРЕННИЙ сервис-провайдер ТОЛЬКО для InMemory-EF   */
+            var efProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
 
             ///* --- Запускаем тесты с одной базой --- */
-            //services.AddDbContext<AppDbContext>(opt =>
-            //    opt.UseInMemoryDatabase("UnitTestsDb"));
-
-            /* --- Запускаем тесты паралельно (с уникальным именем БД) --- */
             services.AddDbContext<AppDbContext>(opt =>
-                opt.UseInMemoryDatabase($"UnitTestsDb_{Guid.NewGuid()}"));
+                opt
+                .UseInMemoryDatabase("UnitTestsDb") //$"UnitTestsDb_{Guid.NewGuid()}")
+                .UseInternalServiceProvider(efProvider) // используем внутренний провайдер EF
+                );
 
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();

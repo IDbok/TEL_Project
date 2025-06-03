@@ -131,17 +131,24 @@ public static class DbInitializer
 		bool recreateDb = false, bool clearDbData = false, bool loadTestData = false)
 
 	{
-		if ((recreateDb))
+        var isInMemory = context.Database.IsInMemory(); // проверка для тестов, т.к. in-memory БД не поддерживает ExecuteSqlRaw
+
+        if ((recreateDb))
 		{
 			context.Database.EnsureDeleted();
 			context.Database.EnsureCreated();
 		}
 
-		if (clearDbData && !recreateDb)          // чистим, если БД оставляем
+		if (!isInMemory && clearDbData && !recreateDb)          // чистим, если БД оставляем
 			await ClearDataAsync(context);
 
-		if (loadTestData) 
-			await LoadTestData(context, userManager, roleManager);
+		if (loadTestData)
+        {
+            if (isInMemory)
+                await SeedViaDbSets(context, userManager, roleManager);        // добавляем через ctx.Set<T>().AddRange(...)
+            else
+                await LoadTestData(context, userManager, roleManager);
+        }
 	}
 
 	private static async Task LoadTestData(AppDbContext context, UserManager<User>? userManager, RoleManager<Role>? roleManager)
@@ -235,7 +242,76 @@ public static class DbInitializer
 		context.Database.CloseConnection();
 	}
 
-	public static void SeedFromJson<T>(
+    private static async Task SeedViaDbSets(
+    AppDbContext ctx,
+    UserManager<User>? userManager = null,
+    RoleManager<Role>? roleManager = null)
+    {
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        jsonOptions.Converters.Add(new ClassifierKeyJsonConverter());
+
+        /* ───── 1. пользователей и роли ───── */
+        if (userManager != null && roleManager != null)
+            await CreateTestUsers(userManager, roleManager);   // готовый метод
+
+        /* ───── 2. читаем файлы ───── */
+        var folder = Path.Combine(AppContext.BaseDirectory, "Seed", "TestData");
+
+        // --- Справочники ---
+        ctx.SeedFromJson<Classifier>(folder, "test_classifiers.json", jsonOptions);
+        ctx.SeedFromJson<BudgetGroup>(folder, "budget_groups.json", jsonOptions);
+        ctx.SeedFromJson<ProjectPhase>(folder, "project_phases.json", jsonOptions);
+        ctx.SeedFromJson<ProjectStage>(folder, "project_stages.json", jsonOptions);
+        ctx.SeedFromJson<ProjectStatus>(folder, "project_statuses.json", jsonOptions);
+
+        // --- Клиенты ---
+        ctx.SeedFromJson<Customer>(folder, "test_customers.json", jsonOptions, fixDates: e =>
+        {
+            e.DateChanged = DateTime.SpecifyKind((DateTime)e.DateChanged, DateTimeKind.Utc);
+        });
+
+        // --- Проекты ---
+        ctx.SeedFromJson<Project>(folder, "test_projects.json", jsonOptions, fixDates: e =>
+        {
+            e.DateInitiation = DateTime.SpecifyKind(e.DateInitiation, DateTimeKind.Utc);
+        });
+
+        // --- Параметры проектов ---
+        ctx.SeedFromJson<ProjectParameter>(folder, "test_project_params.json", jsonOptions, fixDates: e =>
+        {
+            e.ProjectBegin = DateTime.SpecifyKind(e.ProjectBegin, DateTimeKind.Utc);
+            e.ProjectEnd = DateTime.SpecifyKind(e.ProjectEnd, DateTimeKind.Utc);
+            e.DateChanged = DateTime.SpecifyKind((DateTime)e.DateChanged, DateTimeKind.Utc);
+        });
+
+        // --- Бюджеты ---
+        ctx.SeedFromJson<Budget>(folder, "test_budgets.json", jsonOptions);
+
+        /* ───── 3. сохраняем одним коммитом ───── */
+        await ctx.SaveChangesAsync();
+    }
+
+    public static void SeedFromJson<T>(
+    this DbContext ctx,
+    string folder,
+    string file,
+    JsonSerializerOptions options,
+    Action<T>? fixDates = null)   // необязательный «пост-процессор»
+    where T : class
+    {
+        var json = File.ReadAllText(Path.Combine(folder, file));
+        var entities = JsonSerializer.Deserialize<List<T>>(json, options)!;
+
+        if (fixDates != null)
+            foreach (var e in entities) fixDates(e);
+
+        ctx.Set<T>().AddRange(entities);        // ← ровно то, что нужно In-Memory-БД
+    }
+
+    public static void SeedFromJson<T>(
 		this DbContext ctx,
 		string folderPath,
 		string fileName,

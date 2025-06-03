@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using System.Net;
 using System.Net.Http.Json;
-
+using TEL_ProjectBus.WebAPI.Common;
 using TEL_ProjectBus.WebAPI.Controllers;
 using Xunit;
 
@@ -33,9 +33,9 @@ public class AuthTests : IClassFixture<CustomWebApplicationFactory>
         resp.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var body = await resp.Content
-                            .ReadFromJsonAsync<LoginResponse>();
+                            .ReadFromJsonAsync<ApiResponse<LoginResponse>>();
 
-        body!.AccessToken.Should().NotBeNullOrWhiteSpace();
-        body.UserRoles.Should().Contain("Admin");
+        body!.data.AccessToken.Should().NotBeNullOrWhiteSpace();
+        body.data.UserRoles.Should().Contain("Admin");
     }
 }
