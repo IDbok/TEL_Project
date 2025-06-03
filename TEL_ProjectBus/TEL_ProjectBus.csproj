@@ -10,9 +10,13 @@
 
   <ItemGroup>
     <Compile Remove="DAL\Entities\UserManagement\**" />
+    <Compile Remove="WebAPI\Extensions\**" />
     <Content Remove="DAL\Entities\UserManagement\**" />
+    <Content Remove="WebAPI\Extensions\**" />
     <EmbeddedResource Remove="DAL\Entities\UserManagement\**" />
+    <EmbeddedResource Remove="WebAPI\Extensions\**" />
     <None Remove="DAL\Entities\UserManagement\**" />
+    <None Remove="WebAPI\Extensions\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,10 +61,6 @@
     <Content Update="web.config">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-</ItemGroup>
-	
-<ItemGroup>
-  <Folder Include="WebAPI\Extensions\" />
 </ItemGroup>
 	
 <ItemGroup>
