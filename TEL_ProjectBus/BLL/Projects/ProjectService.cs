@@ -3,6 +3,7 @@ using TEL_ProjectBus.BLL.DTOs;
 using TEL_ProjectBus.BLL.Mappers;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities.Projects;
+using TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
 namespace TEL_ProjectBus.BLL.Projects;
 
@@ -61,6 +62,7 @@ public class ProjectService(AppDbContext _dbContext)
                                        .Include(b => b.BudgetGroup)
                                        .Where(b => b.ProjectId == projectId);
 
+
                 var totalCount = await query.CountAsync(cancellationToken);
 
                 var budgets = await query
@@ -72,5 +74,32 @@ public class ProjectService(AppDbContext _dbContext)
                         throw new Exception($"Project with ID {projectId} has no budgets.");
 
                 return (BudgetMapper.ToDto<BudgetLineDto>(budgets), totalCount);
+        }
+
+        public async Task<bool> UpdateProjectAsync(UpdateProjectCommand project, CancellationToken cancellationToken)
+        {
+                var entity = await _dbContext.Projects.FirstOrDefaultAsync(p => p.Id == project.ProjectId, cancellationToken);
+                if (entity is null)
+                        return false;
+
+                entity.Name = project.Name;
+                entity.Code = project.Code;
+                entity.ClassifierId = project.ClassifierCode;
+                entity.DateInitiation = project.DateInitiation;
+                entity.DateCreated = project.DateCreated;
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                return true;
+        }
+
+        public async Task<bool> DeleteProjectAsync(int projectId, CancellationToken cancellationToken)
+        {
+                var entity = await _dbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
+                if (entity is null)
+                        return false;
+
+                _dbContext.Projects.Remove(entity);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                return true;
         }
 }
