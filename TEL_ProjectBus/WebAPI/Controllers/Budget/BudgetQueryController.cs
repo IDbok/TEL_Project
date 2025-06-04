@@ -19,11 +19,20 @@ public class BudgetQueryController(IRequestClient<GetBudgetsQuery> _getBudgetsCl
 	/// <summary>
 	/// Возвращает список строк бюджета проекта по указанному идентификатору.
 	/// </summary>
-	[HttpGet("projects/{projectId:int}/budgets")]
-	public async Task<IActionResult> GetByProjectId(int projectId)
-	{
-		var response = await _getBudgetsByProjectIdClient.GetResponse<GetBudgetsByProjectIdResponse>(
-			new GetBudgetsByProjectIdQuery { ProjectId = projectId }, timeout: TimeSpan.FromSeconds(30));
+        [HttpGet("projects/{projectId:int}/budgets")]
+        public async Task<IActionResult> GetByProjectId(
+                int projectId,
+                [FromQuery] int pageNumber = 1,
+                [FromQuery] int pageSize = 20)
+        {
+                var response = await _getBudgetsByProjectIdClient.GetResponse<GetBudgetsByProjectIdResponse>(
+                        new GetBudgetsByProjectIdQuery
+                        {
+                                ProjectId = projectId,
+                                PageNumber = pageNumber,
+                                PageSize = pageSize,
+                        },
+                        timeout: TimeSpan.FromSeconds(30));
 
 		return SendResponse(response);
 	}
