@@ -140,6 +140,7 @@ public class Program
 
             // Регистрация RequestClient
             x.AddRequestClient<GetBudgetByIdQuery>();
+            x.AddRequestClient<GetBudgetsByProjectIdQuery>();
             x.AddRequestClient<GetProjectsQuery>();
             x.AddRequestClient<GetProjectProfileQuery>();
 

@@ -49,18 +49,28 @@ public class ProjectService(AppDbContext _dbContext)
 
 		//await _dbContext.SaveChangesAsync(cancellationToken);
 	}
-	public async Task<List<BudgetLineDto>> GetProjectBudgetAsync(int projectId, CancellationToken cancellationToken)
-	{
-		var budgets = await _dbContext.Budgets
-						 .AsNoTracking()
-						 .Include(b => b.Classifier)
-						 .Include(b => b.BudgetGroup)
-						 .Where(b => b.ProjectId == projectId)
-						 .ToListAsync(cancellationToken);
+        public async Task<(List<BudgetLineDto> Budgets, int TotalCount)> GetProjectBudgetAsync(
+                int projectId,
+                int pageNumber,
+                int pageSize,
+                CancellationToken cancellationToken)
+        {
+                var query = _dbContext.Budgets
+                                       .AsNoTracking()
+                                       .Include(b => b.Classifier)
+                                       .Include(b => b.BudgetGroup)
+                                       .Where(b => b.ProjectId == projectId);
 
-		if (budgets is null || budgets.Count == 0)
-			throw new Exception($"Project with ID {projectId} has no budgets.");
+                var totalCount = await query.CountAsync(cancellationToken);
 
-		return BudgetMapper.ToDto<BudgetLineDto>(budgets);
-	}
+                var budgets = await query
+                                       .Skip((pageNumber - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .ToListAsync(cancellationToken);
+
+                if (budgets is null || budgets.Count == 0)
+                        throw new Exception($"Project with ID {projectId} has no budgets.");
+
+                return (BudgetMapper.ToDto<BudgetLineDto>(budgets), totalCount);
+        }
 }
