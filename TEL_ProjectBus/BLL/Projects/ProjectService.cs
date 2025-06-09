@@ -10,14 +10,33 @@ namespace TEL_ProjectBus.BLL.Projects;
 public class ProjectService(AppDbContext _dbContext)
 {
 	public async Task<int> CreateNewProjectAsync(ProjectDto project, CancellationToken cancellationToken)
-	{
-		var newProject = ProjectMapper.ToEntity(project);
-		await _dbContext.Projects.AddAsync(newProject, cancellationToken);
-		await _dbContext.SaveChangesAsync();
-		return newProject.Id;
-	}
+    {
+        var newProject = ProjectMapper.ToEntity(project);
 
-	public async Task<Project> GetProjectAsync(int projectId, CancellationToken cancellationToken)
+        await _dbContext.Projects.AddAsync(newProject, cancellationToken);
+
+        await AddBudgetLinesToContext(project.BudgetLines, newProject);
+
+        await _dbContext.SaveChangesAsync();
+        return newProject.Id;
+    }
+
+    private async Task AddBudgetLinesToContext(List<BudgetLineDto> budgetLines, Project newProject)
+    {
+        if (budgetLines != null && budgetLines.Count > 0)
+        {
+            var newBudgetLines = BudgetMapper.ToEntity(budgetLines);
+            foreach (var budgetLine in newBudgetLines)
+            {
+                budgetLine.ProjectId = 0;
+                budgetLine.Project = newProject;
+            }
+
+            await _dbContext.Budgets.AddRangeAsync(newBudgetLines);
+        }
+    }
+
+    public async Task<Project> GetProjectAsync(int projectId, CancellationToken cancellationToken)
 	{
 		var p = await _dbContext.Projects
 						 .AsNoTracking()

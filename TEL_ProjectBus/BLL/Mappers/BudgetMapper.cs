@@ -101,4 +101,12 @@ public static class BudgetMapper
 
 		};
 	}
+
+	public static List<Budget> ToEntity<T>(this List<T> entities)
+		where T : BudgetLineDto
+	{
+		if (entities == null || entities.Count == 0) throw new ArgumentNullException(nameof(entities));
+
+		return entities.Select(e => ToEntity(e)).ToList(); ;
+	}
 }

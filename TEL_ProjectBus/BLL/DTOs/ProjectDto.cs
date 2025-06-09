@@ -4,6 +4,7 @@ namespace TEL_ProjectBus.BLL.DTOs;
 
 public record ProjectDto
 {
+	public int Id { get; init; }
 	public string Name { get; init; } = default!;
 	public string Code { get; init; } = default!;
 	public ClassifierKey ClassifierCode { get; init; } = default!;
