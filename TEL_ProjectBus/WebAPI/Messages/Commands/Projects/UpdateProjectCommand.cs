@@ -4,5 +4,4 @@ namespace TEL_ProjectBus.WebAPI.Messages.Commands.Projects;
 
 public record UpdateProjectCommand : ProjectDto
 {
-    public int ProjectId { get; init; }
 }

@@ -36,91 +36,91 @@ public static class DbInitializer
 		Name = "Admin",
 		DisplayName = "Admin",
 		DisplayNameRu = "Администратор",
-		Description = "Администратор системы"
+		//Description = "Администратор системы"
 	},
 	new Role
 	{
 		Name = "PM",
 		DisplayName = "Project Manager",
 		DisplayNameRu = "Руководитель проекта",
-		Description = "Руководитель проекта"
+		//Description = "Руководитель проекта"
 	},
 	new Role
 	{
 		Name = "PL",
 		DisplayName = "Project Leader",
 		DisplayNameRu = "Руководитель группы",
-		Description = "Руководитель группы"
+		//Description = "Руководитель группы"
 	},
 	new Role
 	{
 		Name = "SD",
 		DisplayName = "Sales Director",
 		DisplayNameRu = "Директор по продажам",
-		Description = "Директор по продажам"
+		//Description = "Директор по продажам"
 	},
 	new Role
 	{
 		Name = "SM",
 		DisplayName = "Sales Manager",
 		DisplayNameRu = "Менеджер по продажам",
-		Description = "Менеджер по продажам"
+		//Description = "Менеджер по продажам"
 	},
 	new Role
 	{
 		Name = "SiM",
 		DisplayName = "Site Manager",
 		DisplayNameRu = "Менеджер по монтажу",
-		Description = "Менеджер по монтажу"
+		//Description = "Менеджер по монтажу"
 	},
 	new Role
 	{
 		Name = "PE",
 		DisplayName = "Engineer",
 		DisplayNameRu = "Инженер",
-		Description = "Инженер"
+		//Description = "Инженер"
 	},
 	new Role
 	{
 		Name = "RO",
 		DisplayName = "Resource Owner",
 		DisplayNameRu = "Владелец ресурса",
-		Description = "Владелец ресурса"
+		//Description = "Владелец ресурса"
 	},
 	new Role
 	{
 		Name = "LC",
 		DisplayName = "Logistics Coordinator",
 		DisplayNameRu = "Координатор логистики",
-		Description = "Координатор логистики"
+		//Description = "Координатор логистики"
 	},
 	new Role
 	{
 		Name = "DM",
 		DisplayName = "Design Manager",
 		DisplayNameRu = "Менеджер по проектированию",
-		Description = "Менеджер по проектированию"
+		//Description = "Менеджер по проектированию"
 	},
 	new Role
 	{
 		Name = "IM",
 		DisplayName = "Installation Manager",
 		DisplayNameRu = "Менеджер по монтажу",
-		Description = "Менеджер по монтажу"
+		//Description = "Менеджер по монтажу"
 	},
 	new Role
 	{
 		Name = "AM",
 		DisplayName = "Administrative Manager",
 		DisplayNameRu = "Административный менеджер",
-		Description = "Административный менеджер"
+		//Description = "Административный менеджер"
 	},
 	new Role
 	{
 		Name = "SSD",
 		DisplayName = "Segment Sales Director",
 		DisplayNameRu = "Директор по продажам сегмента",
-		Description = "Директор по продажам сегмента"
+		//Description = "Директор по продажам сегмента"
 	}
 };
 

@@ -13,5 +13,5 @@ public class Role : IdentityRole
 {
 	public string DisplayName { get; set; } = string.Empty;
 	public string DisplayNameRu { get; set; } = string.Empty;
-	public string? Description { get; set; }
+	//public string? Description { get; set; }
 }

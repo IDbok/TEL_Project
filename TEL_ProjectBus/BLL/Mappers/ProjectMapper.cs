@@ -24,12 +24,12 @@ public static class ProjectMapper
 		{
 			Name = projectDto.Name,
 			Code = projectDto.Code,
-			ClassifierId = projectDto.ClassifierCode,
-			CustomerId = 1, // todo: get from customer
+			ClassifierId = projectDto.Classifier.Id,
+			CustomerId = projectDto.Customer.Id,
 			DateInitiation = projectDto.DateInitiation,
 			DateCreated = projectDto.DateCreated,
-			ChangedByUserId = "00000000-0000-0000-0000-000000000002", // pm // todo: get from user
-
+			ChangedByUserId = projectDto.ChangedByUserId,
+			DateChanged = projectDto.DateChanged,
 		};
 	}
 }

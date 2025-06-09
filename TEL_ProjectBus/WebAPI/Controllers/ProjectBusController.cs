@@ -44,10 +44,10 @@ public class ProjectBusController(
 	/// <param name="command"></param>
 	/// <returns>Возвращает статус 202 (Accepted) с данными о созданном проекте, включая его ID, если создание прошло успешно. 
 	/// В противном случае — статус 400 (BadRequest) с сообщением об ошибке.</returns>
-        [HttpPost("projects/create")]
-        public async Task<IActionResult> CreateProject(CreateProjectCommand command)
-        {
-                var response = await _createProjectClient.GetResponse<CreateProjectResponse>(command);
+    [HttpPost("projects/create")]
+    public async Task<IActionResult> CreateProject(CreateProjectCommand command)
+    {
+        var response = await _createProjectClient.GetResponse<CreateProjectResponse>(command);
 
 		if (response.Message.IsSuccess)
 		{
@@ -56,27 +56,44 @@ public class ProjectBusController(
 		else
 		{
 			return BadRequest(response.Message);
-                }
         }
+    }
 
-        /// <summary>
-        /// Обновляет проект по идентификатору.
-        /// </summary>
-        [HttpPut("projects/{id:int}/update")]
-        public async Task<IActionResult> UpdateProject(int id, [FromBody] UpdateProjectCommand command)
-        {
-                command = command with { ProjectId = id };
-                var response = await _updateProjectClient.GetResponse<UpdateProjectResponse>(command);
-                return SendResponse(response);
-        }
+	/// <summary>
+	/// Обновляет проект по идентификатору на основе данных команды UpdateProjectCommand.
+	/// Строки бюджета не учитываются при обновлении.
+	/// </summary>
+	/// <param name="id">Идентификатор проекта, который требуется обновить.</param>
+	/// <param name="command">Данные для обновления проекта.</param>
+	/// <returns>
+	/// Возвращает статус 202 (Accepted) с обновлёнными данными проекта, если обновление прошло успешно.
+	/// В противном случае — статус 400 (BadRequest) с сообщением об ошибке.
+	/// </returns>
+	[HttpPut("projects/{id:int}/update")]
+    public async Task<IActionResult> UpdateProject(int id, [FromBody] UpdateProjectCommand command)
+    {
+		var userId = User.Identity?.Name;
+		if (string.IsNullOrEmpty(userId))
+		{
+			return Unauthorized("User ID is required.");
+		}
+		command = command with { Id = id, ChangedByUserId = userId, DateChanged = DateTime.UtcNow };
+        var response = await _updateProjectClient.GetResponse<UpdateProjectResponse>(command);
+        return SendResponse(response);
+    }
 
-        /// <summary>
-        /// Удаляет проект по идентификатору.
-        /// </summary>
-        [HttpDelete("projects/{id:int}/delete")]
-        public async Task<IActionResult> DeleteProject(int id)
-        {
-                var response = await _deleteProjectClient.GetResponse<DeleteProjectResponse>(new DeleteProjectCommand { ProjectId = id });
-                return SendResponse(response);
-        }
+	/// <summary>
+	/// Удаляет проект по идентификатору на основе команды DeleteProjectCommand.
+	/// </summary>
+	/// <param name="id">Идентификатор проекта, который требуется удалить.</param>
+	/// <returns>
+	/// Возвращает статус 202 (Accepted), если удаление прошло успешно.
+	/// В противном случае — статус 400 (BadRequest) с сообщением об ошибке.
+	/// </returns>
+	[HttpDelete("projects/{id:int}/delete")]
+    public async Task<IActionResult> DeleteProject(int id)
+    {
+        var response = await _deleteProjectClient.GetResponse<DeleteProjectResponse>(new DeleteProjectCommand { ProjectId = id });
+        return SendResponse(response);
+    }
 }

@@ -57,6 +57,7 @@ public class ProjectService(AppDbContext _dbContext)
 		return p;
 	}
 
+    [Obsolete("This method does not work.")]
 	public async Task CompareAndUpdateAsync<T>(T current, CancellationToken cancellationToken)
 		where T : ProjectProfileDto
 	{
@@ -69,56 +70,80 @@ public class ProjectService(AppDbContext _dbContext)
 
 		//await _dbContext.SaveChangesAsync(cancellationToken);
 	}
-        public async Task<(List<BudgetLineDto> Budgets, int TotalCount)> GetProjectBudgetAsync(
-                int projectId,
-                int pageNumber,
-                int pageSize,
-                CancellationToken cancellationToken)
+
+    public async Task<(List<BudgetLineDto> Budgets, int TotalCount)> GetProjectBudgetAsync(
+            int projectId,
+            int pageNumber,
+            int pageSize,
+            CancellationToken cancellationToken)
+    {
+            var query = _dbContext.Budgets
+                                    .AsNoTracking()
+                                    .Include(b => b.Classifier)
+                                    .Include(b => b.BudgetGroup)
+                                    .Where(b => b.ProjectId == projectId);
+
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var budgets = await query
+                                    .Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync(cancellationToken);
+
+            if (budgets is null || budgets.Count == 0)
+                    throw new Exception($"Project with ID {projectId} has no budgets.");
+
+            return (BudgetMapper.ToDto<BudgetLineDto>(budgets), totalCount);
+    }
+
+    public async Task<bool> UpdateProjectAsync(UpdateProjectCommand project, CancellationToken cancellationToken)
+    {
+        var entity = await _dbContext.Projects
+            .Include(p => p.Classifier)
+			.Include(p => p.Customer)
+			.FirstOrDefaultAsync(p => p.Id == project.Id, cancellationToken);
+        if (entity is null)
+                return false;
+
+        entity.Name = project.Name;
+        entity.Code = project.Code;
+
+        if (project.Classifier is not null && project.Classifier.Id != entity.ClassifierId)
         {
-                var query = _dbContext.Budgets
-                                       .AsNoTracking()
-                                       .Include(b => b.Classifier)
-                                       .Include(b => b.BudgetGroup)
-                                       .Where(b => b.ProjectId == projectId);
-
-
-                var totalCount = await query.CountAsync(cancellationToken);
-
-                var budgets = await query
-                                       .Skip((pageNumber - 1) * pageSize)
-                                       .Take(pageSize)
-                                       .ToListAsync(cancellationToken);
-
-                if (budgets is null || budgets.Count == 0)
-                        throw new Exception($"Project with ID {projectId} has no budgets.");
-
-                return (BudgetMapper.ToDto<BudgetLineDto>(budgets), totalCount);
+            var classifier = await _dbContext.Classifiers
+				.FirstOrDefaultAsync(c => c.Id == project.Classifier.Id, cancellationToken);
+			if (classifier is null)
+				// todo: invalid data exception
+				throw new Exception($"Classifier with ID {project.Classifier.Id} not found.");
+			entity.Classifier = classifier;
         }
 
-        public async Task<bool> UpdateProjectAsync(UpdateProjectCommand project, CancellationToken cancellationToken)
+        if (project.Customer is not null && project.Customer.Id != entity.CustomerId)
         {
-                var entity = await _dbContext.Projects.FirstOrDefaultAsync(p => p.Id == project.ProjectId, cancellationToken);
-                if (entity is null)
-                        return false;
+			var customer = await _dbContext.Customers
+                .FirstOrDefaultAsync(c => c.Id == project.Customer.Id, cancellationToken);
+			if (customer is null)
+                throw new Exception($"Customer with ID {project.Customer.Id} not found.");
+			entity.Customer = customer;
+		}
 
-                entity.Name = project.Name;
-                entity.Code = project.Code;
-                entity.ClassifierId = project.ClassifierCode;
-                entity.DateInitiation = project.DateInitiation;
-                entity.DateCreated = project.DateCreated;
+		// todo: можно ли менять дату создания и инициализации при обновлении?
+		entity.DateInitiation = project.DateInitiation;
+        entity.DateCreated = project.DateCreated; 
 
-                await _dbContext.SaveChangesAsync(cancellationToken);
-                return true;
-        }
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return true;
+    }
 
-        public async Task<bool> DeleteProjectAsync(int projectId, CancellationToken cancellationToken)
-        {
-                var entity = await _dbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
-                if (entity is null)
-                        return false;
+    public async Task<bool> DeleteProjectAsync(int projectId, CancellationToken cancellationToken)
+    {
+            var entity = await _dbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
+            if (entity is null)
+                    return false;
 
-                _dbContext.Projects.Remove(entity);
-                await _dbContext.SaveChangesAsync(cancellationToken);
-                return true;
-        }
+            _dbContext.Projects.Remove(entity);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return true;
+    }
 }
