@@ -1,5 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using TEL_ProjectBus.BLL.DTOs;
+using TEL_ProjectBus.BLL.Mappers;
 using TEL_ProjectBus.Common.Extensions;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
@@ -16,7 +18,9 @@ public class GetProjectsConsumer(AppDbContext db) : IConsumer<GetProjectsQuery>
 		var query = context.Message;
 		var userId = context.Message.UserId;
 
-		var projectsQuery = await db.Projects        // 📌 таблица Projects
+		var projectsQuery = await db.Projects // 📌 таблица Projects
+			.Include(p => p.Classifier)
+			.Include(p => p.Customer)
 			.Select(p => new
 			{
 				Project = p,
@@ -49,22 +53,11 @@ public class GetProjectsConsumer(AppDbContext db) : IConsumer<GetProjectsQuery>
 			.Take(query.PageSize)
 			.ToList();
 
-		 await context.RespondAsync(new GetProjectsResponse
+		await context.RespondAsync(new GetProjectsResponse
 		{
 			IsSuccess = true,
 			Message = "Projects found.",
-			Items = projects.Select(x => new ProjectDto
-			{
-				Id = x.Id,
-				ProjectName = x.Name,
-				ProjectCode = x.Code,
-				DateInitiation = x.DateInitiation,
-
-				Phase = new PhaseDto
-				{
-					PhaseName = x.Parameter.ProjectPhase.GetDescription(),
-				}
-			}),
+			Items = projects.Select(x => x.ToDto<ProjectDto>()),
 			TotalCount = totalCount,
 			PageNumber = query.PageNumber,
 			PageSize = query.PageSize,

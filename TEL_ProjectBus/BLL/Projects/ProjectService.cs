@@ -54,6 +54,8 @@ public class ProjectService(AppDbContext _dbContext)
 
 		p.Parameter = lastParameter;
 
+        p.Parameters.Clear();
+
 		return p;
 	}
 

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using TEL_ProjectBus.BLL;
 using TEL_ProjectBus.BLL.Budgets;
 using TEL_ProjectBus.BLL.Mappers.MappingProfiles;
 using TEL_ProjectBus.BLL.Projects;
@@ -61,13 +62,14 @@ public class Program
         //builder.Services.AddAutoMapper(typeof(Program).Assembly);
         builder.Services.AddScoped<BudgetService>(); // или AddScoped<IBudgetService, BudgetService>()
         builder.Services.AddScoped<ProjectService>();
+		builder.Services.AddScoped<RefDataService>(); // Сервис для получения справочных данных (список ролей, групп бюджетов и т.д.)
 
-        #endregion
+		#endregion
 
-        #region ─────────────────────────────── Identity  ───────────────────────────────
+		#region ─────────────────────────────── Identity  ───────────────────────────────
 
-        // Добавляем Identity-сервис
-        builder.Services
+		// Добавляем Identity-сервис
+		builder.Services
             .AddIdentity<User, Role>(options =>
             {
                 // Настройка требований к паролю

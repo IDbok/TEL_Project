@@ -23,6 +23,12 @@ public static class EnumExtensions
 		return attribute == null ? value.ToString() : attribute.Description;
 	}
 
+	public static int ToInt(this Enum value)
+	{
+		if (value == null) throw new ArgumentNullException(nameof(value));
+		return Convert.ToInt32(value);
+	}
+
 	public static TEnum? ToEnum<TEnum>(int value) where TEnum : struct, Enum
 	{
 		if (Enum.IsDefined(typeof(TEnum), value))

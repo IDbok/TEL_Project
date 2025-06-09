@@ -34,7 +34,7 @@ public static class DbTestDataCreator
 			var item = new Classifier
 			{
 				Id = new ClassifierKey(i + 1),
-				ClassifierCode = $"Classifier {i + 1}",
+				Code = $"Classifier {i + 1}",
 				ChangedByUserId = testUser1Id
 			};
 			itemList.Add(item);

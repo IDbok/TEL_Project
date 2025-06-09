@@ -13,7 +13,7 @@ public class ClassifierConfiguration : IEntityTypeConfiguration<Classifier>
 		builder.ToTable("Classifier");
 		builder.HasKey(c => c.Id);
 
-		builder.Property(p => p.ClassifierCode).HasColumnName("ClassifierCode");
+		builder.Property(p => p.Code).HasColumnName("ClassifierCode");
 
 		builder.ConfigureId<Classifier, ClassifierKey>();
 		builder.ConfigureAudit();

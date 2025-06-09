@@ -7,8 +7,9 @@ public record ProjectDto
 	public int Id { get; init; }
 	public string Name { get; init; } = default!;
 	public string Code { get; init; } = default!;
-	public string Responsible { get; init; } = default!; // ПМ => email ??  авторизация через ADO
-	public string? Phase { get; init; } = default!; // Этап
+	//public string Responsible { get; init; } = default!; 
+	// ПМ => email ??  авторизация через ADO
+	public ProjectPhaseDto? Phase { get; init; } = default!; // Этап
 	public DateTime DateInitiation { get; init; } = default!; // переход от PreSale к Execution
 	public DateTime? DateCreated { get; init; } = default!; // дата создания проекта
 	public DateTime? DateChanged { get; init; } = default!;
