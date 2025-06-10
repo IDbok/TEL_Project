@@ -22,6 +22,8 @@
 - MassTransit
 - MassTransit.Extensions.DependencyInjection
 - MassTransit.RabbitMQ
+- FluentValidation
+- FluentValidation.DependencyInjectionExtensions
 
 // В проекте BLL будут использоваться следующие библиотеки:
 - CompareNETObjects ??

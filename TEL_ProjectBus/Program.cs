@@ -1,4 +1,5 @@
-﻿using Infrastructure;
+﻿//using FluentValidation; // todo - добавить валидацию команд и запросов через FluentValidation
+using Infrastructure;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -9,12 +10,9 @@ using System.Reflection;
 using System.Text;
 using TEL_ProjectBus.BLL;
 using TEL_ProjectBus.BLL.Budgets;
-using TEL_ProjectBus.BLL.Mappers.MappingProfiles;
 using TEL_ProjectBus.BLL.Projects;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
-using TEL_ProjectBus.WebAPI.Consumers.Budgets;
-using TEL_ProjectBus.WebAPI.Consumers.Projects;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
@@ -37,8 +35,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddEndpointsApiExplorer();
+		//builder.Services.AddValidatorsFromAssemblyContaining<CreateBudgetCommandValidator>();
 
-        if (builder.Environment.IsDevelopment())
+		if (builder.Environment.IsDevelopment())
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
         #region ──────────────────────────────────  DB  ──────────────────────────────────
@@ -129,26 +128,30 @@ public class Program
             x.SetKebabCaseEndpointNameFormatter(); // Используем kebab-case для именования очередей
 
             // Регистрируем обработчики сообщений
-            x.AddConsumer<CreateBudgetConsumer>();
-            x.AddConsumer<GetBudgetByIdConsumer>();
-            x.AddConsumer<GetBudgetsByProjectIdConsumer>();
-            x.AddConsumer<UpdateBudgetConsumer>();
-            x.AddConsumer<DeleteBudgetConsumer>();
+            //x.AddConsumer<CreateBudgetConsumer>();
+            //x.AddConsumer<GetBudgetByIdConsumer>();
+            //x.AddConsumer<GetBudgetsByProjectIdConsumer>();
+            //x.AddConsumer<UpdateBudgetConsumer>();
+            //x.AddConsumer<DeleteBudgetConsumer>();
 
-            x.AddConsumer<CreateProjectConsumer>();
-            x.AddConsumer<GetProjectsConsumer>();
-            x.AddConsumer<GetProjectProfileConsumer>();
-            x.AddConsumer<UpdateProjectProfileConsumer>();
-            x.AddConsumer<UpdateProjectConsumer>();
-            x.AddConsumer<DeleteProjectConsumer>();
+            //x.AddConsumer<CreateProjectConsumer>();
+            //x.AddConsumer<GetProjectsConsumer>();
+            //x.AddConsumer<GetProjectProfileConsumer>();
+            //x.AddConsumer<UpdateProjectProfileConsumer>();
+            //x.AddConsumer<UpdateProjectConsumer>();
+            //x.AddConsumer<DeleteProjectConsumer>();
 
-            // Регистрация RequestClient
-            x.AddRequestClient<GetBudgetByIdQuery>();
+			x.AddConsumers(Assembly.GetExecutingAssembly());
+
+			// Регистрация RequestClient
+			x.AddRequestClient<GetBudgetByIdQuery>();
             x.AddRequestClient<GetBudgetsByProjectIdQuery>();
             x.AddRequestClient<GetProjectsQuery>();
             x.AddRequestClient<GetProjectProfileQuery>();
 
-            if (useInMemory)
+			//x.AddFluentValidation();
+
+			if (useInMemory)
                 x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
             else
                 x.UsingRabbitMq((context, cfg) =>
