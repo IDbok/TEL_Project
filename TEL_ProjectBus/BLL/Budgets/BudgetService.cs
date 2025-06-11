@@ -20,18 +20,18 @@ public class BudgetService(AppDbContext _dbContext)
 		return newBudget.Id;
 	}
 
-	public async Task<T?> GetBudgetByIdAsync<T>(long budgetId)
+	public async Task<T?> GetBudgetByIdAsync<T>(long budgetId, CancellationToken cancellationToken)
 		where T : BudgetLineDto, new()
 	{
 		var budget = await _dbContext.Budgets
 			.Include(b => b.BudgetGroup)
-			.FirstOrDefaultAsync(b => b.Id == budgetId);
+			.FirstOrDefaultAsync(b => b.Id == budgetId, cancellationToken);
 		if (budget == null)
 			return null;
 		return budget.ToDto<T>();
 	}
 
-	public async Task<bool> UpdateBudgetAsync<T>(T budget)
+	public async Task<bool> UpdateBudgetAsync<T>(T budget, CancellationToken cancellationToken)
 		where T : BudgetLineDto
 	{
 		if (budget == null)
@@ -40,7 +40,7 @@ public class BudgetService(AppDbContext _dbContext)
 			throw new ArgumentException("Budget ID cannot be 0.", nameof(budget));
 
 		var existingBudget = await _dbContext.Budgets
-			.FirstOrDefaultAsync(b => b.Id == budget.Id);
+			.FirstOrDefaultAsync(b => b.Id == budget.Id, cancellationToken);
 		if (existingBudget == null)
 			return false;
 		existingBudget.Name = budget.Name;
@@ -62,36 +62,36 @@ public class BudgetService(AppDbContext _dbContext)
 		existingBudget.CalcEV = budget.CalcEV;
 		existingBudget.CalcCPI = budget.CalcCPI;
 		existingBudget.CalcSPI = budget.CalcSPI;
-		await _dbContext.SaveChangesAsync();
+		await _dbContext.SaveChangesAsync(cancellationToken);
 		return true;
 	}
 
-	public async Task<bool> UpdateBudgetAutoAsync<T>(T dto)
+	public async Task<bool> UpdateBudgetAutoAsync<T>(T dto, CancellationToken cancellationToken)
 		where T : BudgetLineDto
 	{
 		if (dto is null) throw new ArgumentNullException(nameof(dto));
 		if (dto.Id == 0) throw new ArgumentException("Id == 0");
 
 		var entity = await _dbContext.Budgets
-									 .FirstOrDefaultAsync(b => b.Id == dto.Id);
+									 .FirstOrDefaultAsync(b => b.Id == dto.Id, cancellationToken);
 		if (entity is null) return false;
 
 		_dbContext.Entry(entity).CurrentValues.SetValues(dto);
 		entity.BudgetGroupId = dto.BudgetGroup.Id; // todo: может группу менять отдельным методом?
 
-		await _dbContext.SaveChangesAsync();
+		await _dbContext.SaveChangesAsync(cancellationToken);
 		return true;
 	}
 
 
-	public async Task<bool> DeleteBudgetAsync(long budgetId)
+	public async Task<bool> DeleteBudgetAsync(long budgetId, CancellationToken cancellationToken)
 	{
 		var budget = await _dbContext.Budgets
-			.FirstOrDefaultAsync(b => b.Id == budgetId);
+			.FirstOrDefaultAsync(b => b.Id == budgetId, cancellationToken);
 		if (budget == null)
 			return false;
 		_dbContext.Budgets.Remove(budget);
-		await _dbContext.SaveChangesAsync();
+		await _dbContext.SaveChangesAsync(cancellationToken);
 		return true;
 	}
 

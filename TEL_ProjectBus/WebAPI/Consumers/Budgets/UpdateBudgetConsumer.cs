@@ -10,13 +10,13 @@ public class UpdateBudgetConsumer(BudgetService budgetService, ILogger<UpdateBud
 	{
 		var command = context.Message;
 
-		if (await budgetService.UpdateBudgetAutoAsync(command))
+		if (await budgetService.UpdateBudgetAutoAsync(command, context.CancellationToken))
 		{
 			await context.RespondAsync(new UpdateBudgetResponse
 			{
 				IsSuccess = true,
 				Message = "Budget updated successfully",
-			});
+			}, context.CancellationToken);
 		}
 		else
 		{
@@ -24,7 +24,7 @@ public class UpdateBudgetConsumer(BudgetService budgetService, ILogger<UpdateBud
 			{
 				IsSuccess = false,
 				Message = "Failed to update budget",
-			});
+			}, context.CancellationToken);
 		}
 	}
 }

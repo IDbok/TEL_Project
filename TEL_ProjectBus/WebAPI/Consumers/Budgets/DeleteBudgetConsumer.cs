@@ -10,13 +10,13 @@ public class DeleteBudgetConsumer(BudgetService budgetService, ILogger<DeleteBud
 	{
 		var command = context.Message;
 
-		if (await budgetService.DeleteBudgetAsync(command.BudgetId))
+		if (await budgetService.DeleteBudgetAsync(command.BudgetId, context.CancellationToken))
 		{
 			await context.RespondAsync(new DeleteBudgetResponse
 			{
 				IsSuccess = true,
 				Message = "Budget deleted successfully",
-			});
+			}, context.CancellationToken);
 		}
 		else
 		{
@@ -24,7 +24,7 @@ public class DeleteBudgetConsumer(BudgetService budgetService, ILogger<DeleteBud
 			{
 				IsSuccess = false,
 				Message = "Failed to delete budget",
-			});
+			}, context.CancellationToken);
 		}
 	}
 }
