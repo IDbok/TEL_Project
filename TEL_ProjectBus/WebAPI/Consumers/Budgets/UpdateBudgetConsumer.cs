@@ -16,7 +16,7 @@ public class UpdateBudgetConsumer(BudgetService budgetService, ILogger<UpdateBud
 			{
 				IsSuccess = true,
 				Message = "Budget updated successfully",
-			}, context.CancellationToken);
+			});
 		}
 		else
 		{
@@ -24,7 +24,7 @@ public class UpdateBudgetConsumer(BudgetService budgetService, ILogger<UpdateBud
 			{
 				IsSuccess = false,
 				Message = "Failed to update budget",
-			}, context.CancellationToken);
+			});
 		}
 	}
 }

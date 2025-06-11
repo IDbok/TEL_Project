@@ -24,6 +24,6 @@ public class GetBudgetsByProjectIdConsumer(ProjectService projectService, ILogge
                         TotalCount = totalCount,
                         PageNumber = query.PageNumber,
                         PageSize = query.PageSize,
-                }, context.CancellationToken);
+                });
         }
 }

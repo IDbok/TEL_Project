@@ -16,7 +16,7 @@ public class DeleteBudgetConsumer(BudgetService budgetService, ILogger<DeleteBud
 			{
 				IsSuccess = true,
 				Message = "Budget deleted successfully",
-			}, context.CancellationToken);
+			});
 		}
 		else
 		{
@@ -24,7 +24,7 @@ public class DeleteBudgetConsumer(BudgetService budgetService, ILogger<DeleteBud
 			{
 				IsSuccess = false,
 				Message = "Failed to delete budget",
-			}, context.CancellationToken);
+			});
 		}
 	}
 }
