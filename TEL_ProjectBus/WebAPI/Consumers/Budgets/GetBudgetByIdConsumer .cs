@@ -15,7 +15,7 @@ public class GetBudgetByIdConsumer(BudgetService budgetService, ILogger<GetBudge
 
 			var budgetItemId = context.Message.BudgetItemId;
 
-			var dto = await budgetService.GetBudgetByIdAsync<BudgetLineDto>(budgetItemId);
+			var dto = await budgetService.GetBudgetByIdAsync<BudgetLineDto>(budgetItemId, context.CancellationToken);
 
 			if (dto == null)
 			{
@@ -24,14 +24,14 @@ public class GetBudgetByIdConsumer(BudgetService budgetService, ILogger<GetBudge
 				{
 					IsSuccess = false,
 					Message = $"Budget with ID {budgetItemId} not found."
-				});
+				}, context.CancellationToken);
 				return;
 			}
 
 			await context.RespondAsync(new GetBudgetByIdResponse() {
 				IsSuccess = true,
 				Message = "Budget found.",
-				BudgetLine = dto } );
+				BudgetLine = dto } , context.CancellationToken);
 		}
 		catch (Exception ex)
 		{
@@ -40,7 +40,7 @@ public class GetBudgetByIdConsumer(BudgetService budgetService, ILogger<GetBudge
 			{
 				IsSuccess = false,
 				Message = ex.Message
-			});
+			}, context.CancellationToken);
 		}
 	}
 }
