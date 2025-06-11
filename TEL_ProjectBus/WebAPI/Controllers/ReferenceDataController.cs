@@ -15,9 +15,9 @@ public class ReferenceDataController(RefDataService refDataService) : BaseApiCon
 	/// </summary>
 	/// <returns>Список ролей.</returns>
 	[HttpGet("reference-data/roles")]
-	public async Task<IActionResult> GetRoles()
+	public async Task<IActionResult> GetRoles(CancellationToken cancellationToken)
 	{
-		var roles = await refDataService.GetAllRolesAsync();
+		var roles = await refDataService.GetAllRolesAsync(cancellationToken);
 		return ApiOk(roles);
 	}
 
@@ -26,9 +26,9 @@ public class ReferenceDataController(RefDataService refDataService) : BaseApiCon
 	/// </summary>
 	/// <returns>Список групп бюджета.</returns>
 	[HttpGet("reference-data/budget-groups")]
-	public async Task<IActionResult> GetBudgetGroups()
+	public async Task<IActionResult> GetBudgetGroups(CancellationToken cancellationToken)
 	{
-		var roles = await refDataService.GetAllBudgetGroupsAsync();
+		var roles = await refDataService.GetAllBudgetGroupsAsync(cancellationToken);
 		return ApiOk(roles);
 	}
 }

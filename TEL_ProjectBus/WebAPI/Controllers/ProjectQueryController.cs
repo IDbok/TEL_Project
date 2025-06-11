@@ -22,13 +22,15 @@ public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProject
 	/// <param name="pageSize">Размер страницы для пагинации (по умолчанию 20).</param>
 	/// <param name="projectName">Фильтр по имени проекта (по умолчанию пустое значение).</param>
 	/// <param name="projectCode">Фильтр по коду проекта (по умолчанию пустое значение).</param>
+	/// <param name="cancellationToken"></param>
 	/// <returns>Возвращает список проектов в соответствии с указанными параметрами фильтрации и пагинации.</returns>
 	[HttpGet("projects")]
 	public async Task<IActionResult> GetProjects(
 		[FromQuery] int pageNumber = 1,
 		[FromQuery] int pageSize = 20,
 		[FromQuery] string projectName = "",
-		[FromQuery] string projectCode = "")
+		[FromQuery] string projectCode = "",
+		CancellationToken cancellationToken = default)
 	{
 		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToArray();
@@ -48,7 +50,7 @@ public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProject
 			UserId = userId,
 		};
 
-		var response = await _getProjectsClient.GetResponse<GetProjectsResponse>(query);
+		var response = await _getProjectsClient.GetResponse<GetProjectsResponse>(query, cancellationToken);
 
 		return ApiOk(response.Message);
 	}
@@ -57,17 +59,18 @@ public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProject
 	/// Возвращает паспорт проекта по указанному идентификатору.
 	/// </summary>
 	/// <param name="id">Идентификатор проекта.</param>
+	/// <param name="cancellationToken"></param>
 	/// <returns>Возвращает данные профиля проекта по указанному ID. 
 	/// В случае ошибки или таймаута — соответствующий статус (например, 504 — Request Timeout или 404 — Not Found).</returns>
 	[HttpGet("projects/{id:int}/profile")]
-	public async Task<IActionResult> GetProjectProfileById(int id)
+	public async Task<IActionResult> GetProjectProfileById(int id, CancellationToken cancellationToken)
 	{
 		_logger.LogInformation($"[ProjectQueryController] Sending GetBudgetByIdQuery for {id}");
 
 		try
 		{
 			var response = await _getProjectProfileByIdClient.GetResponse<GetProjectProfileResponse>(
-				new GetProjectProfileQuery { ProjectId = id }, timeout: TimeSpan.FromSeconds(30));
+				new GetProjectProfileQuery { ProjectId = id }, cancellationToken);
 
 			return ApiOk(response.Message);
 		}

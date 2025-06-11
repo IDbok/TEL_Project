@@ -7,11 +7,11 @@ namespace TEL_ProjectBus.BLL;
 
 public class RefDataService(AppDbContext _dbContext)
 {
-	public async Task<List<BudgetGroupDto>> GetAllBudgetGroupsAsync()
+	public async Task<List<BudgetGroupDto>> GetAllBudgetGroupsAsync(CancellationToken cancellationToken)
 	{
 		var budgetGroups = await _dbContext.BudgetGroups
 			.AsNoTracking()
-			.ToListAsync();
+			.ToListAsync(cancellationToken);
 		return budgetGroups.Select(bg => new BudgetGroupDto
 		{
 			Id = bg.Id,
@@ -19,10 +19,10 @@ public class RefDataService(AppDbContext _dbContext)
 		}).ToList();
 	}
 
-	public async Task<List<Role>> GetAllRolesAsync()
+	public async Task<List<Role>> GetAllRolesAsync(CancellationToken cancellationToken)
 	{
 		return await _dbContext.Roles
 			.AsNoTracking()
-			.ToListAsync();
+			.ToListAsync(cancellationToken);
 	}
 }

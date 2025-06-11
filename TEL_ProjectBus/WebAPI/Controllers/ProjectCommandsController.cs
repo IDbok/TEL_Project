@@ -23,9 +23,11 @@ public class ProjectCommandsController(
 	/// <returns>Возвращает статус 202 (Accepted), если создание прошло успешно. 
 	/// В противном случае — статус 400 (BadRequest) с сообщением об ошибке.</returns>
 	[HttpPut("projects/update-profile")]
-	public async Task<IActionResult> UpdateProjectProfile(UpdateProjectProfileCommand command)
+	public async Task<IActionResult> UpdateProjectProfile(UpdateProjectProfileCommand command, 
+		CancellationToken cancellationToken)
 	{
-		var response = await _updateProjectProfileClient.GetResponse<UpdateProjectProfileResponse>(command);
+		var response = await _updateProjectProfileClient.GetResponse<UpdateProjectProfileResponse>(command, 
+			cancellationToken);
 		
 		if (response.Message.IsSuccess)
 		{
@@ -45,9 +47,11 @@ public class ProjectCommandsController(
 	/// <returns>Возвращает статус 202 (Accepted) с данными о созданном проекте, включая его ID, если создание прошло успешно. 
 	/// В противном случае — статус 400 (BadRequest) с сообщением об ошибке.</returns>
     [HttpPost("projects/create")]
-    public async Task<IActionResult> CreateProject(CreateProjectCommand command)
+    public async Task<IActionResult> CreateProject(CreateProjectCommand command,
+		CancellationToken cancellationToken)
     {
-        var response = await _createProjectClient.GetResponse<CreateProjectResponse>(command);
+        var response = await _createProjectClient.GetResponse<CreateProjectResponse>(command,
+			cancellationToken);
 
 		if (response.Message.IsSuccess)
 		{
@@ -70,7 +74,8 @@ public class ProjectCommandsController(
 	/// В противном случае — статус 400 (BadRequest) с сообщением об ошибке.
 	/// </returns>
 	[HttpPut("projects/{id:int}/update")]
-    public async Task<IActionResult> UpdateProject(int id, [FromBody] UpdateProjectCommand command)
+    public async Task<IActionResult> UpdateProject(int id, [FromBody] UpdateProjectCommand command,
+		CancellationToken cancellationToken)
     {
 		var userId = User.Identity?.Name;
 		if (string.IsNullOrEmpty(userId))
@@ -78,7 +83,8 @@ public class ProjectCommandsController(
 			return Unauthorized("User ID is required.");
 		}
 		command = command with { Id = id, ChangedByUserId = userId, DateChanged = DateTime.UtcNow };
-        var response = await _updateProjectClient.GetResponse<UpdateProjectResponse>(command);
+        var response = await _updateProjectClient.GetResponse<UpdateProjectResponse>(command,
+			cancellationToken);
         return SendResponse(response);
     }
 
@@ -91,9 +97,11 @@ public class ProjectCommandsController(
 	/// В противном случае — статус 400 (BadRequest) с сообщением об ошибке.
 	/// </returns>
 	[HttpDelete("projects/{id:int}/delete")]
-    public async Task<IActionResult> DeleteProject(int id)
+    public async Task<IActionResult> DeleteProject(int id, CancellationToken cancellationToken)
     {
-        var response = await _deleteProjectClient.GetResponse<DeleteProjectResponse>(new DeleteProjectCommand { ProjectId = id });
+        var response = await _deleteProjectClient.GetResponse<DeleteProjectResponse>(
+			new DeleteProjectCommand { ProjectId = id },
+			cancellationToken);
         return SendResponse(response);
     }
 }

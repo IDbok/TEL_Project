@@ -15,13 +15,14 @@ public class ProjectService(AppDbContext _dbContext)
 
         await _dbContext.Projects.AddAsync(newProject, cancellationToken);
 
-        await AddBudgetLinesToContext(project.BudgetLines, newProject);
+        await AddBudgetLinesToContext(project.BudgetLines, newProject, cancellationToken);
 
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
         return newProject.Id;
     }
 
-    private async Task AddBudgetLinesToContext(List<BudgetLineDto> budgetLines, Project newProject)
+    private async Task AddBudgetLinesToContext(List<BudgetLineDto> budgetLines, Project newProject, 
+        CancellationToken cancellationToken)
     {
         if (budgetLines != null && budgetLines.Count > 0)
         {
@@ -32,7 +33,7 @@ public class ProjectService(AppDbContext _dbContext)
                 budgetLine.Project = newProject;
             }
 
-            await _dbContext.Budgets.AddRangeAsync(newBudgetLines);
+            await _dbContext.Budgets.AddRangeAsync(newBudgetLines, cancellationToken);
         }
     }
 
