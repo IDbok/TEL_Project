@@ -8,12 +8,12 @@ namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [AllowAnonymous]
 [Route("api/[controller]")]
-public class ProjectBusController(
+public class ProjectCommandsController(
         IRequestClient<UpdateProjectProfileCommand> _updateProjectProfileClient,
         IRequestClient<CreateProjectCommand> _createProjectClient,
         IRequestClient<UpdateProjectCommand> _updateProjectClient,
         IRequestClient<DeleteProjectCommand> _deleteProjectClient,
-        ILogger<ProjectBusController> _logger)
+        ILogger<ProjectCommandsController> _logger)
 	: BaseApiController
 {
 	/// <summary>

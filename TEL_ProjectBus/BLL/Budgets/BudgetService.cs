@@ -7,12 +7,16 @@ namespace TEL_ProjectBus.BLL.Budgets;
 
 public class BudgetService(AppDbContext _dbContext)
 {
-	public async Task<long> CreateNewBudgetAsync<T>(T budget) // todo: передать пользователя и присвоить changedByid
+	public async Task<long> CreateNewBudgetAsync<T>(T budget, CancellationToken ct) // todo: передать пользователя и присвоить changedByid
 		where T : BudgetLineDto
 	{
+		ArgumentNullException.ThrowIfNull(budget);
+
 		var newBudget = BudgetMapper.ToEntity(budget);
-		await _dbContext.Budgets.AddAsync(newBudget);
-		await _dbContext.SaveChangesAsync();
+
+		await _dbContext.Budgets.AddAsync(newBudget, ct);
+		await _dbContext.SaveChangesAsync(ct);
+
 		return newBudget.Id;
 	}
 

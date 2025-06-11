@@ -34,6 +34,7 @@ public class CreateBudgetConsumer(BudgetService budgetService, ILogger<CreateBud
 		//}
 
 		//await context.RespondAsync(response);
+		var ct = context.CancellationToken;
 
 		var id = await budgetService.CreateNewBudgetAsync(context.Message);
 		await context.RespondAsync(new BudgetCreatedDto(id));

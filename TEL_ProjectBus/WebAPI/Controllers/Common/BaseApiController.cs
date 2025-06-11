@@ -5,6 +5,7 @@ using TEL_ProjectBus.WebAPI.Common;
 namespace TEL_ProjectBus.WebAPI.Controllers.Common;
 
 [ApiController]
+[Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {
 	protected IActionResult ApiOk<T>(T data)
