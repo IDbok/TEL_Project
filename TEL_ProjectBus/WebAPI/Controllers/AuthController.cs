@@ -18,8 +18,6 @@ using TEL_ProjectBus.WebAPI.Controllers.Common;
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [Authorize]
-[ApiController]
-[Route("api/[controller]")]
 public class AuthController(UserManager<User> _userManager, IConfiguration _configuration, AppDbContext _context) : BaseApiController
 {
 	public record TestRoleDto

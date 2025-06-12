@@ -19,4 +19,6 @@ public record ProjectProfileDto
 	public string AssumptionsAndConstraints { get; init; }// Допущения и ограничения
 	public string ConfidenceRequirements { get; init; }   // Требования к уверенности
 	public string ProjectManager { get; init; }           // Назначение рук. проекта
+	public string ChangedByUserId { get; init; }       // Идентификатор пользователя, который изменил паспорт
+	public DateTime DateChanged { get; init; }            // Дата изменения паспорта
 }
