@@ -12,8 +12,8 @@ public class CreateProjectConsumer(ProjectService pService, ILogger<CreateProjec
 
 		var response = new CreateProjectResponse
 		{
-			IsSuccess = true,
-			Message = "Project created successfully",
+			//IsSuccess = true,
+			//Message = "Project created successfully",
 			ProjectId = newProjectId,
 		};
 

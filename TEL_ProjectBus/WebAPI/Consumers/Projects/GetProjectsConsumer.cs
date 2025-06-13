@@ -2,10 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.BLL.DTOs;
 using TEL_ProjectBus.BLL.Mappers;
-using TEL_ProjectBus.Common.Extensions;
 using TEL_ProjectBus.DAL.DbContext;
-using TEL_ProjectBus.DAL.Entities;
-using TEL_ProjectBus.WebAPI.Messages.Queries;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
 namespace TEL_ProjectBus.WebAPI.Consumers.Projects;
@@ -55,8 +52,8 @@ public class GetProjectsConsumer(AppDbContext db) : IConsumer<GetProjectsQuery>
 
 		await context.RespondAsync(new GetProjectsResponse
 		{
-			IsSuccess = true,
-			Message = "Projects found.",
+			//IsSuccess = true,
+			//Message = "Projects found.",
 			Items = projects.Select(x => x.ToDto<ProjectDto>()),
 			TotalCount = totalCount,
 			PageNumber = query.PageNumber,

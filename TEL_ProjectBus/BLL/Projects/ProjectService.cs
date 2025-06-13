@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TEL_ProjectBus.BLL.DTOs;
+using TEL_ProjectBus.BLL.Exceptions;
 using TEL_ProjectBus.BLL.Mappers;
 using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities.Projects;
@@ -80,24 +81,27 @@ public class ProjectService(AppDbContext _dbContext)
             int pageSize,
             CancellationToken cancellationToken)
     {
-            var query = _dbContext.Budgets
-                                    .AsNoTracking()
-                                    .Include(b => b.Classifier)
-                                    .Include(b => b.BudgetGroup)
-                                    .Where(b => b.ProjectId == projectId);
+		// проверим, существует ли проект
+		var projectExists = await _dbContext.Projects
+			.AnyAsync(p => p.Id == projectId, cancellationToken);
+		if (!projectExists)
+			throw new NotFoundException($"Project with ID {projectId} not found.");
+
+		var query = _dbContext.Budgets
+                                .AsNoTracking()
+                                .Include(b => b.Classifier)
+                                .Include(b => b.BudgetGroup)
+                                .Where(b => b.ProjectId == projectId);
 
 
-            var totalCount = await query.CountAsync(cancellationToken);
+        var totalCount = await query.CountAsync(cancellationToken);
 
-            var budgets = await query
-                                    .Skip((pageNumber - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToListAsync(cancellationToken);
+        var budgets = await query
+                                .Skip((pageNumber - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync(cancellationToken);
 
-            if (budgets is null || budgets.Count == 0)
-                    throw new Exception($"Project with ID {projectId} has no budgets.");
-
-            return (BudgetMapper.ToDto<BudgetLineDto>(budgets), totalCount);
+        return (BudgetMapper.ToDto<BudgetLineDto>(budgets), totalCount);
     }
 
     public async Task<bool> UpdateProjectAsync(UpdateProjectCommand project, CancellationToken cancellationToken)

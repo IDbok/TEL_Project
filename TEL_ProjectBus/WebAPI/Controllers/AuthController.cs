@@ -1,5 +1,4 @@
 ﻿using Infrastructure;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +17,9 @@ using TEL_ProjectBus.WebAPI.Controllers.Common;
 namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [Authorize]
-public class AuthController(UserManager<User> _userManager, IConfiguration _configuration, AppDbContext _context) : BaseApiController
+public class AuthController(UserManager<User> _userManager, 
+	IConfiguration _configuration,
+	AppDbContext _context) : BaseApiController
 {
 	public record TestRoleDto
 	{

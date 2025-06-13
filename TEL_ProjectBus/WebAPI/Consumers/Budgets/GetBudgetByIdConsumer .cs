@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using TEL_ProjectBus.BLL.Budgets;
 using TEL_ProjectBus.BLL.DTOs;
+using TEL_ProjectBus.BLL.Exceptions;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 
 namespace TEL_ProjectBus.WebAPI.Consumers.Budgets;
@@ -9,38 +10,17 @@ public class GetBudgetByIdConsumer(BudgetService budgetService, ILogger<GetBudge
 {
 	public async Task Consume(ConsumeContext<GetBudgetByIdQuery> context)
 	{
-		try
+		logger.LogInformation($"[GetBudgetByIdConsumer] Received query for {context.Message.BudgetItemId}");
+
+		var budgetItemId = context.Message.BudgetItemId;
+
+		var dto = await budgetService.GetBudgetByIdAsync<BudgetLineDto>(budgetItemId, context.CancellationToken);
+
+		if (dto is null)
 		{
-			logger.LogInformation($"[GetBudgetByIdConsumer] Received query for {context.Message.BudgetItemId}");
-
-			var budgetItemId = context.Message.BudgetItemId;
-
-			var dto = await budgetService.GetBudgetByIdAsync<BudgetLineDto>(budgetItemId, context.CancellationToken);
-
-			if (dto == null)
-			{
-				logger.LogWarning($"[GetBudgetByIdConsumer] Budget with ID {budgetItemId} not found.");
-				await context.RespondAsync(new GetBudgetByIdResponse
-				{
-					IsSuccess = false,
-					Message = $"Budget with ID {budgetItemId} not found."
-				});
-				return;
-			}
-
-			await context.RespondAsync(new GetBudgetByIdResponse() {
-				IsSuccess = true,
-				Message = "Budget found.",
-				BudgetLine = dto });
+			throw new NotFoundException($"Budget with ID {budgetItemId} not found");
 		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, $"[GetBudgetByIdConsumer] Error while processing GetBudgetByIdQuery: {ex.Message}");
-			await context.RespondAsync(new GetBudgetByIdResponse
-			{
-				IsSuccess = false,
-				Message = ex.Message
-			});
-		}
+
+		await context.RespondAsync(dto);
 	}
 }

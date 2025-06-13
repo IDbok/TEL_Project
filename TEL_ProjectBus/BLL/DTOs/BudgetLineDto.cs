@@ -34,9 +34,4 @@ public record BudgetLineDto
 	public decimal? CalcEV { get; init; }
 	public decimal? CalcCPI { get; init; }
 	public decimal? CalcSPI { get; init; }
-
-	public void SetBudgetId(long id)
-	{
-		Id = id;
-	}
 }

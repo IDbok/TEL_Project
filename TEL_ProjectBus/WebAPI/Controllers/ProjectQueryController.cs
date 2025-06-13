@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TEL_ProjectBus.BLL.DTOs;
 using TEL_ProjectBus.WebAPI.Controllers.Common;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
 
@@ -9,11 +10,42 @@ namespace TEL_ProjectBus.WebAPI.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]
-public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProjectsClient,
+public class ProjectQueryController(IRequestClient<GetProjectByIdQuery> _getProjectClient,
+	IRequestClient<GetProjectsQuery> _getProjectsClient,
 	IRequestClient<GetProjectProfileQuery> _getProjectProfileByIdClient,
 	ILogger<ProjectQueryController> _logger
 	) : BaseApiController
 {
+	/// <summary>
+	/// Возвращает проект по указанному идентификатору.
+	/// </summary>
+	[HttpGet("projects/{id:int}")]
+	public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
+	{
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		if (string.IsNullOrEmpty(userId))
+		{
+			return Unauthorized("User ID is required.");
+		}
+
+		try
+		{
+			var query = new GetProjectByIdQuery
+			{
+				ProjectId = id,
+				UserId = userId,
+			};
+			var response = await _getProjectClient.GetResponse<ProjectDto>(query, cancellationToken);
+
+			return Ok(response.Message);
+		}
+		catch (RequestFaultException ex)
+		{
+			_logger.LogWarning("Fault while getting project {Id} (user {UserId}): {Fault}", id, userId, ex.Message);
+			return MapFaultToHttp(ex);
+		}
+	}
+
 	/// <summary>
 	/// Получает список проектов доступных авторизованному пользователю
 	/// с учетом фильтрации и пагинации.
@@ -33,26 +65,31 @@ public class ProjectQueryController(IRequestClient<GetProjectsQuery> _getProject
 		CancellationToken cancellationToken = default)
 	{
 		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-		var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToArray();
-
-		if(string.IsNullOrEmpty(userId))
+		if (string.IsNullOrEmpty(userId))
 		{
 			return Unauthorized("User ID is required.");
 		}
 
-		var query = new GetProjectsQuery
+		try
 		{
-			PageNumber = pageNumber,
-			PageSize = pageSize,
-			ProjectNameFilter = projectName,
-			ProjectCodeFilter = projectCode,
+			var query = new GetProjectsQuery
+			{
+				PageNumber = pageNumber,
+				PageSize = pageSize,
+				ProjectNameFilter = projectName,
+				ProjectCodeFilter = projectCode,
 
-			UserId = userId,
-		};
+				UserId = userId,
+			};
+			var resp = await _getProjectsClient.GetResponse<GetProjectsResponse>(query, cancellationToken);
 
-		var response = await _getProjectsClient.GetResponse<GetProjectsResponse>(query, cancellationToken);
-
-		return ApiOk(response.Message);
+			return Ok(resp.Message);
+		}
+		catch (RequestFaultException ex)
+		{
+			_logger.LogWarning("Fault while getting all projects by user {UserId}: {Fault}", userId, ex.Message);
+			return MapFaultToHttp(ex);
+		}
 	}
 
 	/// <summary>
