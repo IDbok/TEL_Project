@@ -9,22 +9,6 @@ public class UpdateBudgetConsumer(BudgetService budgetService, ILogger<UpdateBud
 	public async Task Consume(ConsumeContext<UpdateBudgetCommand> context)
 	{
 		var command = context.Message;
-
-		if (await budgetService.UpdateBudgetAutoAsync(command, context.CancellationToken))
-		{
-			await context.RespondAsync(new UpdateBudgetResponse
-			{
-				IsSuccess = true,
-				Message = "Budget updated successfully",
-			});
-		}
-		else
-		{
-			await context.RespondAsync(new UpdateBudgetResponse
-			{
-				IsSuccess = false,
-				Message = "Failed to update budget",
-			});
-		}
+		await budgetService.UpdateBudgetAutoAsync(command, context.CancellationToken);
 	}
 }

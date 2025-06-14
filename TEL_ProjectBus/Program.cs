@@ -38,14 +38,13 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddValidatorsFromAssemblyContaining<CreateBudgetCommandValidator>();
 
 		if (builder.Environment.IsDevelopment())
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
-        #region ──────────────────────────────────  DB  ──────────────────────────────────
+		#region ──────────────────────────────  DB  ──────────────────────────────────
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
+		builder.Services.AddDbContext<AppDbContext>(options =>
         {
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             //options.UseNpgsql(connectionString);
@@ -57,18 +56,18 @@ public class Program
             .EnableDetailedErrors();     // стек при ошибках
         });
 
-        #endregion
+		#endregion
 
-        #region ──────────────────────────────  Services  ────────────────────────────────
+		#region ──────────────────────────────  Services  ────────────────────────────────
 
-        //builder.Services.AddAutoMapper(typeof(Program).Assembly);
-        builder.Services.AddScoped<BudgetService>(); // или AddScoped<IBudgetService, BudgetService>()
+		//builder.Services.AddAutoMapper(typeof(Program).Assembly);
+		builder.Services.AddScoped<BudgetService>(); // или AddScoped<IBudgetService, BudgetService>()
         builder.Services.AddScoped<ProjectService>();
 		builder.Services.AddScoped<RefDataService>(); // Сервис для получения справочных данных (список ролей, групп бюджетов и т.д.)
 
 		#endregion
 
-		#region ─────────────────────────────── Identity  ───────────────────────────────
+		#region ──────────────────────────────  Identity  ───────────────────────────────
 
 		// Добавляем Identity-сервис
 		builder.Services
@@ -83,10 +82,10 @@ public class Program
             })
         .AddEntityFrameworkStores<AppDbContext>()
         .AddDefaultTokenProviders(); // подключаем токены для сброса пароля, подтверждения email и т.д.
-        #endregion
+		#endregion
 
-        #region ───────────────────────────  JWT‑аутентификация  ──────────────────────────
-        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+		#region ──────────────────────────────  JWT‑аутентификация  ──────────────────────────
+		var jwtSettings = builder.Configuration.GetSection("JwtSettings");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]!));
         // Добавляем Middleware для проверки JWT
         builder.Services.AddAuthentication(options =>
@@ -110,11 +109,11 @@ public class Program
             };
         });
 
-        #endregion
+		#endregion
 
-        #region ──────────────────────────────  MassTransit  ─────────────────────────────
+		#region ──────────────────────────────  MassTransit  ─────────────────────────────
 
-        var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
+		var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryTransport");
 
         var host = builder.Configuration["RabbitMq:Host"];
         var user = builder.Configuration["RabbitMq:User"];
@@ -169,11 +168,11 @@ public class Program
                 });
         });
 
-        #endregion
+		#endregion
 
-        #region ─────────────────────────────────  CORS  ────────────────────────────────
+		#region ──────────────────────────────  CORS  ────────────────────────────────
 
-        var allowedOrigins = builder.Configuration
+		var allowedOrigins = builder.Configuration
             .GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 
         builder.Services.AddCors(options =>
@@ -227,16 +226,23 @@ public class Program
             c.IncludeXmlComments(xmlPath);
         });
 
-        #endregion
+		#endregion
 
-        builder.Services.AddControllers();
-		builder.Services.AddFluentValidationAutoValidation();
+		#region ──────────────────────────────  FluentValidation  ───────────────────────
+
+		builder.Services.AddValidatorsFromAssemblyContaining<BudgetLineDtoValidator>();
+        builder.Services.AddFluentValidationAutoValidation();
+        builder.Services.AddFluentValidationClientsideAdapters(); // Поддержка клиентской валидации
+
+		#endregion
+
+		builder.Services.AddControllers();
 
 		var app = builder.Build();
 
-        #region ─────────────────────────────  Middleware  ───────────────────────────────
+		#region ──────────────────────────────  Middleware  ───────────────────────────────
 
-        if (app.Environment.IsDevelopment())
+		if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage(); // todo: что это?
             app.UseSwagger();
@@ -250,10 +256,10 @@ public class Program
         app.UseAuthorization();  // Проверяет, разрешён ли доступ к endpoint'у (смотрит, есть ли у User права на выполнение запроса (например, роль Admin))
         app.MapControllers(); // Подключает маршрутизацию контроллеров
 
-        #endregion
+		#endregion
 
-        #region ──────────────────────────────  DB seed  ────────────────────────────────
-        var useDbSeed = builder.Configuration.GetValue<bool>("DbSeed:UseDbSeed");
+		#region ──────────────────────────────  DB seed  ────────────────────────────────
+		var useDbSeed = builder.Configuration.GetValue<bool>("DbSeed:UseDbSeed");
 
         if (useDbSeed)
             using (var scope = app.Services.CreateScope())

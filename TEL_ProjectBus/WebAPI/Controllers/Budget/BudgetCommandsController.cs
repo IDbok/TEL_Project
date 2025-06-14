@@ -61,14 +61,15 @@ public class BudgetCommandsController(IRequestClient<CreateBudgetCommand> _creat
 		{
 			command = command with { Id = id};
 
-			var resp = await _updateClient.GetResponse<UpdateBudgetResponse>(command, cancellationToken);
-			_logger.LogInformation("Budget {Id} updated", id);
+			//var resp = await _updateClient.GetResponse<UpdateBudgetResponse>(command, cancellationToken);
+			await _publisher.Publish(command, cancellationToken);
+			_logger.LogInformation("Budget {Id} published", id);
 
 			return AcceptedAtAction(
 				actionName: "GetById",
 				controllerName: "BudgetQuery",
 				new { id },
-				resp.Message);
+				$"Budget {id} published.");
 		}
 		catch (RequestFaultException ex)
 		{
