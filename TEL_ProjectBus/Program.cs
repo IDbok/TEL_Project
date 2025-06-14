@@ -1,4 +1,6 @@
 ﻿//using FluentValidation; // todo - добавить валидацию команд и запросов через FluentValidation
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,6 +17,7 @@ using TEL_ProjectBus.DAL.DbContext;
 using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Budgets;
 using TEL_ProjectBus.WebAPI.Messages.Queries.Projects;
+using TEL_ProjectBus.WebAPI.Validation.Validators;
 
 // todo: избавиться от наследования в контрактах. + добавить автомаппер / после согласования архитектуры проекта и самих контрактов 
 
@@ -35,7 +38,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddEndpointsApiExplorer();
-		//builder.Services.AddValidatorsFromAssemblyContaining<CreateBudgetCommandValidator>();
+		builder.Services.AddValidatorsFromAssemblyContaining<CreateBudgetCommandValidator>();
 
 		if (builder.Environment.IsDevelopment())
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
@@ -227,8 +230,9 @@ public class Program
         #endregion
 
         builder.Services.AddControllers();
+		builder.Services.AddFluentValidationAutoValidation();
 
-        var app = builder.Build();
+		var app = builder.Build();
 
         #region ─────────────────────────────  Middleware  ───────────────────────────────
 
