@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TEL_ProjectBus.DAL.Entities;
 using TEL_ProjectBus.WebAPI.Controllers.Common;
 using TEL_ProjectBus.WebAPI.Messages.Commands.Budgets;
 
@@ -11,7 +10,7 @@ namespace TEL_ProjectBus.WebAPI.Controllers.Budget;
 public class BudgetCommandsController(IRequestClient<CreateBudgetCommand> _createClient, 
 	IRequestClient<UpdateBudgetCommand> _updateClient,
 	//IRequestClient<DeleteBudgetCommand> _deleteClient,
-	IPublishEndpoint _deleteClient,
+	IPublishEndpoint _publisher,
 	ILogger<BudgetCommandsController> _logger
 	) : BaseApiController
 {
@@ -93,7 +92,7 @@ public class BudgetCommandsController(IRequestClient<CreateBudgetCommand> _creat
 	{
 		try
 		{//var resp = await _deleteClient.GetResponse<DeleteBudgetResponse>(
-			await _deleteClient.Publish(
+			await _publisher.Publish(
 				new DeleteBudgetCommand { BudgetId = id }, cancellationToken);
 
 			return Accepted();

@@ -28,7 +28,7 @@ public class ProjectCommandsController(
 	/// если создание прошло успешно. 
 	/// </returns>
 	[HttpPost("projects")]
-    public async Task<IActionResult> CreateProject(CreateProjectCommand command,
+    public async Task<IActionResult> Create(CreateProjectCommand command,
 		CancellationToken cancellationToken)
     {
 		try
